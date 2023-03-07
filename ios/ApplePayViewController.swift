@@ -14,6 +14,13 @@ extension StripeSdk : PKPaymentAuthorizationViewControllerDelegate, STPApplePayC
         didAuthorizePayment payment: PKPayment,
         handler completion: @escaping (PKPaymentAuthorizationResult) -> Void
     ) {
+        if (self.hasLegacyApplePayListeners) {
+          // Legacy, remove when useApplePay hook is removed
+          let contact =  payment.shippingContact
+          if ((contact) != nil) {
+            sendEvent(withName: "onDidSetShippingContact", body: ["shippingContact": Mappers.mapFromShippingContact(shippingContact: contact!)])
+          }
+        }
         applePaymentMethodFlowCanBeCanceled = false
         
         if (platformPayUsesDeprecatedTokenFlow) {
@@ -165,6 +172,13 @@ extension StripeSdk : PKPaymentAuthorizationViewControllerDelegate, STPApplePayC
         paymentInformation: PKPayment,
         completion: @escaping STPIntentClientSecretCompletionBlock
     ) {
+        if (self.hasLegacyApplePayListeners) {
+          // Legacy, remove when useApplePay hook is removed
+          let contact =  paymentInformation.shippingContact
+          if ((contact) != nil) {
+            sendEvent(withName: "onDidSetShippingContact", body: ["shippingContact": Mappers.mapFromShippingContact(shippingContact: contact!)])
+          }
+        }
         if let clientSecret = self.confirmApplePayPaymentClientSecret {
             completion(clientSecret, nil)
         } else if let clientSecret = self.confirmApplePaySetupClientSecret {
