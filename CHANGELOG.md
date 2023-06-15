@@ -2,6 +2,38 @@
 
 ## Unreleased
 
+## Features
+
+- Added a `disabled` prop to `CardField` and `CardForm` which applies a disabled state such that user input is not accepted.  [#1403](https://github.com/stripe/stripe-react-native/pull/1403)
+
+## Fixes
+
+- Fixed an instance on Android where `collectBankAccountToken` or `collectFinancialConnectionsAccounts` could result in a fatal error. [#1401](https://github.com/stripe/stripe-react-native/pull/1401)
+- Resolve with better error objects on iOS in `confirmPaymentSheetPayment`, `createTokenForCVCUpdate`, `createPaymentMethod`, `retrievePaymentIntent`, and `retrieveSetupIntent`  [#1399](https://github.com/stripe/stripe-react-native/pull/1399)
+
+## 0.27.2 - 2023-05-15
+
+## Fixes
+
+- Updated `stripe-android` from 20.24.0 to 20.25.+ [#1384](https://github.com/stripe/stripe-react-native/pull/1384)
+- Updated `stripe-ios` from 23.7.+ to 23.8.+ [#1384](https://github.com/stripe/stripe-react-native/pull/1384)
+
+## 0.27.1 - 2023-05-03
+
+> Note: [Xcode 13 is no longer supported by Apple](https://developer.apple.com/news/upcoming-requirements/). Please upgrade to Xcode 14.1 or later.
+
+## Fixes
+
+- Fixed the type of `created` on `Token.Result` on Android (was a number, should be a string). [#1369](https://github.com/stripe/stripe-react-native/pull/1369)
+- Fixed `AddToWalletButton` not properly resolving the `androidAssetSource` in release mode. [#1373](https://github.com/stripe/stripe-react-native/pull/1373)
+- Fixed `isPlatformPaySupported` not respecting `existingPaymentMethodRequired` or `testEnv` on Android. [#1374](https://github.com/stripe/stripe-react-native/pull/1374)
+
+## 0.27.0 - 2023-04-21
+
+### Features
+
+- Added `billingDetailsCollectionConfiguration` to `initPaymentSheet` parameters. Use this to configure the collection of email, phone, name, or address in the Payment Sheet. [See the docs here](https://stripe.com/docs/payments/accept-a-payment?platform=react-native&ui=payment-sheet#collect-billing-details) [#1361](https://github.com/stripe/stripe-react-native/pull/1361)
+
 ### Fixes
 
 - Updated Google Pay button asset to match Google's most recent branding guidelines. [#1343](https://github.com/stripe/stripe-react-native/pull/1343)

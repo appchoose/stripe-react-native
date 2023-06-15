@@ -26,7 +26,7 @@ export interface Props extends AccessibilityProps {
   type?: ButtonType;
   /** iOS only. Sets the coloring of the button. */
   appearance?: ButtonStyle;
-  /** iOS only. Sets the border radius of the button. */
+  /** Affects iOS only. Sets the border radius of the button. On Android, you cannot modify the radius of the Google Pay button, since doing so violates the [Google Brand Guidelines](https://developers.google.com/pay/api/android/guides/brand-guidelines#style). */
   borderRadius?: number;
   /** Function called whenever the button is pressed. */
   onPress(): void;
@@ -42,7 +42,8 @@ export interface Props extends AccessibilityProps {
     shippingMethod: ShippingMethod;
   }) => void;
   /**
-   * This callback is triggered whenever the user selects a shipping contact in the Apple Pay sheet.
+   * This callback is triggered whenever the user selects a shipping contact in the Apple Pay sheet IF
+   * ContactField.PostalAddress was included in the requiredShippingAddressFields array.
    * It receives one parameter: an `event` object with a `shippingContact` field. You MUST
    * update the Apple Pay sheet in your callback using the updatePlatformPaySheet function, otherwise the
    * Apple Pay sheet will hang and the payment flow will automatically cancel.
