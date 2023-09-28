@@ -187,4 +187,17 @@ module.exports = {
   AddToWalletButton: () => 'AddToWalletButton',
   PlatformPayButton: () => 'PlatformPayButton',
   useStripe: jest.fn(() => mockHooks),
+  PlatformPay: {
+    ContactField: {
+      EmailAddress: "emailAddress",
+      Name: "name",
+      PhoneNumber: "phoneNumber",
+      PhoneticName: "phoneticName",
+      PostalAddress: "postalAddress",
+    },
+    BillingAddressFormat: {
+      Full: "FULL",
+      Min: "MIN",
+    },
+  },
 };
