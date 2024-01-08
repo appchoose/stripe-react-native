@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## 0.35.0 - 2023-11-02
+
+**Features**
+
+- Added support for RevolutPay bindings
+
 ## 0.34.0 - 2023-10-25
 
 **Features**
@@ -94,7 +100,7 @@
 
 - Fixes `handleURLCallback` to only take action on iOS, no-op on Android. [#1423](https://github.com/stripe/stripe-react-native/pull/1423)
 
-## 0.28.0 - 2023-06-16
+## 0.28.0 - 2023-06-16 (📌 Expo SDK 49)
 
 **Features**
 
