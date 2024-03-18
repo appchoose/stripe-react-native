@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## 0.37.1 - 2024-03-15
+
+**Fixes**
+
+- Native library updates.
+
 ## 0.37.0 - 2024-02-16
 
 **Breaking changes**
@@ -24,7 +30,7 @@
 
 - Fixed an issue on Android where `CardField`'s `placeholderColor` wasn't being applied to the card brand icon.
 
-## 0.35.1 - 2024-01-16
+## 0.35.1 - 2024-01-16 (📌 Expo SDK 50)
 
 **Fixes**
 
