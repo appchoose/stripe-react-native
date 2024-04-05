@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## 0.37.2 - 2024-04-02
+
+**Fixes**
+
+- Native library updates.
+
 ## 0.37.1 - 2024-03-15
 
 **Fixes**
