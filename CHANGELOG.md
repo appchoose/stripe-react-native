@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+## 0.38.1 - 2024-06-28
+
+**Fixes**
+
+- Fixed `preferredNetworks` prop on CardForm on iOS not always being applied
+- Updated `stripe-android` to 20.47.3
+
 ## 0.38.0 - 2024-05-24
 
 **Features**
