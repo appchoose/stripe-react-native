@@ -1234,6 +1234,27 @@ class StripeSdk: RCTEventEmitter, UIAdaptivePresentationControllerDelegate {
             }
         }
     }
+
+    @objc(getNetworksForCard:resolver:rejecter:)
+    func getNetworksForCard(
+        params: NSDictionary,
+        resolver resolve: @escaping RCTPromiseResolveBlock,
+        rejecter reject: @escaping RCTPromiseRejectBlock
+    ) -> Void {
+           guard let cardNumber = params["cardNumber"] as? String else {
+                resolve(Errors.createError(ErrorType.Failed, "Card number is required"))
+                return
+           }
+           STPCardValidator.possibleBrands(forNumber: cardNumber) { result in
+            switch result {
+            case .success(let brands):
+                let brandStrings = brands.map { STPCardBrandUtilities.apiValue(from: $0) }
+                resolve(brandStrings)
+            case .failure:
+                resolve(Errors.createError(ErrorType.Failed, "Failed to fetch card brands"))
+            }
+        }
+    }
 }
 
 func findViewControllerPresenter(from uiViewController: UIViewController) -> UIViewController {

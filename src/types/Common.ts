@@ -27,6 +27,30 @@ export type AddressDetails = {
   isCheckboxSelected?: boolean;
 };
 
+export type PossibleNativeBrand =
+  | 'visa'
+  | 'american_express' // iOS only
+  | 'amex' // Android only
+  | 'mastercard'
+  | 'discover'
+  | 'jcb'
+  | 'diners' // Android only
+  | 'diners_club' // iOS only
+  | 'unionpay'
+  | 'cartes_bancaires'
+  | 'unknown';
+
+export type PossibleBrand =
+  | 'visa'
+  | 'amex'
+  | 'mastercard'
+  | 'discover'
+  | 'jcb'
+  | 'diners'
+  | 'unionpay'
+  | 'cartes_bancaires'
+  | 'unknown';
+
 export enum CardBrand {
   JCB = 0,
   Amex = 1,
