@@ -33,6 +33,7 @@ import type {
   CustomerPaymentOption,
   CustomerAdapter,
 } from './types';
+import { PossibleNativeBrand } from './types/Common';
 
 type NativeStripeSdkType = {
   initialise(params: InitialiseParams): Promise<void>;
@@ -155,6 +156,9 @@ type NativeStripeSdkType = {
   createPaymentMethodCustomNative(
     params: PaymentMethod.CreateParams
   ): Promise<CreatePaymentMethodResult>;
+  getNetworksForCard(params: {
+    cardNumber: string;
+  }): Promise<PossibleNativeBrand[]>;
 };
 
 const { StripeSdk } = NativeModules;
