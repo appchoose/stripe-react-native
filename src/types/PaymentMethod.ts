@@ -83,6 +83,7 @@ export type CardParams =
         expYear: number;
         name: string;
       };
+      preferredNetwork?: string;
     };
 
 export interface IdealParams {

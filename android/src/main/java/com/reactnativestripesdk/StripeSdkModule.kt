@@ -1275,6 +1275,7 @@ class StripeSdkModule(
 
   private fun extractPaymentMethodCreateParams(
     options: ReadableMap,
+    network: String?,
     token: String?,
   ): PaymentMethodCreateParams {
     val cardParams = getMapOrNull(options, "card")
@@ -1289,6 +1290,10 @@ class StripeSdkModule(
         .setName(getValOr(billingDetailsParams, "name"))
         .setPhone(getValOr(billingDetailsParams, "phone"))
         .build()
+
+    PaymentMethodCreateParams.Card
+      .Networks(preferred = network)
+
     val card =
       if (token != null) {
         PaymentMethodCreateParams.Card.create(token)
@@ -1312,6 +1317,7 @@ class StripeSdkModule(
     params: ReadableMap,
     promise: Promise,
   ) {
+    val prefferedNetwork = params?.getString("prefferedNetwork")
     val billingDetailsParams = getMapOrNull(params, "billingDetails")
     val addressParams = getMapOrNull(billingDetailsParams, "address")
     val cardParamsMap = getMapOrNull(params, "card")
@@ -1332,7 +1338,7 @@ class StripeSdkModule(
             cardParams = cardParams,
             stripeAccountId = stripeAccountId,
           )
-        val pmcp = extractPaymentMethodCreateParams(params, token.id)
+        val pmcp = extractPaymentMethodCreateParams(params, prefferedNetwork, token.id)
         stripe.createPaymentMethod(
           paymentMethodCreateParams = pmcp,
           callback =

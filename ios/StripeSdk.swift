@@ -1190,6 +1190,7 @@ class StripeSdk: RCTEventEmitter, UIAdaptivePresentationControllerDelegate {
         billingDetails.email = billingDetailsParams?["email"] as? String
         billingDetails.name = billingDetailsParams?["name"] as? String
         billingDetails.phone = billingDetailsParams?["phone"] as? String
+ 
         if let token = token {
             card.token = token
         } else {
@@ -1207,6 +1208,7 @@ class StripeSdk: RCTEventEmitter, UIAdaptivePresentationControllerDelegate {
         resolver resolve: @escaping RCTPromiseResolveBlock,
         rejecter reject: @escaping RCTPromiseRejectBlock
     ) -> Void {
+        let preferredNetwork = params["preferredNetwork"] as? String
         let billingDetailsParams = params["billingDetails"] as? NSDictionary
         let addressParams = billingDetailsParams?["address"] as? NSDictionary
         let cardParamsMap = params["card"] as? NSDictionary
@@ -1217,9 +1219,17 @@ class StripeSdk: RCTEventEmitter, UIAdaptivePresentationControllerDelegate {
         cardSourceParams.cvc = cardParamsMap?["cvc"] as? String
         cardSourceParams.address = Mappers.mapToAddress(address: addressParams)
         cardSourceParams.name = billingDetailsParams?["name"] as? String
+        if let preferredNetwork = preferredNetwork {
+            cardSourceParams.additionalAPIParameters = ["networks": [
+                "preferred": preferredNetwork
+            ]]
+        }
         STPAPIClient.shared.createToken(withCard: cardSourceParams) { token, error in
             if let token = token {
-                let pmcp = self.extractPaymentMethodCreateParams(options: params, token: token.tokenId)
+                let pmcp = self.extractPaymentMethodCreateParams(
+                  options: params,
+                  token: token.tokenId
+                )
                 STPAPIClient.shared.createPaymentMethod(with: pmcp) { paymentMethod, error in
                     if let error = error {
                         resolve(Errors.createError(ErrorType.Failed, error as NSError))
