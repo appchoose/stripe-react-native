@@ -13,6 +13,7 @@ import com.facebook.react.bridge.ReactMethod
 import com.facebook.react.bridge.ReadableArray
 import com.facebook.react.bridge.ReadableMap
 import com.facebook.react.bridge.WritableMap
+import com.facebook.react.bridge.WritableNativeArray
 import com.facebook.react.bridge.WritableNativeMap
 import com.facebook.react.module.annotations.ReactModule
 import com.facebook.react.modules.core.DeviceEventManagerModule
@@ -58,6 +59,7 @@ import com.stripe.android.model.ConfirmSetupIntentParams
 import com.stripe.android.model.PaymentIntent
 import com.stripe.android.model.PaymentMethod
 import com.stripe.android.model.PaymentMethodCreateParams
+import com.stripe.android.model.PossibleBrands
 import com.stripe.android.model.SetupIntent
 import com.stripe.android.model.Token
 import com.stripe.android.payments.bankaccount.CollectBankAccountConfiguration
@@ -1270,28 +1272,33 @@ class StripeSdkModule(
   /**
    * Custom
    */
-
-  private fun extractPaymentMethodCreateParams(options: ReadableMap, token: String?): PaymentMethodCreateParams {
+  private fun extractPaymentMethodCreateParams(options: ReadableMap): PaymentMethodCreateParams {
+    val preferredNetwork = options?.getString("preferredNetwork")
     val cardParams = getMapOrNull(options, "card")
     val billingDetailsParams = getMapOrNull(options, "billingDetails")
     val addressParams = getMapOrNull(billingDetailsParams, "address")
     val address = mapToAddress(addressParams, null)
-    val billingDetails = PaymentMethod.BillingDetails.Builder()
+    val billingDetails =
+      PaymentMethod.BillingDetails
+        .Builder()
         .setAddress(address)
         .setEmail(getValOr(billingDetailsParams, "email"))
         .setName(getValOr(billingDetailsParams, "name"))
         .setPhone(getValOr(billingDetailsParams, "phone"))
         .build()
-    val card = if (token != null) {
-        PaymentMethodCreateParams.Card.create(token)
-      } else {
-        PaymentMethodCreateParams.Card.Builder()
-          .setCvc(cardParams?.getString("cvc"))
-          .setExpiryMonth(cardParams?.getInt("expMonth"))
-          .setExpiryYear(cardParams?.getInt("expYear"))
-          .setNumber(cardParams?.getString("number"))
-          .build()
-      }
+
+    val card =
+      PaymentMethodCreateParams.Card
+        .Builder()
+        .setCvc(cardParams?.getString("cvc"))
+        .setExpiryMonth(cardParams?.getInt("expMonth"))
+        .setExpiryYear(cardParams?.getInt("expYear"))
+        .setNumber(cardParams?.getString("number"))
+        .setNetworks(
+          PaymentMethodCreateParams.Card.Networks(
+            preferred = preferredNetwork,
+          ),
+        ).build()
     return PaymentMethodCreateParams.create(
       card,
       billingDetails,
@@ -1299,43 +1306,60 @@ class StripeSdkModule(
   }
 
   @ReactMethod
-  fun createPaymentMethodCustomNative(params: ReadableMap, promise: Promise) {
-    val billingDetailsParams = getMapOrNull(params, "billingDetails")
-    val addressParams = getMapOrNull(billingDetailsParams, "address")
-    val cardParamsMap = getMapOrNull(params, "card")
-    val cardParams = CardParams(
-      number = getValOr(cardParamsMap, "number") as String,
-      expMonth = cardParamsMap?.getInt("expMonth") ?: 0,
-      expYear = cardParamsMap?.getInt("expYear") ?: 0,
-      cvc = getValOr(cardParamsMap, "cvc", null) as String,
-      address = mapToAddress(addressParams, null),
-      name = getValOr(billingDetailsParams, "name"),
-    )
-
+  fun createPaymentMethodCustomNative(
+    params: ReadableMap,
+    promise: Promise,
+  ) {
     CoroutineScope(Dispatchers.IO).launch {
       runCatching {
-        val token = stripe.createCardTokenSynchronous(
-          cardParams = cardParams,
-          stripeAccountId = stripeAccountId,
-        )
-        val pmcp = extractPaymentMethodCreateParams(params, token.id)
+        val pmcp = extractPaymentMethodCreateParams(params)
         stripe.createPaymentMethod(
           paymentMethodCreateParams = pmcp,
-          callback = object : ApiResultCallback<PaymentMethod> {
-            override fun onError(e: Exception) {
-              promise.resolve(createError("Failed", e))
-            }
+          callback =
+            object : ApiResultCallback<PaymentMethod> {
+              override fun onError(e: Exception) {
+                promise.resolve(createError("Failed", e))
+              }
 
-            override fun onSuccess(result: PaymentMethod) {
-              val paymentMethodMap: WritableMap = mapFromPaymentMethod(result)
-              promise.resolve(createResult("paymentMethod", paymentMethodMap))
-            }
-          }
+              override fun onSuccess(result: PaymentMethod) {
+                val paymentMethodMap: WritableMap = mapFromPaymentMethod(result)
+                promise.resolve(createResult("paymentMethod", paymentMethodMap))
+              }
+            },
         )
       }.onFailure {
         promise.resolve(createError("Failed", it))
       }
     }
+  }
+
+  @ReactMethod
+  fun getNetworksForCard(
+    params: ReadableMap,
+    promise: Promise,
+  ) {
+    val cardNumber = getValOr(params, "cardNumber") as String?
+    if (cardNumber == null) {
+      promise.resolve(createError("Failed", "cardNumber is required"))
+      return
+    }
+
+    stripe.retrievePossibleBrands(
+      cardNumber,
+      object : ApiResultCallback<PossibleBrands> {
+        override fun onSuccess(result: PossibleBrands) {
+          val codesArray = WritableNativeArray()
+          result.brands.forEach { brand ->
+            codesArray.pushString(brand.code)
+          }
+          promise.resolve(codesArray)
+        }
+
+        override fun onError(e: Exception) {
+          promise.resolve(createError("Failed", e))
+        }
+      },
+    )
   }
 
   companion object {
