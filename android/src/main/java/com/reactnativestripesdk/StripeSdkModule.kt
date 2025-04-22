@@ -1272,12 +1272,8 @@ class StripeSdkModule(
   /**
    * Custom
    */
-
-  private fun extractPaymentMethodCreateParams(
-    options: ReadableMap,
-    network: String?,
-    token: String?,
-  ): PaymentMethodCreateParams {
+  private fun extractPaymentMethodCreateParams(options: ReadableMap): PaymentMethodCreateParams {
+    val preferredNetwork = options?.getString("preferredNetwork")
     val cardParams = getMapOrNull(options, "card")
     val billingDetailsParams = getMapOrNull(options, "billingDetails")
     val addressParams = getMapOrNull(billingDetailsParams, "address")
@@ -1291,21 +1287,18 @@ class StripeSdkModule(
         .setPhone(getValOr(billingDetailsParams, "phone"))
         .build()
 
-    PaymentMethodCreateParams.Card
-      .Networks(preferred = network)
-
     val card =
-      if (token != null) {
-        PaymentMethodCreateParams.Card.create(token)
-      } else {
-        PaymentMethodCreateParams.Card
-          .Builder()
-          .setCvc(cardParams?.getString("cvc"))
-          .setExpiryMonth(cardParams?.getInt("expMonth"))
-          .setExpiryYear(cardParams?.getInt("expYear"))
-          .setNumber(cardParams?.getString("number"))
-          .build()
-      }
+      PaymentMethodCreateParams.Card
+        .Builder()
+        .setCvc(cardParams?.getString("cvc"))
+        .setExpiryMonth(cardParams?.getInt("expMonth"))
+        .setExpiryYear(cardParams?.getInt("expYear"))
+        .setNumber(cardParams?.getString("number"))
+        .setNetworks(
+          PaymentMethodCreateParams.Card.Networks(
+            preferred = preferredNetwork,
+          ),
+        ).build()
     return PaymentMethodCreateParams.create(
       card,
       billingDetails,
@@ -1317,28 +1310,9 @@ class StripeSdkModule(
     params: ReadableMap,
     promise: Promise,
   ) {
-    val prefferedNetwork = params?.getString("prefferedNetwork")
-    val billingDetailsParams = getMapOrNull(params, "billingDetails")
-    val addressParams = getMapOrNull(billingDetailsParams, "address")
-    val cardParamsMap = getMapOrNull(params, "card")
-    val cardParams =
-      CardParams(
-        number = getValOr(cardParamsMap, "number") as String,
-        expMonth = cardParamsMap?.getInt("expMonth") ?: 0,
-        expYear = cardParamsMap?.getInt("expYear") ?: 0,
-        cvc = getValOr(cardParamsMap, "cvc", null) as String,
-        address = mapToAddress(addressParams, null),
-        name = getValOr(billingDetailsParams, "name"),
-      )
-
     CoroutineScope(Dispatchers.IO).launch {
       runCatching {
-        val token =
-          stripe.createCardTokenSynchronous(
-            cardParams = cardParams,
-            stripeAccountId = stripeAccountId,
-          )
-        val pmcp = extractPaymentMethodCreateParams(params, prefferedNetwork, token.id)
+        val pmcp = extractPaymentMethodCreateParams(params)
         stripe.createPaymentMethod(
           paymentMethodCreateParams = pmcp,
           callback =
