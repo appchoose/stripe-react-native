@@ -83,7 +83,7 @@ export type CardParams =
         expYear: number;
         name: string;
       };
-      preferredNetwork?: string;
+      preferredNetwork?: 'cartes_bancaires' | 'visa' | 'mastercard';
     };
 
 export interface IdealParams {

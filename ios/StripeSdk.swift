@@ -1175,17 +1175,6 @@ class StripeSdk: RCTEventEmitter, UIAdaptivePresentationControllerDelegate {
         }
     }
 
-    func getCardBrandFromNetwork(network: String?) -> String? {
-        switch network {
-        case "amex":
-            return "american_express"
-        case "diners":
-            return "diners_club"
-        default:
-            return network ?? nil
-        }
-    }
-
     // Custom
     func extractPaymentMethodCreateParams(
         options: NSDictionary
@@ -1206,7 +1195,7 @@ class StripeSdk: RCTEventEmitter, UIAdaptivePresentationControllerDelegate {
         card.expMonth = cardParams?["expMonth"] as? NSNumber
         card.expYear = cardParams?["expYear"] as? NSNumber
         card.cvc = cardParams?["cvc"] as? String
-        card.networks = STPPaymentMethodCardNetworksParams(preferred: getCardBrandFromNetwork(network: preferredNetwork))
+        card.networks = STPPaymentMethodCardNetworksParams(preferred: preferredNetwork)
         return STPPaymentMethodParams(card: card, billingDetails: billingDetails, metadata: nil)
     }
 
