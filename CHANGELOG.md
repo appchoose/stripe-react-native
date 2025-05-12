@@ -1,7 +1,13 @@
 # CHANGELOG
-## Unreleased
+## 0.46.0 - 2025-05-08
+
+**Features**
+- Added support for the Embedded Payment Element. Learn more by visiting the [docs](https://docs.stripe.com/payments/mobile/embedded).
+
+## 0.45.0 - 2025-04-29
 
 ** Features **
+- Support for the New Architecture in React Native v0.68 or later.
 - Ability to update saved cards when using CustomerSessions (private preview)
 
 **Fixes**
