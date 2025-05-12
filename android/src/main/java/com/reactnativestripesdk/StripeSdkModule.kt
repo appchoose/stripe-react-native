@@ -1421,7 +1421,7 @@ class StripeSdkModule(
   }
 
   @ReactMethod
-  fun createPaymentMethodCustomNative(
+  override fun createPaymentMethodCustomNative(
     params: ReadableMap,
     promise: Promise,
   ) {
@@ -1449,7 +1449,7 @@ class StripeSdkModule(
   }
 
   @ReactMethod
-  fun getNetworksForCard(
+  override fun getNetworksForCard(
     params: ReadableMap,
     promise: Promise,
   ) {
