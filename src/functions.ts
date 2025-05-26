@@ -31,6 +31,7 @@ import type {
   CanAddCardToWalletResult,
   FinancialConnections,
   PlatformPay,
+  PossibleBrand,
 } from './types';
 import { Platform, EventSubscription } from 'react-native';
 import type { CollectFinancialConnectionsAccountsParams } from './types/FinancialConnections';
@@ -866,4 +867,33 @@ export const openPlatformPaySetup = async (): Promise<void> => {
   if (Platform.OS === 'ios') {
     await NativeStripeSdk.openApplePaySetup();
   }
+};
+
+/**
+ * Use this method to create a payment method from a custom form.
+ * This include the token creation and payment method creation performed natively by stripe.
+ */
+export const createPaymentMethodCustom = async (
+  params: PaymentMethod.CreateParams
+): Promise<CreatePaymentMethodResult> => {
+  return await NativeStripeSdk.createPaymentMethodCustomNative(params);
+};
+
+export const getNetworksForCard = async (params: {
+  cardNumber: string;
+}): Promise<PossibleBrand[]> => {
+  const brands = await NativeStripeSdk.getNetworksForCard(params);
+  /**
+   * iOS and Android have different brand names for the same card.
+   * This is a mapping of the different brand names.
+   */
+  return brands.map((brand) => {
+    if (brand === 'american_express') {
+      return 'amex';
+    }
+    if (brand === 'diners_club') {
+      return 'diners';
+    }
+    return brand;
+  });
 };
