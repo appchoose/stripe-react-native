@@ -5,6 +5,13 @@
 
 ### Bug Fixes
 
+* release on github package ([#6](https://github.com/appchoose/stripe-react-native/issues/6)) ([bced83d](https://github.com/appchoose/stripe-react-native/commit/bced83d911652a77bd1638fcefd07a0de43e295f))
+
+## [0.47.2](https://github.com/appchoose/stripe-react-native/compare/v0.47.1...v0.47.2) (2025-05-28)
+
+
+### Bug Fixes
+
 * expo plugin ([53af317](https://github.com/appchoose/stripe-react-native/commit/53af317983cb6705ae9ba95a2cd1316ef583be31))
 * release on github package ([#6](https://github.com/appchoose/stripe-react-native/issues/6)) ([a536e6d](https://github.com/appchoose/stripe-react-native/commit/a536e6d828010580f9bb39a48eb188ee374da832))
 
