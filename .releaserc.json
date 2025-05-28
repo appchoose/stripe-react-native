@@ -6,7 +6,7 @@
       [
         "@semantic-release/changelog",
         {
-          "changelogTitle": "# Changelog"
+          "changelogTitle": "# CHANGELOG"
         }
       ],
       "@semantic-release/npm",
