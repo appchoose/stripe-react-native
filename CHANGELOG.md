@@ -30,6 +30,19 @@
 * release on github package ([#6](https://github.com/appchoose/stripe-react-native/issues/6)) ([f5b7b52](https://github.com/appchoose/stripe-react-native/commit/f5b7b52078b50884f0c212271fbf6023c20363c9))
 
 # CHANGELOG
+
+## 0.48.0 - 2025-06-11
+
+**Feature**
+- Added `height` to `PrimaryButtonConfig.shapes`.
+- Added `formInsetValues` to `AppearanceParams`.
+
+## 0.47.1 - 2025-05-29
+
+**Fixes**
+- Fixed EmbeddedPaymentElement unable to present view controllers after navigating back and forth between screens.
+- Fixed EmbeddedPaymentElement not sizing correctly on Android when the user has saved payment methods.
+
 ## 0.47.0 - 2025-05-21
 
 **Features**
