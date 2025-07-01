@@ -2,6 +2,7 @@
 
 ## [0.48.1](https://github.com/appchoose/stripe-react-native/compare/v0.48.0...v0.48.1) (2025-06-19)
 
+- Added `None` to `FutureUsage`
 
 ### Bug Fixes
 
