@@ -186,7 +186,10 @@ export const handleNextAction = async (
             paymentIntentClientSecret,
             returnURL ?? null
           )
-        : await NativeStripeSdk.handleNextAction(paymentIntentClientSecret);
+        : await NativeStripeSdk.handleNextAction(
+            paymentIntentClientSecret,
+            returnURL ?? null
+          );
     if (error) {
       return {
         error,
