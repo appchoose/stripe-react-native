@@ -84,6 +84,9 @@ export interface Spec extends TurboModule {
   intentCreationCallback(
     result: UnsafeObject<PaymentSheet.IntentCreationCallbackParams>
   ): Promise<void>;
+  customPaymentMethodResultCallback(
+    result: UnsafeObject<PaymentSheet.CustomPaymentMethodResult>
+  ): Promise<void>;
   presentPaymentSheet(
     options: UnsafeObject<PaymentSheet.PresentOptions>
   ): Promise<PresentPaymentSheetResult>;
@@ -215,6 +218,7 @@ export interface Spec extends TurboModule {
   >;
   embeddedPaymentElementRowSelectionImmediateAction: EventEmitter<void>;
   embeddedPaymentElementLoadingFailed: EventEmitter<UnsafeObject<any>>;
+  onCustomPaymentMethodConfirmHandlerCallback: EventEmitter<UnsafeObject<any>>;
   createPaymentMethodCustomNative(
     params: UnsafeObject<PaymentMethod.CreateParams>
   ): Promise<CreatePaymentMethodResult>;
