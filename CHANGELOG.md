@@ -1,5 +1,19 @@
 # CHANGELOG
 
+# [0.51.0](https://github.com/appchoose/stripe-react-native/compare/v0.50.0...v0.51.0) (2025-08-20)
+
+
+### Bug Fixes
+
+* ensure handleNextActionForSetup passes returnURL parameter on Android ([#2021](https://github.com/appchoose/stripe-react-native/issues/2021)) ([1593381](https://github.com/appchoose/stripe-react-native/commit/15933815328c2bc383a5a1ed52d38984a88f023c)), closes [#1960](https://github.com/appchoose/stripe-react-native/issues/1960)
+* Make currencyCode optional for setup mode on Android to match iOS behavior ([#2018](https://github.com/appchoose/stripe-react-native/issues/2018)) ([b6bacff](https://github.com/appchoose/stripe-react-native/commit/b6bacffb646435b1a0f637d0bcd03e54c1841a89))
+
+
+### Features
+
+* add support for Billie ([#1956](https://github.com/appchoose/stripe-react-native/issues/1956)) ([a644bcb](https://github.com/appchoose/stripe-react-native/commit/a644bcbfba427653ad0145f2b304d2c3af90bac3))
+* **minor:** release version ([ffca8b0](https://github.com/appchoose/stripe-react-native/commit/ffca8b02ed2f2669f9c4216a2b82db0808c737a0))
+
 ## x.x.x - x-x-x
 
 **Features**
