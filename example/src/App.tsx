@@ -4,6 +4,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import WebhookPaymentScreen from './screens/WebhookPaymentScreen';
 import HomeScreen from './screens/HomeScreen';
 import NoWebhookPaymentScreen from './screens/NoWebhookPaymentScreen';
+import NoWebhookSetupScreen from './screens/NoWebhookSetupScreen';
 import ApplePayScreen from './screens/ApplePayScreen';
 import SetupFuturePaymentScreen from './screens/SetupFuturePaymentScreen';
 import { StatusBar } from 'react-native';
@@ -19,6 +20,7 @@ import AlipayPaymentScreen from './screens/AlipayPaymentScreen';
 import PaymentResultScreen from './screens/PaymentResultScreen';
 import BancontactPaymentScreen from './screens/BancontactPaymentScreen';
 import BancontactSetupFuturePaymentScreen from './screens/BancontactSetupFuturePaymentScreen';
+import BilliePaymentScreen from './screens/BilliePaymentScreen';
 import SepaPaymentScreen from './screens/SepaPaymentScreen';
 import SepaSetupFuturePaymentScreen from './screens/SepaSetupFuturePaymentScreen';
 import OxxoPaymentScreen from './screens/OxxoPaymentScreen';
@@ -54,6 +56,7 @@ export type RootStackParamList = {
   WebhookPaymentScreen: undefined;
   HomeScreen: undefined;
   NoWebhookPaymentScreen: undefined;
+  NoWebhookSetupScreen: undefined;
   CreateTokenScreen: undefined;
   ApplePayScreen: undefined;
   SetupFuturePaymentScreen: undefined;
@@ -67,6 +70,7 @@ export type RootStackParamList = {
   PaymentResultScreen: { url: string };
   BancontactPaymentScreen: undefined;
   BancontactSetupFuturePaymentScreen: undefined;
+  BilliePaymentScreen: undefined;
   SepaPaymentScreen: undefined;
   SepaSetupFuturePaymentScreen: undefined;
   OxxoPaymentScreen: undefined;
@@ -136,6 +140,10 @@ export default function App() {
           <Stack.Screen
             name="NoWebhookPaymentScreen"
             component={NoWebhookPaymentScreen}
+          />
+          <Stack.Screen
+            name="NoWebhookSetupScreen"
+            component={NoWebhookSetupScreen}
           />
           <Stack.Screen
             name="AuBECSDebitPaymentScreen"
@@ -219,6 +227,10 @@ export default function App() {
           <Stack.Screen
             name="BancontactSetupFuturePaymentScreen"
             component={BancontactSetupFuturePaymentScreen}
+          />
+          <Stack.Screen
+            name="BilliePaymentScreen"
+            component={BilliePaymentScreen}
           />
           <Stack.Screen
             name="SepaPaymentScreen"

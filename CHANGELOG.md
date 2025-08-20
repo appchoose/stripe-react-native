@@ -1,5 +1,60 @@
 # CHANGELOG
 
+## x.x.x - x-x-x
+
+**Features**
+- [#1956](https://github.com/stripe/stripe-react-native/pull/1956) Added support for the Billie payment method
+- Added `image` and `mandateHTML` to `EmbeddedPaymentElement.PaymentOptionDisplayData`
+- Added `embeddedViewDisplaysMandateText` to `EmbeddedPaymentElementConfiguration`
+
+**Changes**
+- Klarna: Made `billingDetails.email` and `billingDetails.address.country` optional when creating Klarna payment methods. See Stripe docs: [Migrate Klarna from Sources – Field mapping reference](https://docs.stripe.com/payments/klarna/migrate) ("Not required when using the Payment Element. It’s collected automatically.").
+
+**Fixes**
+- Fixed iOS crash "Stripe SDK confirmPayment must not be null" when calling `confirmPayment` with optional parameters. Updated native bridge to properly handle nullable params argument. [#2048](https://github.com/stripe/stripe-react-native/issues/2048)
+
+## 0.50.3 - 2025-08-07
+
+**Fixed**
+- Fixed Android crash when using `RowSelectionBehavior.ImmediateAction` with `FormSheetAction.Confirm` in EmbeddedPaymentElement.
+
+## 0.50.2 - 2025-08-06
+
+**Changes**
+- Renamed `RowStyle.FlatWithChevron` to `RowStyle.FlatWithDisclosure` and updated related interfaces (`ChevronConfig` → `DisclosureConfig`).
+- Updated `stripe-ios` to 24.19.0
+- Updated `stripe-android` to 21.22.+
+- Added `successBackgroundColor` and `successTextColor` properties to `PrimaryButtonColorConfig` for customizing the primary button appearance in success states.
+
+**Fixes**
+- Fixed missing `onCustomPaymentMethodConfirmHandlerCallback` in old architecture codegen patch. This resolves pod install failures when using React Native 0.74+ with old architecture and custom payment methods.
+- Fixes an issue where saved payment methods weren't auto selected when using `EmbeddedPaymentElement` on Android.
+
+## 0.50.1 - 2025-07-22
+
+**Fixes**
+- Fixed embedded payment element color support to accept both single color strings and light/dark color objects for `ThemedColor` properties (separatorColor, selectedColor, unselectedColor, checkmark color, chevron color).
+- Fixed Android crash when providing partial `billingDetailsCollectionConfiguration` objects. Now gracefully handles missing fields like `attachDefaultsToPaymentMethod` by using safe accessor methods with default values.
+- Fixed Android Kotlin compilation errors where nullable `ReadableMap?` was passed to functions expecting non-nullable `ReadableMap`. Added null checks in `EmbeddedPaymentElementViewManager` and `AddToWalletButtonManager`. [#1988](https://github.com/stripe/stripe-react-native/issues/1988)
+
+## 0.50.0 - 2025-07-17
+
+**Features**
+- Added support for Custom Payment Methods in PaymentSheet and Embedded Payment Element.
+
+**Fixes**
+- Removed Sofort from playground pages. Sofort is no longer support by Stripe.
+- **Patches**
+- Fixed codegen error when using React Native 0.74+ with old architecture by converting EventEmitter properties to callback functions in TurboModule interface. [#1977](https://github.com/stripe/stripe-react-native/issues/1977). See `patches/README.md` for more info.
+
+## 0.49.0 - 2025-07-02
+
+**Features**
+- Added rowSelectionBehavior to `EmbeddedPaymentElementConfiguration` with `immediateAction` option
+- Added `flatWithChevron` to `AppearanceParams.embeddedPaymentElement.rowConfig.style`
+- Added `PaymentMethodOptions` to `PaymentMode` to enable setting payment method level setup future usage value
+- Added `None` to `FutureUsage`
+
 # [0.50.0](https://github.com/appchoose/stripe-react-native/compare/v0.49.0...v0.50.0) (2025-07-18)
 
 
@@ -59,7 +114,7 @@
 ## 0.47.0 - 2025-05-21
 
 **Features**
-- Added `customerEphemeralKeySecret` and `customerSessionClientSecret` to EmbeddedPaymentElement 
+- Added `customerEphemeralKeySecret` and `customerSessionClientSecret` to EmbeddedPaymentElement
 
 ## 0.46.0 - 2025-05-08
 

@@ -45,7 +45,7 @@ import com.stripe.android.paymentelement.PaymentMethodOptionsSetupFutureUsagePre
 import com.stripe.android.paymentsheet.CreateIntentCallback
 import com.stripe.android.paymentsheet.CreateIntentResult
 import com.stripe.android.paymentsheet.ExperimentalCustomerSessionApi
-import com.stripe.android.paymentsheet.PaymentOptionCallback
+import com.stripe.android.paymentsheet.PaymentOptionResultCallback
 import com.stripe.android.paymentsheet.PaymentSheet
 import com.stripe.android.paymentsheet.PaymentSheetResult
 import com.stripe.android.paymentsheet.PaymentSheetResultCallback
@@ -124,9 +124,9 @@ class PaymentSheetFragment :
       }
 
     val paymentOptionCallback =
-      PaymentOptionCallback { paymentOption ->
+      PaymentOptionResultCallback { paymentOptionResult ->
         val result =
-          paymentOption?.let {
+          paymentOptionResult.paymentOption?.let {
             val bitmap = getBitmapFromVectorDrawable(context, it.drawableResourceId)
             val imageString = getBase64FromBitmap(bitmap)
             val option: WritableMap = WritableNativeMap()
@@ -218,7 +218,7 @@ class PaymentSheetFragment :
         email = mapToCollectionMode(billingConfigParams?.getString("email")),
         address = mapToAddressCollectionMode(billingConfigParams?.getString("address")),
         attachDefaultsToPaymentMethod =
-          billingConfigParams?.getBoolean("attachDefaultsToPaymentMethod") ?: false,
+          billingConfigParams?.getBoolean("attachDefaultsToPaymentMethod", false) ?: false,
       )
 
     var defaultBillingDetails: PaymentSheet.BillingDetails? = null
@@ -250,6 +250,7 @@ class PaymentSheetFragment :
         .googlePay(googlePayConfig)
         .appearance(appearance)
         .shippingDetails(shippingDetails)
+        .link(linkConfig)
         .billingDetailsCollectionConfiguration(billingDetailsConfig)
         .preferredNetworks(
           mapToPreferredNetworks(arguments?.getIntegerArrayList("preferredNetworks")),
@@ -272,7 +273,7 @@ class PaymentSheetFragment :
           PaymentSheet.FlowController
             .Builder(
               resultCallback = paymentResultCallback,
-              paymentOptionCallback = paymentOptionCallback,
+              paymentOptionResultCallback = paymentOptionCallback,
             ).createIntentCallback(createIntentCallback)
             .confirmCustomPaymentMethodCallback(this)
             .build(this)
@@ -280,7 +281,7 @@ class PaymentSheetFragment :
           PaymentSheet.FlowController
             .Builder(
               resultCallback = paymentResultCallback,
-              paymentOptionCallback = paymentOptionCallback,
+              paymentOptionResultCallback = paymentOptionCallback,
             ).confirmCustomPaymentMethodCallback(this)
             .build(this)
         }
@@ -550,7 +551,7 @@ class PaymentSheetFragment :
       )
 
     internal fun buildGooglePayConfig(params: Bundle?): PaymentSheet.GooglePayConfiguration? {
-      if (params == null) {
+      if (params == null || params.isEmpty) {
         return null
       }
 
@@ -617,14 +618,13 @@ class PaymentSheetFragment :
     }
 
     @OptIn(PaymentMethodOptionsSetupFutureUsagePreview::class)
-    private fun buildIntentConfigurationMode(modeParams: Bundle): PaymentSheet.IntentConfiguration.Mode {
-      val currencyCode =
-        modeParams.getString("currencyCode")
-          ?: throw PaymentSheetException(
-            "You must provide a value to intentConfiguration.mode.currencyCode",
-          )
-
-      return if (modeParams.containsKey("amount")) {
+    private fun buildIntentConfigurationMode(modeParams: Bundle): PaymentSheet.IntentConfiguration.Mode =
+      if (modeParams.containsKey("amount")) {
+        val currencyCode =
+          modeParams.getString("currencyCode")
+            ?: throw PaymentSheetException(
+              "You must provide a value to intentConfiguration.mode.currencyCode",
+            )
         PaymentSheet.IntentConfiguration.Mode.Payment(
           amount = modeParams.getInt("amount").toLong(),
           currency = currencyCode,
@@ -639,11 +639,10 @@ class PaymentSheetFragment :
               "You must provide a value to intentConfiguration.mode.setupFutureUsage",
             )
         PaymentSheet.IntentConfiguration.Mode.Setup(
-          currency = currencyCode,
+          currency = modeParams.getString("currencyCode"),
           setupFutureUse = setupFutureUsage,
         )
       }
-    }
 
     @OptIn(ExperimentalCustomerSessionApi::class)
     @Throws(PaymentSheetException::class)

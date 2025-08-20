@@ -136,7 +136,7 @@ public class StripeSdkImpl: NSObject, UIAdaptivePresentationControllerDelegate {
           paymentSheetIntentCreationCallback(.failure(error))
         }
     }
-    
+
     @objc(customPaymentMethodResultCallback:resolver:rejecter:)
     @MainActor public func customPaymentMethodResultCallback(result: NSDictionary, resolver resolve: @escaping RCTPromiseResolveBlock,
                           rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
@@ -464,6 +464,12 @@ public class StripeSdkImpl: NSObject, UIAdaptivePresentationControllerDelegate {
         let (error, paymentRequest) = ApplePayUtils.createPaymentRequest(merchantIdentifier: merchantIdentifier, params: applePayPatams)
         guard let paymentRequest = paymentRequest else {
             resolve(error)
+            return
+        }
+
+        // Prevent multiple simultaneous Apple Pay presentations
+        if self.confirmApplePayResolver != nil {
+            resolve(Errors.createError(ErrorType.Failed, "Apple Pay is already in progress"))
             return
         }
 
@@ -812,7 +818,7 @@ public class StripeSdkImpl: NSObject, UIAdaptivePresentationControllerDelegate {
     @objc(confirmPayment:data:options:resolver:rejecter:)
   public func confirmPayment(
         paymentIntentClientSecret: String,
-        params: NSDictionary?,
+        params: NSDictionary,
         options: NSDictionary,
         resolver resolve: @escaping RCTPromiseResolveBlock,
         rejecter reject: @escaping RCTPromiseRejectBlock
@@ -820,8 +826,10 @@ public class StripeSdkImpl: NSObject, UIAdaptivePresentationControllerDelegate {
         self.confirmPaymentResolver = resolve
         self.confirmPaymentClientSecret = paymentIntentClientSecret
 
-        let paymentMethodData = params?["paymentMethodData"] as? NSDictionary
-        let (missingPaymentMethodError, paymentMethodType) = getPaymentMethodType(params: params)
+        // Handle React Native null values - when null is passed from JS, it becomes NSNull
+        let actualParams = (params == NSNull()) ? nil : params
+        let paymentMethodData = actualParams?["paymentMethodData"] as? NSDictionary
+        let (missingPaymentMethodError, paymentMethodType) = getPaymentMethodType(params: actualParams)
         if (missingPaymentMethodError != nil) {
             resolve(missingPaymentMethodError)
             return
@@ -1175,7 +1183,7 @@ public class StripeSdkImpl: NSObject, UIAdaptivePresentationControllerDelegate {
             break
         }
     }
-    
+
     struct ConfirmationError: Error, LocalizedError {
       private var errorMessage: String
       init(errorMessage: String) {

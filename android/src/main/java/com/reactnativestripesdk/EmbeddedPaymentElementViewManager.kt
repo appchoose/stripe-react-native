@@ -17,6 +17,7 @@ import com.reactnativestripesdk.PaymentSheetFragment.Companion.buildGooglePayCon
 import com.reactnativestripesdk.addresssheet.AddressSheetView
 import com.reactnativestripesdk.utils.PaymentSheetAppearanceException
 import com.reactnativestripesdk.utils.PaymentSheetException
+import com.reactnativestripesdk.utils.getBooleanOr
 import com.reactnativestripesdk.utils.mapToPreferredNetworks
 import com.reactnativestripesdk.utils.parseCustomPaymentMethods
 import com.reactnativestripesdk.utils.toBundleObject
@@ -54,10 +55,13 @@ class EmbeddedPaymentElementViewManager :
     view: EmbeddedPaymentElementView,
     cfg: Dynamic,
   ) {
-    val rowSelectionBehaviorType = parseRowSelectionBehavior(cfg.asMap())
+    val readableMap = cfg.asMap()
+    if (readableMap == null) return
+
+    val rowSelectionBehaviorType = parseRowSelectionBehavior(readableMap)
     view.rowSelectionBehaviorType.value = rowSelectionBehaviorType
 
-    val elementConfig = parseElementConfiguration(cfg.asMap(), view.context)
+    val elementConfig = parseElementConfiguration(readableMap, view.context)
     view.latestElementConfig = elementConfig
     // if intentConfig is already set, configure immediately:
     view.latestIntentConfig?.let { intentCfg ->
@@ -74,7 +78,9 @@ class EmbeddedPaymentElementViewManager :
     view: EmbeddedPaymentElementView,
     cfg: Dynamic,
   ) {
-    val intentConfig = parseIntentConfiguration(cfg.asMap())
+    val readableMap = cfg.asMap()
+    if (readableMap == null) return
+    val intentConfig = parseIntentConfiguration(readableMap)
     view.latestIntentConfig = intentConfig
     view.latestElementConfig?.let { elemCfg ->
       view.configure(elemCfg, intentConfig)
@@ -147,7 +153,7 @@ class EmbeddedPaymentElementViewManager :
         email = mapToCollectionMode(billingConfigParams?.getString("email")),
         address = mapToAddressCollectionMode(billingConfigParams?.getString("address")),
         attachDefaultsToPaymentMethod =
-          billingConfigParams?.getBoolean("attachDefaultsToPaymentMethod") ?: false,
+          billingConfigParams?.getBooleanOr("attachDefaultsToPaymentMethod", false) ?: false,
       )
     val allowsRemovalOfLastSavedPaymentMethod =
       if (map.hasKey("allowsRemovalOfLastSavedPaymentMethod")) {
@@ -189,6 +195,15 @@ class EmbeddedPaymentElementViewManager :
           ),
         ).allowsRemovalOfLastSavedPaymentMethod(allowsRemovalOfLastSavedPaymentMethod)
         .cardBrandAcceptance(mapToCardBrandAcceptance(toBundleObject(map)))
+        .embeddedViewDisplaysMandateText(
+          if (map.hasKey("embeddedViewDisplaysMandateText") &&
+            map.getType("embeddedViewDisplaysMandateText") == ReadableType.Boolean
+          ) {
+            map.getBoolean("embeddedViewDisplaysMandateText")
+          } else {
+            true // default value
+          },
+        )
         // Serialize original ReadableMap because toBundleObject cannot keep arrays of objects
         .customPaymentMethods(
           parseCustomPaymentMethods(

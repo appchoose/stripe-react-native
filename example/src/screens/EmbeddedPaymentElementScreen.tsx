@@ -1,5 +1,6 @@
 import React from 'react';
-import { Alert, View, Text, Modal } from 'react-native';
+import { Alert, View, Text, Modal, Image } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import Button from '../components/Button';
 import PaymentScreen from '../components/PaymentScreen';
 import CustomerSessionSwitch from '../components/CustomerSessionSwitch';
@@ -62,9 +63,18 @@ function PaymentElementView({ intentConfig, elementConfig }: any) {
       {embeddedPaymentElementView}
 
       <View style={{ paddingVertical: 16 }}>
-        <Text style={{ fontSize: 16, fontWeight: '600' }}>
-          {paymentOption?.label ?? 'No option'}
-        </Text>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+          {paymentOption?.image && (
+            <Image
+              source={{ uri: `data:image/png;base64,${paymentOption.image}` }}
+              style={{ width: 32, height: 20 }}
+              resizeMode="contain"
+            />
+          )}
+          <Text style={{ fontSize: 16, fontWeight: '600' }}>
+            {paymentOption?.label ?? 'No option'}
+          </Text>
+        </View>
       </View>
 
       <Button
@@ -148,6 +158,10 @@ export default function EmbeddedPaymentElementScreen() {
       const darkBorderColor = '#48484A'; // Dark mode border
       const darkSecondaryText = '#8E8E93'; // Dark mode secondary text
 
+      // Blurple colors for success states
+      const blurple = '#635BFF'; // Stripe's signature blurple color
+      const blurpleText = '#FFFFFF'; // White text on blurple
+
       const appearance: AppearanceParams = {
         colors: {
           light: {
@@ -198,12 +212,16 @@ export default function EmbeddedPaymentElementScreen() {
               background: actionPink,
               text: brandWhite, // White text on pink
               border: '00000000', // No border color needed
-            },
+              successBackgroundColor: blurple, // Blurple success background
+              successTextColor: blurpleText, // White text on blurple
+            } as any,
             dark: {
               background: actionPink,
               text: brandWhite, // White text on pink
               border: '#00000000', // No border color needed
-            },
+              successBackgroundColor: blurple, // Blurple success background
+              successTextColor: blurpleText, // White text on blurple
+            } as any,
           },
         },
         embeddedPaymentElement: {
@@ -352,10 +370,12 @@ export default function EmbeddedPaymentElementScreen() {
           }}
         />
       </View>
-      <PaymentElementView
-        elementConfig={elementConfig}
-        intentConfig={intentConfig}
-      />
+      {!modalVisible && (
+        <PaymentElementView
+          elementConfig={elementConfig}
+          intentConfig={intentConfig}
+        />
+      )}
       <Modal
         visible={modalVisible}
         animationType="slide"
@@ -363,7 +383,7 @@ export default function EmbeddedPaymentElementScreen() {
           setModalVisible(false);
         }}
       >
-        <View style={{ padding: 20 }}>
+        <SafeAreaView style={{ padding: 20 }}>
           <PaymentElementView
             elementConfig={elementConfig}
             intentConfig={intentConfig}
@@ -375,7 +395,7 @@ export default function EmbeddedPaymentElementScreen() {
               setModalVisible(false);
             }}
           />
-        </View>
+        </SafeAreaView>
       </Modal>
     </PaymentScreen>
   );
