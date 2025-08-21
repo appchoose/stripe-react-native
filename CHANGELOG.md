@@ -1,5 +1,12 @@
 # CHANGELOG
 
+# [0.52.0](https://github.com/appchoose/stripe-react-native/compare/v0.51.0...v0.52.0) (2025-08-21)
+
+
+### Features
+
+* **patch:** release ([e4c8236](https://github.com/appchoose/stripe-react-native/commit/e4c82364e66c6fad283a5d879097826bd9afa0e5))
+
 ## 0.51.0 - 2025-08-20
 
 **Features**
