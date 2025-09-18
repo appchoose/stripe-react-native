@@ -1,11 +1,26 @@
 # CHANGELOG
 
-# [0.52.0](https://github.com/appchoose/stripe-react-native/compare/v0.51.0...v0.52.0) (2025-08-21)
+## x.x.x - x.x.x
 
+**Fixes**
 
-### Features
+- [#2129](https://github.com/stripe/stripe-react-native/pull/2129) Fix iOS build on new arch 0.81 with static linkage
 
-* **patch:** release ([e4c8236](https://github.com/appchoose/stripe-react-native/commit/e4c82364e66c6fad283a5d879097826bd9afa0e5))
+## 0.53.0 - 2025-09-15
+
+**Features**
+- Added `isLoaded` flag to `useEmbeddedPaymentElement` hook that indicates when the embedded payment element has finished loading and is ready to display (height > 1). Useful for showing loading states and smooth UI transitions.
+
+**Fixes**
+- Fixed Android EmbeddedPaymentElement not respecting Link configuration. Now properly honors `LinkDisplay.NEVER` to hide Link payment method when configured.
+- Fixed Android EmbeddedPaymentElement layout measurement issues by improving height calculation and switching from `onPlaced` to `onSizeChanged` for better layout synchronization.
+
+## 0.52.0 - 2025-09-08
+**Features**
+- [#2079](https://github.com/stripe/stripe-react-native/pull/2079) Added support to differentiate between a user closing FlowController and selecting a payment option
+
+**Fixes**
+- [#2092](https://github.com/stripe/stripe-react-native/pull/2092) Fix Android crash in release mode when using the new architecture.
 
 ## 0.51.0 - 2025-08-20
 

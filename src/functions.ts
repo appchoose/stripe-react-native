@@ -436,7 +436,7 @@ export const presentPaymentSheet = async (
   options: PaymentSheet.PresentOptions = {}
 ): Promise<PresentPaymentSheetResult> => {
   try {
-    const { paymentOption, error } =
+    const { paymentOption, didCancel, error } =
       await NativeStripeSdk.presentPaymentSheet(options);
     if (error) {
       return {
@@ -445,6 +445,7 @@ export const presentPaymentSheet = async (
     }
     return {
       paymentOption: paymentOption!,
+      didCancel: didCancel,
     };
   } catch (error: any) {
     return {
@@ -891,6 +892,17 @@ export const updatePlatformPaySheet = async (params: {
 export const openPlatformPaySetup = async (): Promise<void> => {
   if (Platform.OS === 'ios') {
     await NativeStripeSdk.openApplePaySetup();
+  }
+};
+
+export const setFinancialConnectionsForceNativeFlow = async (
+  enabled: boolean
+): Promise<void> => {
+  if (Platform.OS !== 'ios') return;
+  try {
+    await NativeStripeSdk.setFinancialConnectionsForceNativeFlow(enabled);
+  } catch (_) {
+    // no-op
   }
 };
 

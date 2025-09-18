@@ -1,6 +1,6 @@
 {
   "name": "@appchoose/stripe-react-native",
-  "version": "0.52.0",
+  "version": "0.53.0",
   "author": "Stripe",
   "description": "Stripe SDK for React Native",
   "main": "lib/commonjs/index",
@@ -12,7 +12,7 @@
     "test": "jest",
     "typescript": "tsc --noEmit",
     "lint": "eslint \"**/*.{js,ts,tsx}\" --ignore-pattern \"docs/api-reference/*\" --ignore-path .gitignore",
-    "prepare": "bob build && husky",
+    "prepare": "bob build && rm -rf lib/*/package.json && husky",
     "release": "semantic-release",
     "example": "yarn --cwd example",
     "pods": "cd example && npx pod-install --quiet",
@@ -33,6 +33,25 @@
     "format:android:check": "cd android && ./gradlew spotlessCheck",
     "format:android:write": "cd android && ./gradlew spotlessApply"
   },
+  "files": [
+    "src",
+    "lib",
+    "android",
+    "ios",
+    "jest",
+    "stripe-react-native.podspec",
+    "app.plugin.js",
+    "LICENSE",
+    "!android/.cxx",
+    "!android/.gradle",
+    "!android/build",
+    "!android/src/androidTest",
+    "!ios/build",
+    "!ios/Tests",
+    "!**/__tests__",
+    "!**/__fixtures__",
+    "!**/__mocks__"
+  ],
   "keywords": [
     "react-native",
     "ios",
@@ -132,14 +151,18 @@
     "output": "lib",
     "targets": [
       [
-        "commonjs"
+        "commonjs",
+        {
+          "configFile": true
+        }
       ],
       [
-        "module"
+        "module",
+        {
+          "configFile": true
+        }
       ],
-      [
-        "typescript"
-      ]
+      "typescript"
     ]
   },
   "resolutions": {

@@ -1,9 +1,6 @@
 import { TurboModuleRegistry } from 'react-native';
 import type { TurboModule } from 'react-native/Libraries/TurboModule/RCTExport';
-import type {
-  EventEmitter,
-  Int32,
-} from 'react-native/Libraries/Types/CodegenTypes';
+import type { Int32 } from 'react-native/Libraries/Types/CodegenTypes';
 import type {
   CanAddCardToWalletParams,
   CanAddCardToWalletResult,
@@ -41,7 +38,6 @@ import type {
   EmbeddedPaymentElementConfiguration,
   EmbeddedPaymentElementResult,
 } from '../types/EmbeddedPaymentElement';
-import type { FinancialConnectionsEvent } from '../types/FinancialConnections';
 import type { IntentConfiguration } from '../types/PaymentSheet';
 import type { UnsafeObject } from './utils';
 import type { PossibleNativeBrand } from '../types/Common';
@@ -189,42 +185,18 @@ export interface Spec extends TurboModule {
   ): Promise<void>;
   clearEmbeddedPaymentOption(viewTag: Int32): Promise<void>;
 
-  // Events
-  onConfirmHandlerCallback: EventEmitter<{
-    paymentMethod: UnsafeObject<PaymentMethod.Result>;
-    shouldSavePaymentMethod: boolean;
-  }>;
-  onFinancialConnectionsEvent: EventEmitter<
-    UnsafeObject<FinancialConnectionsEvent>
-  >;
-  onOrderTrackingCallback: EventEmitter<void>;
-  onCustomerAdapterFetchPaymentMethodsCallback: EventEmitter<void>;
-  onCustomerAdapterAttachPaymentMethodCallback: EventEmitter<{
-    paymentMethodId: string;
-  }>;
-  onCustomerAdapterDetachPaymentMethodCallback: EventEmitter<{
-    paymentMethodId: string;
-  }>;
-  onCustomerAdapterSetSelectedPaymentOptionCallback: EventEmitter<{
-    paymentOption: string;
-  }>;
-  onCustomerAdapterFetchSelectedPaymentOptionCallback: EventEmitter<void>;
-  onCustomerAdapterSetupIntentClientSecretForCustomerAttachCallback: EventEmitter<void>;
-  embeddedPaymentElementDidUpdateHeight: EventEmitter<UnsafeObject<any>>;
-  embeddedPaymentElementWillPresent: EventEmitter<void>;
-  embeddedPaymentElementDidUpdatePaymentOption: EventEmitter<UnsafeObject<any>>;
-  embeddedPaymentElementFormSheetConfirmComplete: EventEmitter<
-    UnsafeObject<any>
-  >;
-  embeddedPaymentElementRowSelectionImmediateAction: EventEmitter<void>;
-  embeddedPaymentElementLoadingFailed: EventEmitter<UnsafeObject<any>>;
-  onCustomPaymentMethodConfirmHandlerCallback: EventEmitter<UnsafeObject<any>>;
+  setFinancialConnectionsForceNativeFlow(enabled: boolean): Promise<void>;
+
   createPaymentMethodCustomNative(
     params: UnsafeObject<PaymentMethod.CreateParams>
   ): Promise<CreatePaymentMethodResult>;
   getNetworksForCard(
     params: UnsafeObject<{ cardNumber: string }>
   ): Promise<PossibleNativeBrand[]>;
+
+  // Events
+  addListener: (eventType: string) => void;
+  removeListeners: (count: number) => void;
 }
 
 export default TurboModuleRegistry.getEnforcing<Spec>('StripeSdk');

@@ -1,6 +1,7 @@
 import PassKit
 @_spi(DashboardOnly) @_spi(STP) import Stripe
 @_spi(EmbeddedPaymentElementPrivateBeta) import StripePaymentSheet
+@_spi(STP) import StripePayments
 import StripeFinancialConnections
 import Foundation
 
@@ -211,14 +212,14 @@ public class StripeSdkImpl: NSObject, UIAdaptivePresentationControllerDelegate {
             paymentSheetViewController = UIApplication.shared.delegate?.window??.rootViewController ?? UIViewController()
             if let paymentSheetFlowController = self.paymentSheetFlowController {
                 paymentSheetFlowController.presentPaymentOptions(from: findViewControllerPresenter(from: paymentSheetViewController!)
-                ) {
+                ) { didCancel in
                     paymentSheetViewController = nil
                     if let paymentOption = self.paymentSheetFlowController?.paymentOption {
                         let option: NSDictionary = [
                             "label": paymentOption.label,
                             "image": paymentOption.image.pngData()?.base64EncodedString() ?? ""
                         ]
-                        resolve(Mappers.createResult("paymentOption", option))
+                        resolve(Mappers.createResult("paymentOption", option, additionalFields: ["didCancel": didCancel]))
                     } else {
                         resolve(Errors.createError(ErrorType.Canceled, "The payment option selection flow has been canceled"))
                     }
@@ -1147,6 +1148,16 @@ public class StripeSdkImpl: NSObject, UIAdaptivePresentationControllerDelegate {
             }
         }
 #endif
+    }
+
+    @objc(setFinancialConnectionsForceNativeFlow:resolver:rejecter:)
+    public func setFinancialConnectionsForceNativeFlow(
+        enabled: Bool,
+        resolver resolve: @escaping RCTPromiseResolveBlock,
+        rejecter reject: @escaping RCTPromiseRejectBlock
+    ) {
+        UserDefaults.standard.set(enabled, forKey: "FINANCIAL_CONNECTIONS_EXAMPLE_APP_ENABLE_NATIVE")
+        resolve(nil)
     }
 
     public func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
