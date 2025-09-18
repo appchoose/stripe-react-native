@@ -1,5 +1,22 @@
 # CHANGELOG
 
+# [0.53.0](https://github.com/appchoose/stripe-react-native/compare/v0.52.0...v0.53.0) (2025-09-18)
+
+
+### Bug Fixes
+
+* add missing await to NativeStripeSdk.initialise calls ([#2113](https://github.com/appchoose/stripe-react-native/issues/2113)) ([d7ed060](https://github.com/appchoose/stripe-react-native/commit/d7ed0604d3586b1fed54e984eed0eff8ae15b3e9))
+
+
+### Features
+
+* release new version ([192e627](https://github.com/appchoose/stripe-react-native/commit/192e627a63421dd4fc5635626854d64ccaabfd58))
+
+
+### Reverts
+
+* Revert "Use files instead of npmignore to cleanup npm package ([#2081](https://github.com/appchoose/stripe-react-native/issues/2081))" ([#2099](https://github.com/appchoose/stripe-react-native/issues/2099)) ([c8d2bb2](https://github.com/appchoose/stripe-react-native/commit/c8d2bb2f768b641d69efc5ba48ee2819726fd6e2))
+
 ## x.x.x - x.x.x
 
 **Fixes**
