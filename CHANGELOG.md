@@ -1,5 +1,12 @@
 # CHANGELOG
 
+# [0.54.0](https://github.com/appchoose/stripe-react-native/compare/v0.53.0...v0.54.0) (2025-11-10)
+
+
+### Features
+
+* add Alma implementation ([#2140](https://github.com/appchoose/stripe-react-native/issues/2140)) ([777d274](https://github.com/appchoose/stripe-react-native/commit/777d274dc250e261d5ca6397e7798c1130171022))
+
 ## 0.56.0 - 2025-11-06
 
 **Changes**
