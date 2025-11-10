@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## [0.54.1](https://github.com/appchoose/stripe-react-native/compare/v0.54.0...v0.54.1) (2025-11-10)
+
+
+### Bug Fixes
+
+* getMapOrNull to getMap ([02152d5](https://github.com/appchoose/stripe-react-native/commit/02152d5135236df597150d48c38b135ae5efe357))
+
 # [0.54.0](https://github.com/appchoose/stripe-react-native/compare/v0.53.0...v0.54.0) (2025-11-10)
 
 
