@@ -19,11 +19,11 @@ import {
   BillingDetails,
   Address,
   IntentCreationCallbackParams,
-  PaymentMethod,
   EmbeddedPaymentElementResult,
   CustomPaymentMethod,
   CustomPaymentMethodResult,
   CustomPaymentMethodResultStatus,
+  ConfirmationToken,
 } from '@stripe/stripe-react-native';
 import {
   useEmbeddedPaymentElement,
@@ -95,7 +95,7 @@ function PaymentElementView({ intentConfig, elementConfig }: any) {
 
       <Button
         variant="primary"
-        title="Pay"
+        title="Complete payment"
         onPress={handlePay}
         loading={loading}
         disabled={!paymentOption}
@@ -107,6 +107,7 @@ function PaymentElementView({ intentConfig, elementConfig }: any) {
         onPress={clearPaymentOption}
         disabled={!paymentOption}
       />
+      <View style={{ height: 40 }} />
     </>
   );
 }
@@ -325,9 +326,8 @@ export default function EmbeddedPaymentElementScreen() {
 
       // 5. Intent config
       const newIntentConfig: IntentConfiguration = {
-        confirmHandler: async (
-          paymentMethod: PaymentMethod.Result,
-          _save,
+        confirmationTokenConfirmHandler: async (
+          confirmationToken: ConfirmationToken.Result,
           callback: (res: IntentCreationCallbackParams) => void
         ) => {
           const resp = await fetch(
@@ -336,7 +336,6 @@ export default function EmbeddedPaymentElementScreen() {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
-                paymentMethodId: paymentMethod.id,
                 customerId: customer,
               }),
             }
@@ -353,7 +352,6 @@ export default function EmbeddedPaymentElementScreen() {
           else callback({ clientSecret });
         },
         mode: { amount: 6099, currencyCode: 'USD' },
-        paymentMethodTypes: ['card', 'klarna', 'cashapp'],
       };
 
       setElementConfig(uiConfig);

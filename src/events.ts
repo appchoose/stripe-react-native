@@ -17,6 +17,7 @@ import NativeStripeSdkModule from './specs/NativeStripeSdkModule';
 import { PaymentMethod } from './types';
 import { UnsafeObject } from './specs/utils';
 import { FinancialConnectionsEvent } from './types/FinancialConnections';
+import { Result as ConfirmationTokenResult } from './types/ConfirmationToken';
 
 const compatEventEmitter =
   Platform.OS === 'ios'
@@ -30,6 +31,9 @@ type Events = {
   onConfirmHandlerCallback: EventEmitter<{
     paymentMethod: UnsafeObject<PaymentMethod.Result>;
     shouldSavePaymentMethod: boolean;
+  }>;
+  onConfirmationTokenHandlerCallback: EventEmitter<{
+    confirmationToken: UnsafeObject<ConfirmationTokenResult>;
   }>;
   onFinancialConnectionsEvent: EventEmitter<
     UnsafeObject<FinancialConnectionsEvent>
@@ -47,6 +51,8 @@ type Events = {
   }>;
   onCustomerAdapterFetchSelectedPaymentOptionCallback: EventEmitter<void>;
   onCustomerAdapterSetupIntentClientSecretForCustomerAttachCallback: EventEmitter<void>;
+  onCustomerSessionProviderSetupIntentClientSecret: EventEmitter<void>;
+  onCustomerSessionProviderCustomerSessionClientSecret: EventEmitter<void>;
   embeddedPaymentElementDidUpdateHeight: EventEmitter<UnsafeObject<any>>;
   embeddedPaymentElementWillPresent: EventEmitter<void>;
   embeddedPaymentElementDidUpdatePaymentOption: EventEmitter<UnsafeObject<any>>;

@@ -54,70 +54,6 @@ public abstract class NativeStripeSdkModuleSpec extends ReactContextBaseJavaModu
     invoke(eventName, null);
   }
 
-  protected final void emitOnConfirmHandlerCallback(ReadableMap value) {
-    invoke("onConfirmHandlerCallback", value);
-  }
-
-  protected final void emitOnFinancialConnectionsEvent(ReadableMap value) {
-    invoke("onFinancialConnectionsEvent", value);
-  }
-
-  protected final void emitOnOrderTrackingCallback() {
-    invoke("onOrderTrackingCallback");
-  }
-
-  protected final void emitOnCustomerAdapterFetchPaymentMethodsCallback() {
-    invoke("onCustomerAdapterFetchPaymentMethodsCallback");
-  }
-
-  protected final void emitOnCustomerAdapterAttachPaymentMethodCallback(ReadableMap value) {
-    invoke("onCustomerAdapterAttachPaymentMethodCallback", value);
-  }
-
-  protected final void emitOnCustomerAdapterDetachPaymentMethodCallback(ReadableMap value) {
-    invoke("onCustomerAdapterDetachPaymentMethodCallback", value);
-  }
-
-  protected final void emitOnCustomerAdapterSetSelectedPaymentOptionCallback(ReadableMap value) {
-    invoke("onCustomerAdapterSetSelectedPaymentOptionCallback", value);
-  }
-
-  protected final void emitOnCustomerAdapterFetchSelectedPaymentOptionCallback() {
-    invoke("onCustomerAdapterFetchSelectedPaymentOptionCallback");
-  }
-
-  protected final void emitOnCustomerAdapterSetupIntentClientSecretForCustomerAttachCallback() {
-    invoke("onCustomerAdapterSetupIntentClientSecretForCustomerAttachCallback");
-  }
-
-  protected final void emitEmbeddedPaymentElementDidUpdateHeight(ReadableMap value) {
-    invoke("embeddedPaymentElementDidUpdateHeight", value);
-  }
-
-  protected final void emitEmbeddedPaymentElementWillPresent() {
-    invoke("embeddedPaymentElementWillPresent");
-  }
-
-  protected final void emitEmbeddedPaymentElementDidUpdatePaymentOption(ReadableMap value) {
-    invoke("embeddedPaymentElementDidUpdatePaymentOption", value);
-  }
-
-  protected final void emitEmbeddedPaymentElementFormSheetConfirmComplete(ReadableMap value) {
-    invoke("embeddedPaymentElementFormSheetConfirmComplete", value);
-  }
-
-  protected final void emitEmbeddedPaymentElementRowSelectionImmediateAction() {
-    invoke("embeddedPaymentElementRowSelectionImmediateAction");
-  }
-
-  protected final void emitEmbeddedPaymentElementLoadingFailed(ReadableMap value) {
-    invoke("embeddedPaymentElementLoadingFailed", value);
-  }
-
-  protected final void emitOnCustomPaymentMethodConfirmHandlerCallback(ReadableMap value) {
-    invoke("onCustomPaymentMethodConfirmHandlerCallback", value);
-  }
-
   @ReactMethod
   @DoNotStrip
   public abstract void initialise(ReadableMap params, Promise promise);
@@ -157,6 +93,10 @@ public abstract class NativeStripeSdkModuleSpec extends ReactContextBaseJavaModu
   @ReactMethod
   @DoNotStrip
   public abstract void intentCreationCallback(ReadableMap result, Promise promise);
+
+  @ReactMethod
+  @DoNotStrip
+  public abstract void confirmationTokenCreationCallback(ReadableMap result, Promise promise);
 
   @ReactMethod
   @DoNotStrip
@@ -299,6 +239,14 @@ public abstract class NativeStripeSdkModuleSpec extends ReactContextBaseJavaModu
   @ReactMethod
   @DoNotStrip
   public abstract void customerAdapterSetupIntentClientSecretForCustomerAttachCallback(String clientSecret, Promise promise);
+
+  @ReactMethod
+  @DoNotStrip
+  public abstract void clientSecretProviderSetupIntentClientSecretCallback(String setupIntentClientSecret, Promise promise);
+
+  @ReactMethod
+  @DoNotStrip
+  public abstract void clientSecretProviderCustomerSessionClientSecretCallback(ReadableMap customerSessionClientSecret, Promise promise);
 
   @ReactMethod
   @DoNotStrip
