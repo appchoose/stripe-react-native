@@ -1455,9 +1455,9 @@ class StripeSdkModule(
    */
   private fun extractPaymentMethodCreateParams(options: ReadableMap): PaymentMethodCreateParams {
     val preferredNetwork = options?.getString("preferredNetwork")
-    val cardParams = getMapOrNull(options, "card")
-    val billingDetailsParams = getMapOrNull(options, "billingDetails")
-    val addressParams = getMapOrNull(billingDetailsParams, "address")
+    val cardParams = options?.getMap("card")
+    val billingDetailsParams =  options?.getMap("billingDetails")
+    val addressParams = billingDetailsParams?.getMap("address")
     val address = mapToAddress(addressParams, null)
     val billingDetails =
       PaymentMethod.BillingDetails
