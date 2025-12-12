@@ -1931,6 +1931,70 @@ public class StripeSdkImpl: NSObject, UIAdaptivePresentationControllerDelegate {
             return errorMessage
         }
     }
+
+    // Custom
+    func extractPaymentMethodCreateParams(
+        options: NSDictionary
+    ) -> STPPaymentMethodParams {
+        let preferredNetwork = options["preferredNetwork"] as? String
+        let cardParams = options["card"] as? NSDictionary
+        let billingDetailsParams = options["billingDetails"] as? NSDictionary
+        let addressParams = billingDetailsParams?["address"] as? NSDictionary
+        let card = STPPaymentMethodCardParams()
+        let billingDetails = STPPaymentMethodBillingDetails()
+        let address = STPPaymentMethodAddress(address: Mappers.mapToAddress(address: addressParams))
+        billingDetails.address = address
+        billingDetails.email = billingDetailsParams?["email"] as? String
+        billingDetails.name = billingDetailsParams?["name"] as? String
+        billingDetails.phone = billingDetailsParams?["phone"] as? String
+
+        card.number = cardParams?["number"] as? String
+        card.expMonth = cardParams?["expMonth"] as? NSNumber
+        card.expYear = cardParams?["expYear"] as? NSNumber
+        card.cvc = cardParams?["cvc"] as? String
+        card.networks = STPPaymentMethodCardNetworksParams(preferred: preferredNetwork)
+        return STPPaymentMethodParams(card: card, billingDetails: billingDetails, metadata: nil)
+    }
+
+    @objc(createPaymentMethodCustomNative:resolver:rejecter:)
+    public func createPaymentMethodCustomNative(
+        params: NSDictionary,
+        resolver resolve: @escaping RCTPromiseResolveBlock,
+        rejecter reject: @escaping RCTPromiseRejectBlock
+    ) {
+        let pmcp = self.extractPaymentMethodCreateParams(options: params)
+
+        STPAPIClient.shared.createPaymentMethod(with: pmcp) { paymentMethod, error in
+            if let error = error {
+                resolve(Errors.createError(ErrorType.Failed, error as NSError))
+                return
+            }
+            resolve(
+                Mappers.createResult("paymentMethod", Mappers.mapFromPaymentMethod(paymentMethod))
+            )
+        }
+    }
+
+    @objc(getNetworksForCard:resolver:rejecter:)
+    public func getNetworksForCard(
+        params: NSDictionary,
+        resolver resolve: @escaping RCTPromiseResolveBlock,
+        rejecter reject: @escaping RCTPromiseRejectBlock
+    ) {
+           guard let cardNumber = params["cardNumber"] as? String else {
+                resolve(Errors.createError(ErrorType.Failed, "Card number is required"))
+                return
+           }
+           STPCardValidator.possibleBrands(forNumber: cardNumber) { result in
+            switch result {
+            case .success(let brands):
+                let brandStrings = brands.map { STPCardBrandUtilities.apiValue(from: $0) }
+                resolve(brandStrings)
+            case .failure:
+                resolve(Errors.createError(ErrorType.Failed, "Failed to fetch card brands"))
+            }
+        }
+    }
 }
 
 func findViewControllerPresenter(from uiViewController: UIViewController) -> UIViewController {

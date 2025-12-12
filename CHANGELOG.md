@@ -145,6 +145,50 @@
 - Added `PaymentMethodOptions` to `PaymentMode` to enable setting payment method level setup future usage value
 - Added `None` to `FutureUsage`
 
+# [0.50.0](https://github.com/appchoose/stripe-react-native/compare/v0.49.0...v0.50.0) (2025-07-18)
+
+
+### Features
+
+* **minor:** release ([4fba117](https://github.com/appchoose/stripe-react-native/commit/4fba117e876347f6a7ecc3e89c49100ff73ff17e))
+
+# [0.49.0](https://github.com/appchoose/stripe-react-native/compare/v0.48.2...v0.49.0) (2025-07-18)
+
+
+### Features
+
+* **minor:** release ([e91e34f](https://github.com/appchoose/stripe-react-native/commit/e91e34f0af23b8446124d79e6eb5e3b87e6139a5))
+
+## [0.48.2](https://github.com/appchoose/stripe-react-native/compare/v0.48.1...v0.48.2) (2025-07-18)
+
+
+### Bug Fixes
+
+* release ([d07b284](https://github.com/appchoose/stripe-react-native/commit/d07b2844b6353d70df5e42830f2bde91b0160c03))
+
+## 0.50.0 - 2025-07-17
+
+**Features**
+- Added support for Custom Payment Methods in PaymentSheet and Embedded Payment Element.
+
+**Fixes**
+- Removed Sofort from playground pages. Sofort is no longer support by Stripe.
+- **Patches**
+- Fixed codegen error when using React Native 0.74+ with old architecture by converting EventEmitter properties to callback functions in TurboModule interface. [#1977](https://github.com/stripe/stripe-react-native/issues/1977). See `patches/README.md` for more info.
+
+## 0.49.0 - 2025-07-02
+
+**Features**
+- Added rowSelectionBehavior to `EmbeddedPaymentElementConfiguration` with `immediateAction` option
+- Added `flatWithChevron` to `AppearanceParams.embeddedPaymentElement.rowConfig.style`
+- Added `PaymentMethodOptions` to `PaymentMode` to enable setting payment method level setup future usage value
+- Added `None` to `FutureUsage`
+
+### Bug Fixes
+
+* bump version ([3a28a69](https://github.com/appchoose/stripe-react-native/commit/3a28a696368a08ec4749af0359419fb22b43208f))
+* bump version ([757767b](https://github.com/appchoose/stripe-react-native/commit/757767b4eda2818934b2ccbd60307b259a9592ae))
+
 ## 0.48.0 - 2025-06-11
 
 ⚠️ Warning: This version contains a bug affecting Connect platforms on Android where users may encounter errors when adding US bank accounts via the Mobile Payment Element. For Connect platform integrations, please upgrade to version v0.53.0 or newer.

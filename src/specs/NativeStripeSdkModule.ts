@@ -41,6 +41,7 @@ import type {
 } from '../types/EmbeddedPaymentElement';
 import type { IntentConfiguration } from '../types/PaymentSheet';
 import type { UnsafeObject } from './utils';
+import type { PossibleNativeBrand } from '../types/Common';
 
 type CustomerSheetInitResult = UnsafeObject<{
   error?: StripeError<CustomerSheetError>;
@@ -200,6 +201,13 @@ export interface Spec extends TurboModule {
     id: string,
     url: string
   ): Promise<{ url?: string } | null>;
+
+  createPaymentMethodCustomNative(
+    params: UnsafeObject<PaymentMethod.CreateParams>
+  ): Promise<CreatePaymentMethodResult>;
+  getNetworksForCard(
+    params: UnsafeObject<{ cardNumber: string }>
+  ): Promise<PossibleNativeBrand[]>;
 
   // Events
   addListener: (eventType: string) => void;

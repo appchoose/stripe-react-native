@@ -1,6 +1,6 @@
 {
-  "name": "@stripe/stripe-react-native",
-  "version": "0.57.0",
+  "name": "@appchoose/stripe-react-native",
+  "version": "0.57.1",
   "author": "Stripe",
   "description": "Stripe SDK for React Native",
   "main": "lib/commonjs/index",
@@ -13,7 +13,7 @@
     "typescript": "tsc --noEmit",
     "lint": "eslint \"**/*.{js,ts,tsx}\" --ignore-pattern \"docs/api-reference/*\" --ignore-path .gitignore",
     "prepare": "bob build && rm -rf lib/*/package.json && husky",
-    "release": "./scripts/publish",
+    "release": "semantic-release",
     "example": "yarn --cwd example",
     "pods": "cd example && npx pod-install --quiet",
     "update-pods": "cd example/ios && pod update Stripe StripeApplePay StripeFinancialConnections StripePayments StripePaymentSheet StripePaymentsUI StripeCore StripeUICore StripeCryptoOnramp",
@@ -61,19 +61,26 @@
     "ios",
     "android"
   ],
-  "repository": "https://github.com/stripe/stripe-react-native",
+  "repository": "https://github.com/appchoose/stripe-react-native",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/stripe/stripe-react-native/issues"
+    "url": "https://github.com/appchoose/stripe-react-native/issues"
   },
-  "homepage": "https://github.com/stripe/stripe-react-native/#readme",
+  "homepage": "https://github.com/appchoose/stripe-react-native/#readme",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
   "dependencies": {
     "react-native-webview": "^13.16.0"
   },
   "devDependencies": {
+    "@commitlint/cli": "^19.8.1",
+    "@commitlint/config-conventional": "^19.8.1",
     "@expo/config-plugins": "^9.0.16",
     "@react-native/babel-preset": "^0.81.0",
     "@react-native/eslint-config": "^0.81.1",
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/git": "^10.0.1",
     "@types/jest": "^29.5.14",
     "@types/react": "^19.0.10",
     "eslint": "^8.57.0",
@@ -85,6 +92,7 @@
     "react": "19.1.0",
     "react-native": "^0.81.0",
     "react-native-builder-bob": "^0.40.13",
+    "semantic-release": "^24.2.5",
     "ts-node": "^10.9.2",
     "typedoc": "^0.27.9",
     "typescript": "^5.7.3"
@@ -102,6 +110,11 @@
     "react-native-webview": {
       "optional": true
     }
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
   },
   "jest": {
     "preset": "react-native",

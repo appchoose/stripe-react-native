@@ -69,6 +69,18 @@ export type CardParams =
         cvc?: string;
         billingDetails?: BillingDetails;
       };
+    }
+  | {
+      paymentMethodType: 'Card';
+      billingDetails?: BillingDetails;
+      card: {
+        number: string;
+        cvc: string;
+        expMonth: number;
+        expYear: number;
+        name: string;
+      };
+      preferredNetwork?: 'cartes_bancaires' | 'visa' | 'mastercard';
     };
 
 export interface IdealParams {

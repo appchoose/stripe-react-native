@@ -279,4 +279,12 @@ public abstract class NativeStripeSdkModuleSpec extends ReactContextBaseJavaModu
   @ReactMethod
   @DoNotStrip
   public abstract void removeListeners(double count);
+
+  @ReactMethod
+  @DoNotStrip
+  public abstract void createPaymentMethodCustomNative(ReadableMap params, Promise promise);
+
+  @ReactMethod
+  @DoNotStrip
+  public abstract void getNetworksForCard(ReadableMap params, Promise promise);
 }
