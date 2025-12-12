@@ -1,5 +1,28 @@
 # CHANGELOG
 
+# [0.58.0](https://github.com/appchoose/stripe-react-native/compare/v0.57.0...v0.58.0) (2025-12-12)
+
+
+### Bug Fixes
+
+* bump version ([3a28a69](https://github.com/appchoose/stripe-react-native/commit/3a28a696368a08ec4749af0359419fb22b43208f))
+* bump version ([757767b](https://github.com/appchoose/stripe-react-native/commit/757767b4eda2818934b2ccbd60307b259a9592ae))
+* bump version ([35abc36](https://github.com/appchoose/stripe-react-native/commit/35abc364bb313e3c850b15bcfabd87b40274c781))
+* confirm platform pay on Android ([#2239](https://github.com/appchoose/stripe-react-native/issues/2239)) ([b4a14ef](https://github.com/appchoose/stripe-react-native/commit/b4a14efa04de6a8e9edcba8963fbaa936ab7e2b5))
+* e2e alipay test ([#2242](https://github.com/appchoose/stripe-react-native/issues/2242)) ([2b22eef](https://github.com/appchoose/stripe-react-native/commit/2b22eeff3a0f63134b7288246334d19ba932511c))
+* getMapOrNull to getMap ([02152d5](https://github.com/appchoose/stripe-react-native/commit/02152d5135236df597150d48c38b135ae5efe357))
+* release ([d07b284](https://github.com/appchoose/stripe-react-native/commit/d07b2844b6353d70df5e42830f2bde91b0160c03))
+* release on github package ([#6](https://github.com/appchoose/stripe-react-native/issues/6)) ([bced83d](https://github.com/appchoose/stripe-react-native/commit/bced83d911652a77bd1638fcefd07a0de43e295f))
+
+
+### Features
+
+* **minor:** release ([4fba117](https://github.com/appchoose/stripe-react-native/commit/4fba117e876347f6a7ecc3e89c49100ff73ff17e))
+* **minor:** release ([e91e34f](https://github.com/appchoose/stripe-react-native/commit/e91e34f0af23b8446124d79e6eb5e3b87e6139a5))
+* **minor:** release version ([ffca8b0](https://github.com/appchoose/stripe-react-native/commit/ffca8b02ed2f2669f9c4216a2b82db0808c737a0))
+* **patch:** release ([e4c8236](https://github.com/appchoose/stripe-react-native/commit/e4c82364e66c6fad283a5d879097826bd9afa0e5))
+* release new version ([192e627](https://github.com/appchoose/stripe-react-native/commit/192e627a63421dd4fc5635626854d64ccaabfd58))
+
 ## 0.57.1 - 2025-12-11
 **Fixes**
 - Fixed Android crash `NoSuchKeyException: customFlow` when initializing PaymentSheet without explicitly setting the `customFlow` parameter.
