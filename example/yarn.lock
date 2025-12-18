@@ -1627,8 +1627,7 @@
     "@sinonjs/commons" "^3.0.0"
 
 "@stripe/stripe-react-native@link:..":
-  version "0.0.0"
-  uid ""
+  version "0.52.0"
 
 "@types/babel__core@^7.1.14":
   version "7.20.5"
