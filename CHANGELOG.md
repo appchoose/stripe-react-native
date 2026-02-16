@@ -1,5 +1,18 @@
 # CHANGELOG
 
+# [0.59.0](https://github.com/appchoose/stripe-react-native/compare/v0.58.1...v0.59.0) (2026-02-16)
+
+
+### Bug Fixes
+
+* Android screen dismissal after Connect authentication ([#2299](https://github.com/appchoose/stripe-react-native/issues/2299)) ([0b2937f](https://github.com/appchoose/stripe-react-native/commit/0b2937f248b52e681c0bfd6899f2939eafc835ae))
+* prevent Android navigation bar overlap in Connect embedded components ([#2300](https://github.com/appchoose/stripe-react-native/issues/2300)) ([218e78b](https://github.com/appchoose/stripe-react-native/commit/218e78bd2ed1885cadcc6513fd4f0b091eeb2219))
+
+
+### Features
+
+* Add native CSV export with share sheet for Connect components ([#2298](https://github.com/appchoose/stripe-react-native/issues/2298)) ([ada945b](https://github.com/appchoose/stripe-react-native/commit/ada945b30bce108b8284bf5f8e6cf1cfa8732739))
+
 ## [0.58.1](https://github.com/appchoose/stripe-react-native/compare/v0.58.0...v0.58.1) (2025-12-18)
 
 
