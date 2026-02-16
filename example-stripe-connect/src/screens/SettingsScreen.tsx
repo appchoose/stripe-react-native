@@ -2,6 +2,7 @@ import { useRouter, Stack } from 'expo-router';
 import React, { useCallback, useState } from 'react';
 import {
   Keyboard,
+  Platform,
   StyleSheet,
   Text,
   TextInput,
@@ -34,8 +35,16 @@ const SettingsScreen: React.FC = () => {
   const [localSelectedMerchant, setLocalSelectedMerchant] =
     useState<MerchantInfo | null>(selectedMerchant);
   const [localBackendUrl, setLocalBackendUrl] = useState(backendUrl);
-  const [customMerchantId, setCustomMerchantId] = useState('');
+  const [customMerchantId, setCustomMerchantId] = useState(
+    selectedMerchant &&
+      !availableMerchants.find(
+        (m) => m.merchant_id === selectedMerchant.merchant_id
+      )
+      ? selectedMerchant.merchant_id
+      : ''
+  );
   const [hasChanges, setHasChanges] = useState(false);
+  const [merchantIdError, setMerchantIdError] = useState<string | null>(null);
 
   const handleSave = useCallback(async () => {
     if (localSelectedMerchant) {
@@ -52,19 +61,50 @@ const SettingsScreen: React.FC = () => {
   ]);
 
   const handleSelectMerchant = (merchant: MerchantInfo) => {
+    setCustomMerchantId(''); // Clear custom input
+    setMerchantIdError(null); // Clear any validation error
     setLocalSelectedMerchant(merchant);
     checkForChanges(merchant, localBackendUrl);
   };
 
+  const validateMerchantId = (merchantId: string): string | null => {
+    if (!merchantId.trim()) {
+      return null; // Empty is valid (cleared state)
+    }
+    if (!merchantId.startsWith('acct_')) {
+      return 'Merchant ID must start with "acct_"';
+    }
+    if (merchantId.length <= 5) {
+      return 'Merchant ID must be more than 5 characters';
+    }
+    return null; // Valid
+  };
+
   const handleCustomMerchantChange = (text: string) => {
     setCustomMerchantId(text);
+
+    // Validate the input
+    const error = validateMerchantId(text);
+    setMerchantIdError(error);
+
     if (text.trim()) {
+      // User entered a custom merchant ID (save even if invalid)
       const customMerchant: MerchantInfo = {
         merchant_id: text.trim(),
         display_name: 'Other',
       };
       setLocalSelectedMerchant(customMerchant);
       checkForChanges(customMerchant, localBackendUrl);
+    } else {
+      // User cleared the input - select first merchant if available
+      if (availableMerchants.length > 0) {
+        const firstMerchant = availableMerchants[0];
+        setLocalSelectedMerchant(firstMerchant);
+        checkForChanges(firstMerchant, localBackendUrl);
+      } else {
+        setLocalSelectedMerchant(null);
+        checkForChanges(null, localBackendUrl);
+      }
     }
   };
 
@@ -100,11 +140,14 @@ const SettingsScreen: React.FC = () => {
       <Stack.Screen
         options={{
           title: 'Settings',
-          headerLeft: () => (
-            <TouchableOpacity onPress={() => router.back()}>
-              <Text style={styles.backButton}>Cancel</Text>
-            </TouchableOpacity>
-          ),
+          headerLeft:
+            Platform.OS === 'ios'
+              ? () => (
+                  <TouchableOpacity onPress={() => router.back()}>
+                    <Text style={styles.backButton}>Cancel</Text>
+                  </TouchableOpacity>
+                )
+              : undefined,
           headerRight: () => (
             <TouchableOpacity onPress={handleSave} disabled={!hasChanges}>
               <Text
@@ -151,15 +194,25 @@ const SettingsScreen: React.FC = () => {
                 />
                 <View style={styles.inputContainer}>
                   <TextInput
-                    style={styles.input}
+                    style={[styles.input, merchantIdError && styles.inputError]}
                     placeholder="acct_xxxx"
                     value={customMerchantId}
                     onChangeText={handleCustomMerchantChange}
+                    onEndEditing={(e) => {
+                      // Fallback to catch paste events where onChangeText didn't fire
+                      const text = e.nativeEvent.text;
+                      if (text !== customMerchantId) {
+                        handleCustomMerchantChange(text);
+                      }
+                    }}
                     autoCapitalize="none"
                     autoCorrect={false}
                     returnKeyType="done"
                     onSubmitEditing={Keyboard.dismiss}
                   />
+                  {merchantIdError && (
+                    <Text style={styles.errorText}>{merchantIdError}</Text>
+                  )}
                 </View>
               </View>
             </Section>
@@ -270,6 +323,15 @@ const styles = StyleSheet.create({
     padding: 12,
     fontSize: 17,
     backgroundColor: Colors.background.input,
+  },
+  inputError: {
+    borderWidth: 1,
+    borderColor: '#FF3B30',
+  },
+  errorText: {
+    color: '#FF3B30',
+    fontSize: 13,
+    marginTop: 4,
   },
   menuOption: {
     flexDirection: 'row',

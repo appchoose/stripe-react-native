@@ -24,7 +24,7 @@ import com.reactnativestripesdk.utils.mapToPreferredNetworks
 import com.reactnativestripesdk.utils.parseCustomPaymentMethods
 import com.stripe.android.ExperimentalAllowsRemovalOfLastSavedPaymentMethodApi
 import com.stripe.android.paymentelement.EmbeddedPaymentElement
-import com.stripe.android.paymentelement.ExperimentalCustomPaymentMethodsApi
+import com.stripe.android.paymentsheet.CardFundingFilteringPrivatePreview
 import com.stripe.android.paymentsheet.PaymentSheet
 import org.json.JSONArray
 import org.json.JSONObject
@@ -98,7 +98,7 @@ class EmbeddedPaymentElementViewManager :
   @SuppressLint("RestrictedApi")
   @OptIn(
     ExperimentalAllowsRemovalOfLastSavedPaymentMethodApi::class,
-    ExperimentalCustomPaymentMethodsApi::class,
+    CardFundingFilteringPrivatePreview::class,
   )
   private fun parseElementConfiguration(
     map: ReadableMap,
@@ -132,6 +132,7 @@ class EmbeddedPaymentElementViewManager :
         map.getMap("billingDetailsCollectionConfiguration"),
       )
     val allowsRemovalOfLastSavedPaymentMethod = map.getBooleanOr("allowsRemovalOfLastSavedPaymentMethod", true)
+    val opensCardScannerAutomatically = map.getBooleanOr("opensCardScannerAutomatically", false)
     val primaryButtonLabel = map.getString("primaryButtonLabel")
     val paymentMethodOrder = map.getStringList("paymentMethodOrder")
 
@@ -156,8 +157,11 @@ class EmbeddedPaymentElementViewManager :
               ?.let { ArrayList(it) },
           ),
         ).allowsRemovalOfLastSavedPaymentMethod(allowsRemovalOfLastSavedPaymentMethod)
+        .opensCardScannerAutomatically(opensCardScannerAutomatically)
         .cardBrandAcceptance(mapToCardBrandAcceptance(map))
-        .embeddedViewDisplaysMandateText(
+        .apply {
+          mapToAllowedCardFundingTypes(map)?.let { allowedCardFundingTypes(it) }
+        }.embeddedViewDisplaysMandateText(
           map.getBooleanOr("embeddedViewDisplaysMandateText", true),
         ).customPaymentMethods(
           parseCustomPaymentMethods(

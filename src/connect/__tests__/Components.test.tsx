@@ -1,4 +1,6 @@
 // Mock dependencies BEFORE imports
+import { mockCreateNativeStripeSdkMock } from '../testUtils';
+
 jest.mock('react-native-webview', () => {
   const React = require('react');
   return {
@@ -11,12 +13,11 @@ jest.mock('react-native-webview', () => {
   };
 });
 
-jest.mock('../../specs/NativeStripeSdkModule', () => ({
-  __esModule: true,
-  default: {
+jest.mock('../../specs/NativeStripeSdkModule', () =>
+  mockCreateNativeStripeSdkMock({
     openAuthenticatedWebView: jest.fn(),
-  },
-}));
+  })
+);
 
 jest.mock('../../specs/NativeConnectAccountOnboardingView', () => {
   const React = require('react');
@@ -100,7 +101,6 @@ describe('ConnectAccountOnboarding', () => {
       const nativeView = getByTestId('native-account-onboarding-view');
       expect(nativeView.props.title).toBe(title);
       expect(nativeView.props.backgroundColor).toBe('#FFFFFF');
-      expect(nativeView.props.textColor).toBe('#333333');
       expect(nativeView.props.visible).toBe(true);
     });
 

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import {
   ConnectComponentsProvider,
   loadConnectAndInitialize,
@@ -9,6 +10,7 @@ import { useSettings } from '../contexts/SettingsContext';
 import { createAPIClient } from '../api/StripeConnectAPI';
 import { APPEARANCE_PRESETS } from '../constants/appearancePresets';
 import { Colors } from '../constants/colors';
+import { getCustomFont } from '../fonts/preloadedFonts';
 
 interface Props {
   children?: React.ReactNode;
@@ -17,6 +19,8 @@ interface Props {
 const ConnectScreen: React.FC<Props> = ({ children }) => {
   const { publishableKey, selectedMerchant, backendUrl, appearancePreset } =
     useSettings();
+
+  const customFont = getCustomFont();
 
   const [stripeConnectInstance, setStripeConnectInstance] =
     useState<StripeConnectInstance>();
@@ -45,6 +49,7 @@ const ConnectScreen: React.FC<Props> = ({ children }) => {
       appearance: {
         variables: appearanceVariables,
       },
+      fonts: customFont ? [customFont] : undefined,
     });
 
     setStripeConnectInstance(instance);
@@ -53,6 +58,7 @@ const ConnectScreen: React.FC<Props> = ({ children }) => {
     selectedMerchant?.merchant_id,
     backendUrl,
     appearancePreset,
+    customFont,
   ]);
 
   // Update appearance when preset changes
@@ -77,7 +83,9 @@ const ConnectScreen: React.FC<Props> = ({ children }) => {
 
   return (
     <ConnectComponentsProvider connectInstance={stripeConnectInstance}>
-      <View style={styles.container}>{children}</View>
+      <SafeAreaView style={styles.container} edges={['bottom']}>
+        {children}
+      </SafeAreaView>
     </ConnectComponentsProvider>
   );
 };

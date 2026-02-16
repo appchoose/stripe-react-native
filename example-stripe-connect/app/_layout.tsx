@@ -9,6 +9,7 @@ import { StatusBar } from 'expo-status-bar';
 import { TouchableOpacity, Text, Platform, StyleSheet } from 'react-native';
 import { SymbolView } from 'expo-symbols';
 import { Colors } from '../src/constants/colors';
+import '../src/fonts/preloadedFonts'; // Load fonts at app startup
 
 const queryClient = new QueryClient();
 
@@ -60,14 +61,16 @@ function RootLayoutNav() {
     <StripeProvider publishableKey={key || 'pk_test_placeholder'}>
       <Stack
         screenOptions={{
-          headerTransparent: true,
+          headerTransparent: Platform.select({ ios: true, default: false }),
           headerBlurEffect: 'systemChromeMaterial',
+          headerBackButtonDisplayMode: 'minimal',
           headerLargeStyle: {
             backgroundColor: 'transparent',
           },
-          headerStyle: {
-            backgroundColor: 'transparent',
-          },
+          headerStyle: Platform.select({
+            ios: { backgroundColor: 'transparent' },
+            default: {},
+          }),
         }}
       >
         <Stack.Screen name="index" options={{ headerShown: true }} />

@@ -7,6 +7,18 @@
 
 * **tests:** updating test institution names in tests #ir-rider-prefix ([#2247](https://github.com/appchoose/stripe-react-native/issues/2247)) ([d181142](https://github.com/appchoose/stripe-react-native/commit/d1811421a8ed51e7ae80cc62e1fb3703230ccf7a))
 
+
+## 0.58.0 - 2026-01-27
+
+**Changes**
+- Updated Stripe iOS SDK from 25.0.1 to 25.6.0
+- Updated Stripe Android SDK from 22.2.+ to 22.7.+
+
+## 0.57.3 - 2026-01-21
+
+**Fixes**
+- `react-native-webview` is no longer a dependency of the SDK.
+
 ## 0.57.2 - 2025-12-16
 
 **Fixes**

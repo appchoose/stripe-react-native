@@ -38,9 +38,9 @@ appId: ${APP_ID}
     text: "Connect account"
 
 - assertVisible:
-    text: "Not now"
+    text: "Finish without saving"
 - tapOn:
-    text: "Not now"
+    text: "Finish without saving"
 
 - assertVisible:
     text: "Back to Stripe Shop"

@@ -195,7 +195,12 @@ export interface EmbeddedPaymentElementConfiguration {
    * Note: Card brand filtering is not currently supported in Link.
    */
   cardBrandAcceptance?: PaymentSheetTypes.CardBrandAcceptance;
-  /** The view can display payment methods like “Card” that, when tapped, open a sheet where customers enter their payment method details.
+  /**
+   * Configuration for filtering cards by funding type.
+   * @note This is a private preview API and will have no effect unless your Stripe account is enrolled in the private preview.
+   */
+  cardFundingFiltering?: PaymentSheetTypes.CardFundingFiltering;
+  /** The view can display payment methods like "Card" that, when tapped, open a sheet where customers enter their payment method details.
    * The sheet has a button at the bottom. `formSheetAction` controls the action the button performs. Defaults to 'continue'.
    */
   formSheetAction?: EmbeddedFormSheetAction;
@@ -210,6 +215,11 @@ export interface EmbeddedPaymentElementConfiguration {
    * Defaults to `true`.
    */
   embeddedViewDisplaysMandateText?: boolean;
+  /** By default, EmbeddedPaymentElement offers a card scan button within the new card entry form.
+   * When opensCardScannerAutomatically is set to true,
+   * the card entry form will initialize with the card scanner already open.
+   * Defaults to false. */
+  opensCardScannerAutomatically?: boolean;
 }
 
 // -----------------------------------------------------------------------------
