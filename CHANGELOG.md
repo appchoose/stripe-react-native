@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## [0.59.1](https://github.com/appchoose/stripe-react-native/compare/v0.59.0...v0.59.1) (2026-02-16)
+
+
+### Bug Fixes
+
+* remove NativeStripeSdkModule mock ([9f0cabb](https://github.com/appchoose/stripe-react-native/commit/9f0cabbdfab739a4f9b7f0f03ec6ea76f5bc181d))
+
 # [0.59.0](https://github.com/appchoose/stripe-react-native/compare/v0.58.1...v0.59.0) (2026-02-16)
 
 
