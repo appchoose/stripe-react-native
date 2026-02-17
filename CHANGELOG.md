@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## [0.59.3](https://github.com/appchoose/stripe-react-native/compare/v0.59.2...v0.59.3) (2026-02-17)
+
+
+### Bug Fixes
+
+* **android:** fileprovider ([870d875](https://github.com/appchoose/stripe-react-native/commit/870d8758fa3786cddd1a8f9fd0306688f843eeaf))
+
 ## [0.59.2](https://github.com/appchoose/stripe-react-native/compare/v0.59.1...v0.59.2) (2026-02-16)
 
 
