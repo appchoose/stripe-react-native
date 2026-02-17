@@ -1521,7 +1521,7 @@ class StripeSdkModule(
       val uri =
         androidx.core.content.FileProvider.getUriForFile(
           reactApplicationContext,
-          "${reactApplicationContext.packageName}.stripe.fileprovider",
+          "${reactApplicationContext.packageName}.fileprovider",
           file,
         )
 
