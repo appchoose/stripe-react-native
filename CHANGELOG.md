@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## [0.59.4](https://github.com/appchoose/stripe-react-native/compare/v0.59.3...v0.59.4) (2026-02-23)
+
+
+### Bug Fixes
+
+* propagate FlowController configuration errors on Android ([#2308](https://github.com/appchoose/stripe-react-native/issues/2308)) ([a04e2ff](https://github.com/appchoose/stripe-react-native/commit/a04e2ff1d166b8a41f0bb8dbdc7dafb3398ff66f))
+* use unique FileProvider authority to avoid manifest conflicts ([#2310](https://github.com/appchoose/stripe-react-native/issues/2310)) ([344fcbb](https://github.com/appchoose/stripe-react-native/commit/344fcbbd70a423cefde09ed120a1a8e8add6049f)), closes [#2307](https://github.com/appchoose/stripe-react-native/issues/2307)
+
 ## [0.59.3](https://github.com/appchoose/stripe-react-native/compare/v0.59.2...v0.59.3) (2026-02-17)
 
 ## 0.59.0 - 2026-02-20
