@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## [0.59.5](https://github.com/appchoose/stripe-react-native/compare/v0.59.4...v0.59.5) (2026-02-23)
+
+
+### Bug Fixes
+
+* disable infoIconColor ([72727f1](https://github.com/appchoose/stripe-react-native/commit/72727f10df7e404fcd71c175d3f85e2c86987716))
+
 ## [0.59.4](https://github.com/appchoose/stripe-react-native/compare/v0.59.3...v0.59.4) (2026-02-23)
 
 
