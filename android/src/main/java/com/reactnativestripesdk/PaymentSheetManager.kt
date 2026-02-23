@@ -39,6 +39,7 @@ import com.reactnativestripesdk.utils.mapFromPaymentMethod
 import com.reactnativestripesdk.utils.mapToPreferredNetworks
 import com.reactnativestripesdk.utils.parseCustomPaymentMethods
 import com.stripe.android.ExperimentalAllowsRemovalOfLastSavedPaymentMethodApi
+import com.stripe.android.PaymentConfiguration
 import com.stripe.android.core.reactnative.ReactNativeSdkInternal
 import com.stripe.android.model.PaymentMethod
 import com.stripe.android.paymentelement.ConfirmCustomPaymentMethodCallback
@@ -298,6 +299,14 @@ class PaymentSheetManager(
       mapToPaymentMethodLayout(arguments.getString("paymentMethodLayout")),
     )
 
+    val userKeyTermsDisplay =
+      computeTermsDisplayForUserKey(
+        PaymentConfiguration.getInstance(context).publishableKey,
+      )
+    if (userKeyTermsDisplay.isNotEmpty()) {
+      configurationBuilder.termsDisplay(userKeyTermsDisplay)
+    }
+
     paymentSheetConfiguration = configurationBuilder.build()
 
     if (arguments.getBooleanOr("customFlow", false)) {
@@ -433,32 +442,8 @@ class PaymentSheetManager(
 
   private fun configureFlowController() {
     val onFlowControllerConfigure =
-      PaymentSheet.FlowController.ConfigCallback { _, _ ->
-        flowController?.getPaymentOption()?.let { paymentOption ->
-          // Launch async job to convert drawable, but resolve promise synchronously
-          CoroutineScope(Dispatchers.Default).launch {
-            val imageString =
-              try {
-                convertDrawableToBase64(paymentOption.icon())
-              } catch (e: Exception) {
-                val result =
-                  createError(
-                    PaymentSheetErrorType.Failed.toString(),
-                    "Failed to process payment option image: ${e.message}",
-                  )
-                initPromise.resolve(result)
-                return@launch
-              }
-
-            val option: WritableMap = Arguments.createMap()
-            option.putString("label", paymentOption.label)
-            option.putString("image", imageString)
-            val result = createResult("paymentOption", option)
-            initPromise.resolve(result)
-          }
-        } ?: run {
-          initPromise.resolve(Arguments.createMap())
-        }
+      PaymentSheet.FlowController.ConfigCallback { success, error ->
+        handleFlowControllerConfigured(success, error, initPromise, flowController)
       }
 
     if (!paymentIntentClientSecret.isNullOrEmpty()) {
@@ -718,5 +703,46 @@ internal fun mapToPaymentMethodOptions(options: ReadableMap?): PaymentSheet.Inte
     )
   } else {
     null
+  }
+}
+
+internal fun handleFlowControllerConfigured(
+  success: Boolean,
+  error: Throwable?,
+  promise: Promise,
+  flowController: PaymentSheet.FlowController?,
+) {
+  if (!success) {
+    promise.resolve(
+      createError(
+        PaymentSheetErrorType.Failed.toString(),
+        error?.message ?: "Failed to configure payment sheet",
+      ),
+    )
+    return
+  }
+  flowController?.getPaymentOption()?.let { paymentOption ->
+    CoroutineScope(Dispatchers.Default).launch {
+      val imageString =
+        try {
+          convertDrawableToBase64(paymentOption.icon())
+        } catch (e: Exception) {
+          val result =
+            createError(
+              PaymentSheetErrorType.Failed.toString(),
+              "Failed to process payment option image: ${e.message}",
+            )
+          promise.resolve(result)
+          return@launch
+        }
+
+      val option: WritableMap = Arguments.createMap()
+      option.putString("label", paymentOption.label)
+      option.putString("image", imageString)
+      val result = createResult("paymentOption", option)
+      promise.resolve(result)
+    }
+  } ?: run {
+    promise.resolve(Arguments.createMap())
   }
 }

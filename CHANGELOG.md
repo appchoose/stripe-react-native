@@ -2,6 +2,13 @@
 
 ## [0.59.3](https://github.com/appchoose/stripe-react-native/compare/v0.59.2...v0.59.3) (2026-02-17)
 
+## 0.59.0 - 2026-02-20
+
+**Features**
+* [Added] Connect embedded components are now available in private preview, including Account Onboarding, Payments, and Payouts.
+
+**Changes**
+* [Added] Added support for creating a [Radar session](https://docs.stripe.com/radar/radar-session).
 
 ### Bug Fixes
 
