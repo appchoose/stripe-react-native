@@ -41,9 +41,9 @@ internal class PaymentMethodMessagingElementConfig {
             appearance.textColor = textColorHex
         }
 
-        // if let linkTextColorHex = parseThemedColor(params: params, key: "linkTextColor") {
-        //     appearance.infoIconColor = linkTextColorHex
-        // }
+        if let linkTextColorHex = parseThemedColor(params: params, key: "linkTextColor") {
+            appearance.infoIconColor = linkTextColorHex
+        }
 
         return appearance
     }
@@ -103,12 +103,12 @@ internal class PaymentMethodMessagingElementConfig {
             }
         }
 
-        var configuration = PaymentMethodMessagingElement.Configuration(
+        let configuration = PaymentMethodMessagingElement.Configuration(
             amount: amount,
             currency: currency,
             locale: locale,
             countryCode: country,
-            paymentMethodTypes: paymentMethodTypes,
+            paymentMethodTypes: paymentMethodTypes
         )
 
         return (nil, configuration)

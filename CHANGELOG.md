@@ -1,6 +1,8 @@
 # CHANGELOG
 
-## [0.59.5](https://github.com/appchoose/stripe-react-native/compare/v0.59.4...v0.59.5) (2026-02-23)
+## 0.59.1 - 2026-02-25
+**Fixes**
+* [Fixed] A build issue when using Xcode 16 ([#2323](https://github.com/stripe/stripe-react-native/issues/2323))
 
 
 ### Bug Fixes
