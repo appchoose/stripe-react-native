@@ -1,5 +1,17 @@
 # CHANGELOG
 
+## [0.59.6](https://github.com/appchoose/stripe-react-native/compare/v0.59.5...v0.59.6) (2026-02-27)
+
+
+### Bug Fixes
+
+* **android:** use StripeFileProvider instead of custom authority ([#2321](https://github.com/appchoose/stripe-react-native/issues/2321)) ([237c271](https://github.com/appchoose/stripe-react-native/commit/237c271aaff11d980c9c4d4593395222b1d38d79))
+
+
+### Reverts
+
+* Revert "Auto-hide card mandate disclaimer for user keys (MOTO) ([#2309](https://github.com/appchoose/stripe-react-native/issues/2309))" ([#2317](https://github.com/appchoose/stripe-react-native/issues/2317)) ([c34e2c1](https://github.com/appchoose/stripe-react-native/commit/c34e2c154eae56a0806033e78d7e828e4de193c8))
+
 ## 0.59.1 - 2026-02-25
 **Fixes**
 * [Fixed] A build issue when using Xcode 16 ([#2323](https://github.com/stripe/stripe-react-native/issues/2323))
