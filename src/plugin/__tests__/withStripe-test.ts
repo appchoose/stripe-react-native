@@ -8,7 +8,7 @@ import {
 } from '../withStripe';
 
 jest.mock(
-  '@stripe/stripe-react-native/package.json',
+  '@appchoose/stripe-react-native/package.json',
   () => ({
     name: 'stripe-react-native',
     version: '0.1.1',

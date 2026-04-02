@@ -267,6 +267,31 @@ const StripeConstants = {
       Failed: 'failed',
     },
   },
+
+  PaymentIntent: {
+    Status: {
+      Succeeded: 'Succeeded',
+      RequiresPaymentMethod: 'RequiresPaymentMethod',
+      RequiresConfirmation: 'RequiresConfirmation',
+      Canceled: 'Canceled',
+      Processing: 'Processing',
+      RequiresAction: 'RequiresAction',
+      RequiresCapture: 'RequiresCapture',
+      Unknown: 'Unknown',
+    },
+  },
+
+  SetupIntent: {
+    Status: {
+      Succeeded: 'Succeeded',
+      RequiresPaymentMethod: 'RequiresPaymentMethod',
+      RequiresConfirmation: 'RequiresConfirmation',
+      Canceled: 'Canceled',
+      Processing: 'Processing',
+      RequiresAction: 'RequiresAction',
+      Unknown: 'Unknown',
+    },
+  },
 };
 
 // EmbeddedPaymentElement constants and enums for testing
