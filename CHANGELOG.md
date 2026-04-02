@@ -1,5 +1,17 @@
 # CHANGELOG
 
+# [0.60.0](https://github.com/appchoose/stripe-react-native/compare/v0.59.6...v0.60.0) (2026-04-02)
+
+
+### Bug Fixes
+
+* use NSInteger for STPPaymentStatus interop ([#2355](https://github.com/appchoose/stripe-react-native/issues/2355)) ([b613850](https://github.com/appchoose/stripe-react-native/commit/b613850fcd1047a02a9174cf6a28640431d2eb30))
+
+
+### Features
+
+* expose termsDisplay as a public PaymentSheet configuration option ([#2322](https://github.com/appchoose/stripe-react-native/issues/2322)) ([f389510](https://github.com/appchoose/stripe-react-native/commit/f389510fb950ab593c34195cbe1492980c232da7))
+
 ## 0.62.0 - 2026-03-31
 **Changes**
 - Updated Stripe Android SDK from 23.1.+ to 23.2.+
