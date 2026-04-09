@@ -15,7 +15,7 @@ Pod::Spec.new do |s|
   s.authors      = package['author']
 
   s.platforms    = { ios: '13.0' }
-  s.source       = { git: 'https://github.com/stripe/stripe-react-native.git', tag: s.version.to_s }
+  s.source       = { git: 'https://github.com/appchoose/stripe-react-native.git', tag: s.version.to_s }
 
   s.source_files = 'ios/**/*.{h,m,mm,swift}'
   s.exclude_files = [ 'ios/Tests/', 'ios/NewArch/' ]

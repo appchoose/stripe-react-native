@@ -55,6 +55,45 @@
 **Changes**
 * [Added] Added support for creating a [Radar session](https://docs.stripe.com/radar/radar-session).
 
+### Bug Fixes
+
+* **android:** fileprovider ([870d875](https://github.com/appchoose/stripe-react-native/commit/870d8758fa3786cddd1a8f9fd0306688f843eeaf))
+
+## [0.59.2](https://github.com/appchoose/stripe-react-native/compare/v0.59.1...v0.59.2) (2026-02-16)
+
+
+### Bug Fixes
+
+* updates file provider authority ([bdd5b52](https://github.com/appchoose/stripe-react-native/commit/bdd5b521df20114c8313e4a1a0d672641e40367d))
+
+## [0.59.1](https://github.com/appchoose/stripe-react-native/compare/v0.59.0...v0.59.1) (2026-02-16)
+
+
+### Bug Fixes
+
+* remove NativeStripeSdkModule mock ([9f0cabb](https://github.com/appchoose/stripe-react-native/commit/9f0cabbdfab739a4f9b7f0f03ec6ea76f5bc181d))
+
+# [0.59.0](https://github.com/appchoose/stripe-react-native/compare/v0.58.1...v0.59.0) (2026-02-16)
+
+
+### Bug Fixes
+
+* Android screen dismissal after Connect authentication ([#2299](https://github.com/appchoose/stripe-react-native/issues/2299)) ([0b2937f](https://github.com/appchoose/stripe-react-native/commit/0b2937f248b52e681c0bfd6899f2939eafc835ae))
+* prevent Android navigation bar overlap in Connect embedded components ([#2300](https://github.com/appchoose/stripe-react-native/issues/2300)) ([218e78b](https://github.com/appchoose/stripe-react-native/commit/218e78bd2ed1885cadcc6513fd4f0b091eeb2219))
+
+
+### Features
+
+* Add native CSV export with share sheet for Connect components ([#2298](https://github.com/appchoose/stripe-react-native/issues/2298)) ([ada945b](https://github.com/appchoose/stripe-react-native/commit/ada945b30bce108b8284bf5f8e6cf1cfa8732739))
+
+## [0.58.1](https://github.com/appchoose/stripe-react-native/compare/v0.58.0...v0.58.1) (2025-12-18)
+
+
+### Bug Fixes
+
+* **tests:** updating test institution names in tests #ir-rider-prefix ([#2247](https://github.com/appchoose/stripe-react-native/issues/2247)) ([d181142](https://github.com/appchoose/stripe-react-native/commit/d1811421a8ed51e7ae80cc62e1fb3703230ccf7a))
+
+
 ## 0.58.0 - 2026-01-27
 
 **Changes**
@@ -215,6 +254,50 @@
 - Added `flatWithChevron` to `AppearanceParams.embeddedPaymentElement.rowConfig.style`
 - Added `PaymentMethodOptions` to `PaymentMode` to enable setting payment method level setup future usage value
 - Added `None` to `FutureUsage`
+
+# [0.50.0](https://github.com/appchoose/stripe-react-native/compare/v0.49.0...v0.50.0) (2025-07-18)
+
+
+### Features
+
+* **minor:** release ([4fba117](https://github.com/appchoose/stripe-react-native/commit/4fba117e876347f6a7ecc3e89c49100ff73ff17e))
+
+# [0.49.0](https://github.com/appchoose/stripe-react-native/compare/v0.48.2...v0.49.0) (2025-07-18)
+
+
+### Features
+
+* **minor:** release ([e91e34f](https://github.com/appchoose/stripe-react-native/commit/e91e34f0af23b8446124d79e6eb5e3b87e6139a5))
+
+## [0.48.2](https://github.com/appchoose/stripe-react-native/compare/v0.48.1...v0.48.2) (2025-07-18)
+
+
+### Bug Fixes
+
+* release ([d07b284](https://github.com/appchoose/stripe-react-native/commit/d07b2844b6353d70df5e42830f2bde91b0160c03))
+
+## 0.50.0 - 2025-07-17
+
+**Features**
+- Added support for Custom Payment Methods in PaymentSheet and Embedded Payment Element.
+
+**Fixes**
+- Removed Sofort from playground pages. Sofort is no longer support by Stripe.
+- **Patches**
+- Fixed codegen error when using React Native 0.74+ with old architecture by converting EventEmitter properties to callback functions in TurboModule interface. [#1977](https://github.com/stripe/stripe-react-native/issues/1977). See `patches/README.md` for more info.
+
+## 0.49.0 - 2025-07-02
+
+**Features**
+- Added rowSelectionBehavior to `EmbeddedPaymentElementConfiguration` with `immediateAction` option
+- Added `flatWithChevron` to `AppearanceParams.embeddedPaymentElement.rowConfig.style`
+- Added `PaymentMethodOptions` to `PaymentMode` to enable setting payment method level setup future usage value
+- Added `None` to `FutureUsage`
+
+### Bug Fixes
+
+* bump version ([3a28a69](https://github.com/appchoose/stripe-react-native/commit/3a28a696368a08ec4749af0359419fb22b43208f))
+* bump version ([757767b](https://github.com/appchoose/stripe-react-native/commit/757767b4eda2818934b2ccbd60307b259a9592ae))
 
 ## 0.48.0 - 2025-06-11
 
