@@ -36,6 +36,9 @@ extension StripeSdkImpl {
                 completion(.failure(error))
                 return
             }
+            let rawBody = data.flatMap { String(data: $0, encoding: .utf8) } ?? "(empty)"
+            let statusCode = (response as? HTTPURLResponse)?.statusCode ?? -1
+            print("[LinkDebug] POST \(endpoint) (\(statusCode)) → \(rawBody)")
             guard let data = data,
                   let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else {
                 completion(.failure(NSError(domain: "LinkError", code: 0, userInfo: [NSLocalizedDescriptionKey: "Failed to parse response"])))
