@@ -16,7 +16,8 @@ internal class LinkConsumerRepository(private val publishableKey: String) {
 
     fun lookupConsumer(email: String): JSONObject {
         val params = buildString {
-            append("email_address=${encode(email)}")
+            append("email_address=${encode(email.lowercase())}")
+            append("&email_source=customer_object")
             append("&request_surface=android_payment_element")
             append("&session_id=${UUID.randomUUID()}")
         }
@@ -50,7 +51,7 @@ internal class LinkConsumerRepository(private val publishableKey: String) {
             append("&types[]=BANK_ACCOUNT")
         }
         val json = post("$apiBase/consumers/payment_details/list", params, consumerAccountPublishableKey ?: publishableKey)
-        return json.optJSONArray("redactedPaymentDetails") ?: JSONArray()
+        return json.optJSONArray("redacted_payment_details") ?: JSONArray()
     }
 
     private fun post(url: String, body: String, apiKey: String): JSONObject {

@@ -1869,10 +1869,10 @@ class StripeSdkModule(
         val exists = json.optBoolean("exists", false)
         if (exists) {
           result.putBoolean("exists", true)
-          val session = json.optJSONObject("consumerSession")
-          result.putString("consumerSessionClientSecret", session?.optString("clientSecret") ?: "")
-          result.putString("redactedPhoneNumber", session?.optString("redactedFormattedPhoneNumber") ?: "")
-          val consumerKey = json.optString("publishableKey", "")
+          val session = json.optJSONObject("consumer_session")
+          result.putString("consumerSessionClientSecret", session?.optString("client_secret") ?: "")
+          result.putString("redactedPhoneNumber", session?.optString("redacted_formatted_phone_number") ?: "")
+          val consumerKey = json.optString("publishable_key", "")
           if (consumerKey.isNotBlank()) {
             result.putString("consumerAccountPublishableKey", consumerKey)
           }
@@ -1923,8 +1923,8 @@ class StripeSdkModule(
       try {
         val json = LinkConsumerRepository(publishableKey).confirmVerification(consumerSessionClientSecret, code, consumerAccountPublishableKey)
         val result = WritableNativeMap()
-        val session = json.optJSONObject("consumerSession")
-        result.putString("consumerSessionClientSecret", session?.optString("clientSecret") ?: consumerSessionClientSecret)
+        val session = json.optJSONObject("consumer_session")
+        result.putString("consumerSessionClientSecret", session?.optString("client_secret") ?: consumerSessionClientSecret)
         promise.resolve(result)
       } catch (e: Exception) {
         promise.resolve(createError("Failed", e))
@@ -1950,27 +1950,27 @@ class StripeSdkModule(
         for (i in 0 until detailsArray.length()) {
           val detail = detailsArray.getJSONObject(i)
           val id = detail.getString("id")
-          val isDefault = detail.optBoolean("isDefault", false)
+          val isDefault = detail.optBoolean("is_default", false)
           val type = detail.optString("type", "")
           val method = WritableNativeMap()
           method.putString("id", id)
           method.putBoolean("isDefault", isDefault)
           when (type.uppercase()) {
             "CARD" -> {
-              val card = detail.optJSONObject("cardDetails")
+              val card = detail.optJSONObject("card_details")
               method.putString("type", "Card")
               method.putString("last4", card?.optString("last4") ?: "")
               if (card != null) {
                 method.putString("brand", card.optString("brand"))
-                method.putInt("expYear", card.optInt("expYear"))
-                method.putInt("expMonth", card.optInt("expMonth"))
+                method.putInt("expYear", card.optInt("exp_year"))
+                method.putInt("expMonth", card.optInt("exp_month"))
               }
             }
             "BANK_ACCOUNT" -> {
-              val bank = detail.optJSONObject("bankAccountDetails")
+              val bank = detail.optJSONObject("bank_account_details")
               method.putString("type", "BankAccount")
               method.putString("last4", bank?.optString("last4") ?: "")
-              method.putString("bankName", bank?.optString("bankName") ?: "")
+              method.putString("bankName", bank?.optString("bank_name") ?: "")
             }
             else -> {
               method.putString("type", "Unknown")

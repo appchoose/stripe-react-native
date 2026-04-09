@@ -73,6 +73,7 @@ extension StripeSdkImpl {
         let apiKey = STPAPIClient.shared.publishableKey ?? ""
         let bodyParts: [(String, String)] = [
             ("email_address", email.lowercased()),
+            ("email_source", "customer_object"),
             ("request_surface", "ios_payment_element"),
             ("session_id", UUID().uuidString),
         ]
@@ -82,16 +83,16 @@ extension StripeSdkImpl {
             case .success(let json):
                 let exists = json["exists"] as? Bool ?? false
                 if exists {
-                    guard let session = json["consumerSession"] as? [String: Any] else {
+                    guard let session = json["consumer_session"] as? [String: Any] else {
                         resolve(["exists": false])
                         return
                     }
                     var response: [String: Any] = [
                         "exists": true,
-                        "consumerSessionClientSecret": session["clientSecret"] as? String ?? "",
-                        "redactedPhoneNumber": session["redactedFormattedPhoneNumber"] as? String ?? "",
+                        "consumerSessionClientSecret": session["client_secret"] as? String ?? "",
+                        "redactedPhoneNumber": session["redacted_formatted_phone_number"] as? String ?? "",
                     ]
-                    if let consumerKey = json["publishableKey"] as? String, !consumerKey.isEmpty {
+                    if let consumerKey = json["publishable_key"] as? String, !consumerKey.isEmpty {
                         response["consumerAccountPublishableKey"] = consumerKey
                     }
                     resolve(response)
@@ -162,8 +163,8 @@ extension StripeSdkImpl {
         linkPost(endpoint: "consumers/sessions/confirm_verification", bodyParts: bodyParts, apiKey: apiKey) { result in
             switch result {
             case .success(let json):
-                let session = json["consumerSession"] as? [String: Any]
-                let newSecret = session?["clientSecret"] as? String ?? consumerSessionClientSecret
+                let session = json["consumer_session"] as? [String: Any]
+                let newSecret = session?["client_secret"] as? String ?? consumerSessionClientSecret
                 resolve(["consumerSessionClientSecret": newSecret])
             case .failure(let error):
                 resolve(Errors.createError(ErrorType.Failed, error))
@@ -196,15 +197,15 @@ extension StripeSdkImpl {
         linkPost(endpoint: "consumers/payment_details/list", bodyParts: bodyParts, apiKey: apiKey) { result in
             switch result {
             case .success(let json):
-                let detailsArray = json["redactedPaymentDetails"] as? [[String: Any]] ?? []
+                let detailsArray = json["redacted_payment_details"] as? [[String: Any]] ?? []
                 let methods: [[String: Any]] = detailsArray.compactMap { detail in
                     let id = detail["id"] as? String ?? ""
-                    let isDefault = detail["isDefault"] as? Bool ?? false
+                    let isDefault = detail["is_default"] as? Bool ?? false
                     let type = (detail["type"] as? String ?? "").uppercased()
 
                     switch type {
                     case "CARD":
-                        let card = detail["cardDetails"] as? [String: Any]
+                        let card = detail["card_details"] as? [String: Any]
                         var method: [String: Any] = [
                             "id": id,
                             "type": "Card",
@@ -213,18 +214,18 @@ extension StripeSdkImpl {
                         ]
                         if let card = card {
                             method["brand"] = card["brand"] as? String ?? ""
-                            method["expYear"] = card["expYear"] as? Int ?? 0
-                            method["expMonth"] = card["expMonth"] as? Int ?? 0
+                            method["expYear"] = card["exp_year"] as? Int ?? 0
+                            method["expMonth"] = card["exp_month"] as? Int ?? 0
                         }
                         return method
                     case "BANK_ACCOUNT":
-                        let bank = detail["bankAccountDetails"] as? [String: Any]
+                        let bank = detail["bank_account_details"] as? [String: Any]
                         return [
                             "id": id,
                             "type": "BankAccount",
                             "last4": bank?["last4"] as? String ?? "",
                             "isDefault": isDefault,
-                            "bankName": bank?["bankName"] as? String ?? "",
+                            "bankName": bank?["bank_name"] as? String ?? "",
                         ]
                     default:
                         return [
