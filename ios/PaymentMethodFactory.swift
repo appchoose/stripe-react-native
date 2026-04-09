@@ -61,6 +61,8 @@ class PaymentMethodFactory {
                 return try createCashAppPaymentMethodParams()
             case STPPaymentMethodType.revolutPay:
                 return try createRevolutPayPaymentMethodParams()
+            case STPPaymentMethodType.link:
+                return try createLinkPaymentMethodParams()
             //            case STPPaymentMethodType.weChatPay:
             //                return try createWeChatPayPaymentMethodParams()
             default:
@@ -115,6 +117,8 @@ class PaymentMethodFactory {
             case STPPaymentMethodType.cashApp:
                 return nil
             case STPPaymentMethodType.revolutPay:
+                return nil
+            case STPPaymentMethodType.link:
                 return nil
             default:
                 throw PaymentMethodError.paymentNotSupported
@@ -378,6 +382,15 @@ class PaymentMethodFactory {
     private func createRevolutPayPaymentMethodParams() throws -> STPPaymentMethodParams {
         let params = STPPaymentMethodRevolutPayParams()
         return STPPaymentMethodParams(revolutPay: params, billingDetails: billingDetailsParams, metadata: metadata)
+    }
+
+    private func createLinkPaymentMethodParams() throws -> STPPaymentMethodParams {
+        let params = STPPaymentMethodParams()
+        params.type = .link
+        params.link = STPPaymentMethodLinkParams()
+        params.billingDetails = billingDetailsParams
+        params.metadata = metadata
+        return params
     }
 
     func createMandateData() -> STPMandateDataParams? {

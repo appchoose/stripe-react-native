@@ -50,7 +50,8 @@ export type ConfirmParams =
   | PayPalParams
   | AffirmParams
   | CashAppParams
-  | RevolutPayParams;
+  | RevolutPayParams
+  | LinkParams;
 
 export type ConfirmOptions = PaymentMethod.ConfirmOptions;
 
@@ -305,6 +306,15 @@ export type RevolutPayParams = {
     metadata?: MetaData;
   };
 };
+
+export interface LinkParams {
+  paymentMethodType: 'Link';
+  paymentMethodData?: {
+    billingDetails?: BillingDetails;
+    mandateData?: MandateData;
+    metadata?: MetaData;
+  };
+}
 
 export type CollectBankAccountParams = {
   paymentMethodType: 'USBankAccount';

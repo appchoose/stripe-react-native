@@ -42,7 +42,8 @@ export type CreateParams =
   | USBankAccountParams
   | PayPalParams
   | AffirmParams
-  | CashAppParams;
+  | CashAppParams
+  | LinkParams;
 
 export type ConfirmParams = CreateParams;
 
@@ -213,6 +214,13 @@ export type CashAppParams = {
   };
 };
 
+export interface LinkParams {
+  paymentMethodType: 'Link';
+  paymentMethodData?: {
+    billingDetails?: BillingDetails;
+  };
+}
+
 export interface AuBecsDebitResult {
   fingerprint?: string;
   last4?: string;
@@ -292,6 +300,7 @@ export type Type =
   | 'Upi'
   | 'USBankAccount'
   | 'PayPal'
+  | 'Link'
   | 'Unknown';
 
 export type CollectBankAccountParams = {
