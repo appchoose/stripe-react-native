@@ -49,6 +49,7 @@ export {
 export * from './PushProvisioning';
 export * from './Errors';
 export * from './CustomerSheet';
+export * from './Link';
 export type {
   Address,
   BillingDetails,

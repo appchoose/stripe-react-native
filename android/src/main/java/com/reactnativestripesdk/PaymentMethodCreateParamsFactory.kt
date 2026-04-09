@@ -238,11 +238,19 @@ class PaymentMethodCreateParamsFactory(
     )
 
   @Throws(PaymentMethodCreateParamsException::class)
-  private fun createLinkParams(): PaymentMethodCreateParams =
-    PaymentMethodCreateParams.createLink(
+  private fun createLinkParams(): PaymentMethodCreateParams {
+    val paymentDetailsId = getValOr(paymentMethodData, "paymentDetailsId", null)
+    val consumerSessionClientSecret = getValOr(paymentMethodData, "consumerSessionClientSecret", null)
+    val cvc = getValOr(paymentMethodData, "cvc", null)
+    val extraParams: Map<String, Any>? = if (cvc != null) mapOf("card" to mapOf("cvc" to cvc)) else null
+    return PaymentMethodCreateParams.createLink(
+      paymentDetailsId = paymentDetailsId,
+      consumerSessionClientSecret = consumerSessionClientSecret,
       billingDetails = billingDetailsParams,
+      extraParams = extraParams,
       metadata = metadataParams,
     )
+  }
 
   @Throws(PaymentMethodCreateParamsException::class)
   fun createParams(

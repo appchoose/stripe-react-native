@@ -1,5 +1,6 @@
 import Foundation
 import Stripe
+@_spi(STP) import StripePayments
 
 class PaymentMethodFactory {
     var billingDetailsParams: STPPaymentMethodBillingDetails?
@@ -387,7 +388,17 @@ class PaymentMethodFactory {
     private func createLinkPaymentMethodParams() throws -> STPPaymentMethodParams {
         let params = STPPaymentMethodParams()
         params.type = .link
-        params.link = STPPaymentMethodLinkParams()
+        let linkParams = STPPaymentMethodLinkParams()
+        if let paymentDetailsId = self.paymentMethodData?["paymentDetailsId"] as? String {
+            linkParams.paymentDetailsID = paymentDetailsId
+        }
+        if let consumerSessionClientSecret = self.paymentMethodData?["consumerSessionClientSecret"] as? String {
+            linkParams.credentials = ["consumer_session_client_secret": consumerSessionClientSecret]
+        }
+        if let cvc = self.paymentMethodData?["cvc"] as? String {
+            linkParams.additionalAPIParameters["card"] = ["cvc": cvc]
+        }
+        params.link = linkParams
         params.billingDetails = billingDetailsParams
         params.metadata = metadata
         return params

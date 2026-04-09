@@ -308,4 +308,20 @@ public abstract class NativeStripeSdkModuleSpec extends ReactContextBaseJavaModu
   @ReactMethod
   @DoNotStrip
   public abstract void getNetworksForCard(ReadableMap params, Promise promise);
+
+  @ReactMethod
+  @DoNotStrip
+  public abstract void lookupLinkConsumer(String email, Promise promise);
+
+  @ReactMethod
+  @DoNotStrip
+  public abstract void startLinkOTPVerification(ReadableMap params, Promise promise);
+
+  @ReactMethod
+  @DoNotStrip
+  public abstract void confirmLinkOTPVerification(ReadableMap params, Promise promise);
+
+  @ReactMethod
+  @DoNotStrip
+  public abstract void listLinkPaymentMethods(ReadableMap params, Promise promise);
 }

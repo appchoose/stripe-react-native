@@ -81,6 +81,7 @@ import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.json.JSONArray
 import org.json.JSONObject
 
 @ReactModule(name = StripeSdkModule.NAME)
@@ -1854,6 +1855,137 @@ class StripeSdkModule(
         }
       },
     )
+  }
+
+  @ReactMethod
+  override fun lookupLinkConsumer(
+    email: String,
+    promise: Promise,
+  ) {
+    CoroutineScope(Dispatchers.IO).launch {
+      try {
+        val json = LinkConsumerRepository(publishableKey).lookupConsumer(email)
+        val result = WritableNativeMap()
+        val exists = json.optBoolean("exists", false)
+        if (exists) {
+          result.putBoolean("exists", true)
+          val session = json.optJSONObject("consumerSession")
+          result.putString("consumerSessionClientSecret", session?.optString("clientSecret") ?: "")
+          result.putString("redactedPhoneNumber", session?.optString("redactedFormattedPhoneNumber") ?: "")
+          val consumerKey = json.optString("publishableKey", "")
+          if (consumerKey.isNotBlank()) {
+            result.putString("consumerAccountPublishableKey", consumerKey)
+          }
+        } else {
+          result.putBoolean("exists", false)
+        }
+        promise.resolve(result)
+      } catch (e: Exception) {
+        promise.resolve(createError("Failed", e))
+      }
+    }
+  }
+
+  @ReactMethod
+  override fun startLinkOTPVerification(
+    params: ReadableMap,
+    promise: Promise,
+  ) {
+    val consumerSessionClientSecret = params.getString("consumerSessionClientSecret")
+    if (consumerSessionClientSecret == null) {
+      promise.resolve(createError("Failed", "consumerSessionClientSecret is required"))
+      return
+    }
+    val consumerAccountPublishableKey = if (params.hasKey("consumerAccountPublishableKey")) params.getString("consumerAccountPublishableKey") else null
+    CoroutineScope(Dispatchers.IO).launch {
+      try {
+        LinkConsumerRepository(publishableKey).startVerification(consumerSessionClientSecret, consumerAccountPublishableKey)
+        promise.resolve(WritableNativeMap())
+      } catch (e: Exception) {
+        promise.resolve(createError("Failed", e))
+      }
+    }
+  }
+
+  @ReactMethod
+  override fun confirmLinkOTPVerification(
+    params: ReadableMap,
+    promise: Promise,
+  ) {
+    val consumerSessionClientSecret = params.getString("consumerSessionClientSecret")
+    val code = params.getString("code")
+    if (consumerSessionClientSecret == null || code == null) {
+      promise.resolve(createError("Failed", "consumerSessionClientSecret and code are required"))
+      return
+    }
+    val consumerAccountPublishableKey = if (params.hasKey("consumerAccountPublishableKey")) params.getString("consumerAccountPublishableKey") else null
+    CoroutineScope(Dispatchers.IO).launch {
+      try {
+        val json = LinkConsumerRepository(publishableKey).confirmVerification(consumerSessionClientSecret, code, consumerAccountPublishableKey)
+        val result = WritableNativeMap()
+        val session = json.optJSONObject("consumerSession")
+        result.putString("consumerSessionClientSecret", session?.optString("clientSecret") ?: consumerSessionClientSecret)
+        promise.resolve(result)
+      } catch (e: Exception) {
+        promise.resolve(createError("Failed", e))
+      }
+    }
+  }
+
+  @ReactMethod
+  override fun listLinkPaymentMethods(
+    params: ReadableMap,
+    promise: Promise,
+  ) {
+    val consumerSessionClientSecret = params.getString("consumerSessionClientSecret")
+    if (consumerSessionClientSecret == null) {
+      promise.resolve(createError("Failed", "consumerSessionClientSecret is required"))
+      return
+    }
+    val consumerAccountPublishableKey = if (params.hasKey("consumerAccountPublishableKey")) params.getString("consumerAccountPublishableKey") else null
+    CoroutineScope(Dispatchers.IO).launch {
+      try {
+        val detailsArray = LinkConsumerRepository(publishableKey).listPaymentDetails(consumerSessionClientSecret, consumerAccountPublishableKey)
+        val methods = WritableNativeArray()
+        for (i in 0 until detailsArray.length()) {
+          val detail = detailsArray.getJSONObject(i)
+          val id = detail.getString("id")
+          val isDefault = detail.optBoolean("isDefault", false)
+          val type = detail.optString("type", "")
+          val method = WritableNativeMap()
+          method.putString("id", id)
+          method.putBoolean("isDefault", isDefault)
+          when (type.uppercase()) {
+            "CARD" -> {
+              val card = detail.optJSONObject("cardDetails")
+              method.putString("type", "Card")
+              method.putString("last4", card?.optString("last4") ?: "")
+              if (card != null) {
+                method.putString("brand", card.optString("brand"))
+                method.putInt("expYear", card.optInt("expYear"))
+                method.putInt("expMonth", card.optInt("expMonth"))
+              }
+            }
+            "BANK_ACCOUNT" -> {
+              val bank = detail.optJSONObject("bankAccountDetails")
+              method.putString("type", "BankAccount")
+              method.putString("last4", bank?.optString("last4") ?: "")
+              method.putString("bankName", bank?.optString("bankName") ?: "")
+            }
+            else -> {
+              method.putString("type", "Unknown")
+              method.putString("last4", "")
+            }
+          }
+          methods.pushMap(method)
+        }
+        val result = WritableNativeMap()
+        result.putArray("paymentMethods", methods)
+        promise.resolve(result)
+      } catch (e: Exception) {
+        promise.resolve(createError("Failed", e))
+      }
+    }
   }
 
   companion object {
