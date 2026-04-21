@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## [0.63.1](https://github.com/appchoose/stripe-react-native/compare/v0.63.0...v0.63.1) (2026-04-21)
+
+
+### Bug Fixes
+
+* add explicit permissions to generate-docs workflow ([#2177](https://github.com/appchoose/stripe-react-native/issues/2177)) ([01dd14e](https://github.com/appchoose/stripe-react-native/commit/01dd14e8589148258e1db0a229719d99ecf31ac3))
+
 ## 0.64.0 - 2026-04-16
 **Changes**
 * [Breaking] `platformPayParams` has changed from `PlatformPay.PaymentMethodParams` to `Onramp.OnrampPlatformPayParams` to better match expectations for GooglePay. ([#2390] (https://github.com/stripe/stripe-react-native/pull/2390))
