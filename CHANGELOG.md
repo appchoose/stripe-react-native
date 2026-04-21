@@ -1,23 +1,19 @@
 # CHANGELOG
 
-# [0.63.0](https://github.com/appchoose/stripe-react-native/compare/v0.62.2...v0.63.0) (2026-04-09)
+## 0.64.0 - 2026-04-16
+**Changes**
+* [Breaking] `platformPayParams` has changed from `PlatformPay.PaymentMethodParams` to `Onramp.OnrampPlatformPayParams` to better match expectations for GooglePay. ([#2390] (https://github.com/stripe/stripe-react-native/pull/2390))
+* [Added] `CollectPaymentMethodResult` has changed to include an optional `kycInfo` field that includes billing contact information (name and address), if requested as part of  `platformPayParams`. If not already collected, this information can be used by the client app to attach KYC information using `attachKYCInfo` or pre-fill KYC collection fields in client UI.
+* [Added] Now accepts `isEmailRequired` and `allowCreditCards` as part of `GooglePayConfig`. ([#2390] (https://github.com/stripe/stripe-react-native/pull/2390))
+* Updated Stripe iOS SDK from 25.10.+ to 25.11.+.
+* Updated Stripe Android SDK from 23.3.+ to 23.4.+.
 
+**Fixes**
+* [Fixed] `autocompleteCountries` prop on `AddressSheet` was silently ignored on iOS.
+* [Fixed] Calling `confirmPayment` without `params` no longer crashes in iOS builds. ([#2331](https://github.com/stripe/stripe-react-native/issues/2331))
 
-### Features
-
-* **minor:** release ([7a81960](https://github.com/appchoose/stripe-react-native/commit/7a81960a30c83228044adf5fd2fda7c0552e2939))
-
-# [0.63.0](https://github.com/appchoose/stripe-react-native/compare/v0.63.0...v0.62.0) (2026-04-09)
-
-
-### Bug Fixes
-
-## [0.62.2](https://github.com/appchoose/stripe-react-native/compare/v0.62.1...v0.62.2) (2026-04-09)
-
-
-### Bug Fixes
-
-* release ([af48f67](https://github.com/appchoose/stripe-react-native/commit/af48f67ba566c9e067450e111c7b6cfb8a7da83e))
+**Features**
+* [Added] Added Multibanco support on iOS and Android. ([#2352](https://github.com/stripe/stripe-react-native/issues/2352))
 
 ## 0.63.0 - 2026-04-06
 **Changes**

@@ -61,6 +61,7 @@ import com.stripe.android.PaymentConfiguration
 import com.stripe.android.Stripe
 import com.stripe.android.core.ApiVersion
 import com.stripe.android.core.AppInfo
+import com.stripe.android.core.reactnative.ReactNativeAnalytics
 import com.stripe.android.core.reactnative.ReactNativeSdkInternal
 import com.stripe.android.customersheet.CustomerSheet
 import com.stripe.android.googlepaylauncher.GooglePayLauncher
@@ -226,6 +227,7 @@ class StripeSdkModule(
     )
   }
 
+  @SuppressLint("RestrictedApi")
   @ReactMethod
   override fun initialise(
     params: ReadableMap,
@@ -255,6 +257,11 @@ class StripeSdkModule(
 
     PaymentConfiguration.init(reactApplicationContext, publishableKey, stripeAccountId)
 
+    ReactNativeAnalytics.isNewArchitecture = BuildConfig.IS_NEW_ARCHITECTURE_ENABLED
+    ReactNativeAnalytics.reactNativeVersion =
+      with(ReactNativeVersion.VERSION) {
+        "${get("major")}.${get("minor")}.${get("patch")}"
+      }
     preventActivityRecreation()
     setupComposeCompatView()
 

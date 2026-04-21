@@ -900,7 +900,7 @@ public class StripeSdkImpl: NSObject, UIAdaptivePresentationControllerDelegate {
     @objc(confirmPayment:data:options:resolver:rejecter:)
     public func confirmPayment(
         paymentIntentClientSecret: String,
-        params: NSDictionary,
+        params: NSDictionary?,
         options: NSDictionary,
         resolver resolve: @escaping RCTPromiseResolveBlock,
         rejecter reject: @escaping RCTPromiseRejectBlock
@@ -908,10 +908,8 @@ public class StripeSdkImpl: NSObject, UIAdaptivePresentationControllerDelegate {
         self.confirmPaymentResolver = resolve
         self.confirmPaymentClientSecret = paymentIntentClientSecret
 
-        // Handle React Native null values - when null is passed from JS, it becomes NSNull
-        let actualParams = (params == NSNull()) ? nil : params
-        let paymentMethodData = actualParams?["paymentMethodData"] as? NSDictionary
-        let (missingPaymentMethodError, paymentMethodType) = getPaymentMethodType(params: actualParams)
+        let paymentMethodData = params?["paymentMethodData"] as? NSDictionary
+        let (missingPaymentMethodError, paymentMethodType) = getPaymentMethodType(params: params)
         if missingPaymentMethodError != nil {
             resolve(missingPaymentMethodError)
             return
@@ -1602,11 +1600,21 @@ public class StripeSdkImpl: NSObject, UIAdaptivePresentationControllerDelegate {
                 let presentingViewController = await MainActor.run {
                     findViewControllerPresenter(from: RCTKeyWindow()?.rootViewController ?? UIViewController())
                 }
-                if let result = try await coordinator.collectPaymentMethod(type: paymentMethodType, from: presentingViewController) {
-                    let displayData = Mappers.paymentMethodDisplayDataToMap(result)
-                    resolve(["displayData": displayData])
-                } else {
+                let result = try await coordinator.collectPaymentMethod(type: paymentMethodType, from: presentingViewController)
+                switch result {
+                case .canceled:
                     let errorResult = Errors.createError(ErrorType.Canceled, "Payment collection was cancelled")
+                    resolve(["error": errorResult["error"]!])
+                case .completed(let displayData, let kycInfo):
+                    var response: [String: Any] = ["displayData": Mappers.paymentMethodDisplayDataToMap(displayData)]
+
+                    if let kycInfo {
+                        response["kycInfo"] = Mappers.mapFromKycInfo(kycInfo)
+                    }
+
+                    resolve(response)
+                @unknown default:
+                    let errorResult = Errors.createError(ErrorType.Failed, "Received an unexpected payment collection result")
                     resolve(["error": errorResult["error"]!])
                 }
             } catch {
