@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## [0.64.1](https://github.com/appchoose/stripe-react-native/compare/v0.64.0...v0.64.1) (2026-04-24)
+
+
+### Bug Fixes
+
+* forward ref properly in messaging element ([f2aca2a](https://github.com/appchoose/stripe-react-native/commit/f2aca2ab1b4d2b8b2710324a9b3b4c6f74c76f9d))
+
 # [0.64.0](https://github.com/appchoose/stripe-react-native/compare/v0.63.1...v0.64.0) (2026-04-21)
 
 
