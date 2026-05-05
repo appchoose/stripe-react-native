@@ -36,7 +36,7 @@
     "format:ios:check": "swiftlint ios --config .swiftlint.yml --strict",
     "format:ios:write": "./scripts/format-changed-ios",
     "test:package-types": "attw --pack .",
-    "prepublishOnly": "echo \"\\nPlease use ./scripts/publish instead\\n\" && exit 1",
+    "prepublishOnly": "node -e \"if (process.env.ALLOW_NPM_PUBLISH==='1') process.exit(0); console.error('\\nPlease use ./scripts/publish instead\\n'); process.exit(1);\"",
     "api-extractor:update": "bob build && api-extractor run --local --verbose",
     "api-extractor:check": "bob build && api-extractor run --verbose"
   },

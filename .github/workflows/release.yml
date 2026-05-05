@@ -30,3 +30,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.APPCHOOSE_GITHUB_TOKEN_RELEASER }}
           NPM_TOKEN: ${{ secrets.APPCHOOSE_GITHUB_TOKEN_RELEASER }}
+          ALLOW_NPM_PUBLISH: "1"
