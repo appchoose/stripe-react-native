@@ -1,5 +1,6 @@
 import Foundation
 import Stripe
+@_spi(STP) import StripePayments
 
 class PaymentMethodFactory {
     var billingDetailsParams: STPPaymentMethodBillingDetails?
@@ -63,6 +64,8 @@ class PaymentMethodFactory {
                 return try createCashAppPaymentMethodParams()
             case STPPaymentMethodType.revolutPay:
                 return try createRevolutPayPaymentMethodParams()
+            case STPPaymentMethodType.link:
+                return try createLinkPaymentMethodParams()
             //            case STPPaymentMethodType.weChatPay:
             //                return try createWeChatPayPaymentMethodParams()
             default:
@@ -119,6 +122,8 @@ class PaymentMethodFactory {
             case STPPaymentMethodType.cashApp:
                 return nil
             case STPPaymentMethodType.revolutPay:
+                return nil
+            case STPPaymentMethodType.link:
                 return nil
             default:
                 throw PaymentMethodError.paymentNotSupported
@@ -394,6 +399,25 @@ class PaymentMethodFactory {
     private func createRevolutPayPaymentMethodParams() throws -> STPPaymentMethodParams {
         let params = STPPaymentMethodRevolutPayParams()
         return STPPaymentMethodParams(revolutPay: params, billingDetails: billingDetailsParams, metadata: metadata)
+    }
+
+    private func createLinkPaymentMethodParams() throws -> STPPaymentMethodParams {
+        let params = STPPaymentMethodParams()
+        params.type = .link
+        let linkParams = STPPaymentMethodLinkParams()
+        if let paymentDetailsId = self.paymentMethodData?["paymentDetailsId"] as? String {
+            linkParams.paymentDetailsID = paymentDetailsId
+        }
+        if let consumerSessionClientSecret = self.paymentMethodData?["consumerSessionClientSecret"] as? String {
+            linkParams.credentials = ["consumer_session_client_secret": consumerSessionClientSecret]
+        }
+        if let cvc = self.paymentMethodData?["cvc"] as? String {
+            linkParams.additionalAPIParameters["card"] = ["cvc": cvc]
+        }
+        params.link = linkParams
+        params.billingDetails = billingDetailsParams
+        params.metadata = metadata
+        return params
     }
 
     func createMandateData() -> STPMandateDataParams? {

@@ -602,6 +602,34 @@ RCT_EXPORT_METHOD(getNetworksForCard:(nonnull NSDictionary *)params
   [StripeSdkImpl.shared getNetworksForCard:params resolver:resolve rejecter:reject];
 }
 
+RCT_EXPORT_METHOD(lookupLinkConsumer:(nonnull NSString *)email
+                             resolve:(nonnull RCTPromiseResolveBlock)resolve
+                              reject:(nonnull RCTPromiseRejectBlock)reject)
+{
+  [StripeSdkImpl.shared lookupLinkConsumer:email resolver:resolve rejecter:reject];
+}
+
+RCT_EXPORT_METHOD(startLinkOTPVerification:(nonnull NSDictionary *)params
+                                   resolve:(nonnull RCTPromiseResolveBlock)resolve
+                                    reject:(nonnull RCTPromiseRejectBlock)reject)
+{
+  [StripeSdkImpl.shared startLinkOTPVerification:params resolver:resolve rejecter:reject];
+}
+
+RCT_EXPORT_METHOD(confirmLinkOTPVerification:(nonnull NSDictionary *)params
+                                     resolve:(nonnull RCTPromiseResolveBlock)resolve
+                                      reject:(nonnull RCTPromiseRejectBlock)reject)
+{
+  [StripeSdkImpl.shared confirmLinkOTPVerification:params resolver:resolve rejecter:reject];
+}
+
+RCT_EXPORT_METHOD(listLinkPaymentMethods:(nonnull NSDictionary *)params
+                                 resolve:(nonnull RCTPromiseResolveBlock)resolve
+                                  reject:(nonnull RCTPromiseRejectBlock)reject)
+{
+  [StripeSdkImpl.shared listLinkPaymentMethods:params resolver:resolve rejecter:reject];
+}
+
 /* clang-format on */
 
 #ifdef RCT_NEW_ARCH_ENABLED

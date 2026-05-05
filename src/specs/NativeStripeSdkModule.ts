@@ -35,6 +35,13 @@ import type {
   Token,
   VerifyMicrodepositsParams,
   CreateRadarSessionResult,
+  LookupLinkConsumerResult,
+  StartLinkOTPVerificationParams,
+  StartLinkOTPVerificationResult,
+  ConfirmLinkOTPVerificationParams,
+  ConfirmLinkOTPVerificationResult,
+  ListLinkPaymentMethodsParams,
+  ListLinkPaymentMethodsResult,
 } from '../types';
 import type { Checkout } from '../types/Checkout';
 import type {
@@ -280,6 +287,17 @@ export interface Spec extends TurboModule {
   getNetworksForCard(
     params: UnsafeObject<{ cardNumber: string }>
   ): Promise<PossibleNativeBrand[]>;
+
+  lookupLinkConsumer(email: string): Promise<LookupLinkConsumerResult>;
+  startLinkOTPVerification(
+    params: UnsafeObject<StartLinkOTPVerificationParams>
+  ): Promise<StartLinkOTPVerificationResult>;
+  confirmLinkOTPVerification(
+    params: UnsafeObject<ConfirmLinkOTPVerificationParams>
+  ): Promise<ConfirmLinkOTPVerificationResult>;
+  listLinkPaymentMethods(
+    params: UnsafeObject<ListLinkPaymentMethodsParams>
+  ): Promise<ListLinkPaymentMethodsResult>;
 
   // Events
   addListener: (eventType: string) => void;

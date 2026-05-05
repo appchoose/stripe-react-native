@@ -56,6 +56,7 @@ class PaymentMethodCreateParamsFactory(
         PaymentMethod.Type.Affirm -> createAffirmParams()
         PaymentMethod.Type.CashAppPay -> createCashAppParams()
         PaymentMethod.Type.RevolutPay -> createRevolutPayParams()
+        PaymentMethod.Type.Link -> createLinkParams()
         else -> {
           throw Exception("This paymentMethodType is not supported yet")
         }
@@ -259,6 +260,21 @@ class PaymentMethodCreateParamsFactory(
     )
 
   @Throws(PaymentMethodCreateParamsException::class)
+  private fun createLinkParams(): PaymentMethodCreateParams {
+    val paymentDetailsId = getValOr(paymentMethodData, "paymentDetailsId", null)
+    val consumerSessionClientSecret = getValOr(paymentMethodData, "consumerSessionClientSecret", null)
+    val cvc = getValOr(paymentMethodData, "cvc", null)
+    val extraParams: Map<String, Any>? = if (cvc != null) mapOf("card" to mapOf("cvc" to cvc)) else null
+    return PaymentMethodCreateParams.createLink(
+      paymentDetailsId = paymentDetailsId,
+      consumerSessionClientSecret = consumerSessionClientSecret,
+      billingDetails = billingDetailsParams,
+      extraParams = extraParams,
+      metadata = metadataParams,
+    )
+  }
+
+  @Throws(PaymentMethodCreateParamsException::class)
   fun createParams(
     clientSecret: String,
     paymentMethodType: PaymentMethod.Type?,
@@ -271,6 +287,7 @@ class PaymentMethodCreateParamsFactory(
           createUSBankAccountStripeIntentParams(clientSecret, isPaymentIntent)
 
         PaymentMethod.Type.Affirm -> createAffirmStripeIntentParams(clientSecret, isPaymentIntent)
+        PaymentMethod.Type.Link,
         PaymentMethod.Type.Ideal,
         PaymentMethod.Type.Alipay,
         PaymentMethod.Type.Alma,
