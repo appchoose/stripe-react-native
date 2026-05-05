@@ -1,1 +1,1 @@
-yarn lint && yarn typescript
+npx lint-staged
