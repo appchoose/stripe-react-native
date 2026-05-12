@@ -1,25 +1,9 @@
 # CHANGELOG
 
-## [0.65.1](https://github.com/appchoose/stripe-react-native/compare/v0.65.0...v0.65.1) (2026-05-05)
-
-
-### Bug Fixes
-
-* release process ([a63145a](https://github.com/appchoose/stripe-react-native/commit/a63145aaa29b1d514da3738ded8ef5818572657d))
-
-# [0.65.0](https://github.com/appchoose/stripe-react-native/compare/v0.64.1...v0.65.0) (2026-05-05)
-
-
-### Bug Fixes
-
-* handle network errors in retrievePaymentIntent and retrieveSetupIntent on Android ([#2409](https://github.com/appchoose/stripe-react-native/issues/2409)) ([21ca8b8](https://github.com/appchoose/stripe-react-native/commit/21ca8b809ee9f3d84ed7a84646762600485ee505))
-
-
-### Features
-
-* **minor:** release ([a2c17c0](https://github.com/appchoose/stripe-react-native/commit/a2c17c00938ba9fbc516a7f86f41baf9dee1ad26))
-
-## Unreleased
+## 0.65.1 - 2026-05-11
+**Fixes**
+* [Fixed] Fixed bug preventing PaymentSheet from dismissing when presenting with timeout. ([#2451](https://github.com/stripe/stripe-react-native/pull/2451))
+* [Fixed] Fixed spurious `onExit` events firing when using `ASWebAuthenticationSession`. ([#2447](https://github.com/stripe/stripe-react-native/pull/2447))
 
 ## 0.65.0 - 2026-04-29
 **Changes**
