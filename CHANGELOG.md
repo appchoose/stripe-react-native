@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## [0.65.2](https://github.com/appchoose/stripe-react-native/compare/v0.65.1...v0.65.2) (2026-05-12)
+
+
+### Bug Fixes
+
+* Fix presentWithTimeout ([#2451](https://github.com/appchoose/stripe-react-native/issues/2451)) ([90aee1e](https://github.com/appchoose/stripe-react-native/commit/90aee1e3e31d7c70992c49661691a8f3f8e6baa0))
+* **ios:** Remove spurious onExit firing during Connect onboarding identity verification ([#2447](https://github.com/appchoose/stripe-react-native/issues/2447)) ([3cb8a2b](https://github.com/appchoose/stripe-react-native/commit/3cb8a2b9608fad08e15e0f6fa843bb8e78e4a2fd))
+
 ## 0.65.1 - 2026-05-11
 **Fixes**
 * [Fixed] Fixed bug preventing PaymentSheet from dismissing when presenting with timeout. ([#2451](https://github.com/stripe/stripe-react-native/pull/2451))
