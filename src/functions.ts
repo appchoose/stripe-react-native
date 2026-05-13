@@ -37,6 +37,15 @@ import type {
 import { Platform, EventSubscription } from 'react-native';
 import type { CollectFinancialConnectionsAccountsParams } from './types/FinancialConnections';
 import type { CollectBankAccountTokenParams } from './types/PaymentMethod';
+import type {
+  LookupLinkConsumerResult,
+  StartLinkOTPVerificationParams,
+  StartLinkOTPVerificationResult,
+  ConfirmLinkOTPVerificationParams,
+  ConfirmLinkOTPVerificationResult,
+  ListLinkPaymentMethodsParams,
+  ListLinkPaymentMethodsResult,
+} from './types/Link';
 import { addListener } from './events';
 
 export const createPaymentMethod = async (
@@ -988,4 +997,28 @@ export const getNetworksForCard = async (params: {
     }
     return brand;
   });
+};
+
+export const lookupLinkConsumer = async (
+  email: string
+): Promise<LookupLinkConsumerResult> => {
+  return await NativeStripeSdk.lookupLinkConsumer(email);
+};
+
+export const startLinkOTPVerification = async (
+  params: StartLinkOTPVerificationParams
+): Promise<StartLinkOTPVerificationResult> => {
+  return await NativeStripeSdk.startLinkOTPVerification(params);
+};
+
+export const confirmLinkOTPVerification = async (
+  params: ConfirmLinkOTPVerificationParams
+): Promise<ConfirmLinkOTPVerificationResult> => {
+  return await NativeStripeSdk.confirmLinkOTPVerification(params);
+};
+
+export const listLinkPaymentMethods = async (
+  params: ListLinkPaymentMethodsParams
+): Promise<ListLinkPaymentMethodsResult> => {
+  return await NativeStripeSdk.listLinkPaymentMethods(params);
 };

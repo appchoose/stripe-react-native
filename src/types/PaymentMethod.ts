@@ -42,7 +42,8 @@ export type CreateParams =
   | USBankAccountParams
   | PayPalParams
   | AffirmParams
-  | CashAppParams;
+  | CashAppParams
+  | LinkParams;
 
 export type ConfirmParams = CreateParams;
 
@@ -220,6 +221,19 @@ export type CashAppParams = {
   };
 };
 
+export interface LinkParams {
+  paymentMethodType: 'Link';
+  paymentMethodData?: {
+    billingDetails?: BillingDetails;
+    /** ID of the saved payment detail in the Link consumer's wallet. */
+    paymentDetailsId?: string;
+    /** Client secret of the authenticated Link consumer session. */
+    consumerSessionClientSecret?: string;
+    /** CVC for card payment details (optional). */
+    cvc?: string;
+  };
+}
+
 export interface AuBecsDebitResult {
   fingerprint?: string;
   last4?: string;
@@ -295,6 +309,7 @@ export type Type =
   | 'Oxxo'
   | 'USBankAccount'
   | 'PayPal'
+  | 'Link'
   | 'Unknown';
 
 export type CollectBankAccountParams = {

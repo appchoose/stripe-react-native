@@ -51,7 +51,8 @@ export type ConfirmParams =
   | PayPalParams
   | AffirmParams
   | CashAppParams
-  | RevolutPayParams;
+  | RevolutPayParams
+  | LinkParams;
 
 export type ConfirmOptions = PaymentMethod.ConfirmOptions;
 
@@ -315,6 +316,21 @@ export type RevolutPayParams = {
     metadata?: MetaData;
   };
 };
+
+export interface LinkParams {
+  paymentMethodType: 'Link';
+  paymentMethodData?: {
+    billingDetails?: BillingDetails;
+    /** ID of the saved payment detail in the Link consumer's wallet. */
+    paymentDetailsId?: string;
+    /** Client secret of the authenticated Link consumer session. */
+    consumerSessionClientSecret?: string;
+    /** CVC for card payment details (optional). */
+    cvc?: string;
+    mandateData?: MandateData;
+    metadata?: MetaData;
+  };
+}
 
 export type CollectBankAccountParams = {
   paymentMethodType: 'USBankAccount';
