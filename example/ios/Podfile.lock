@@ -1820,14 +1820,14 @@ PODS:
     - ReactCommon/turbomodule/core
     - ReactNativeDependencies
     - Yoga
-  - Stripe (25.12.0):
-    - StripeApplePay (= 25.12.0)
-    - StripeCore (= 25.12.0)
-    - StripeIssuing (= 25.12.0)
-    - StripePayments (= 25.12.0)
-    - StripePaymentsUI (= 25.12.0)
-    - StripeUICore (= 25.12.0)
-  - stripe-react-native (0.64.0):
+  - Stripe (25.15.0):
+    - StripeApplePay (= 25.15.0)
+    - StripeCore (= 25.15.0)
+    - StripeIssuing (= 25.15.0)
+    - StripePayments (= 25.15.0)
+    - StripePaymentsUI (= 25.15.0)
+    - StripeUICore (= 25.15.0)
+  - stripe-react-native (0.65.1):
     - hermes-engine
     - RCTRequired
     - RCTTypeSafety
@@ -1848,10 +1848,10 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - ReactNativeDependencies
-    - stripe-react-native/Core (= 0.64.0)
-    - stripe-react-native/NewArch (= 0.64.0)
+    - stripe-react-native/Core (= 0.65.1)
+    - stripe-react-native/NewArch (= 0.65.1)
     - Yoga
-  - stripe-react-native/Core (0.64.0):
+  - stripe-react-native/Core (0.65.1):
     - hermes-engine
     - RCTRequired
     - RCTTypeSafety
@@ -1872,14 +1872,14 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - ReactNativeDependencies
-    - Stripe (~> 25.12.0)
-    - StripeApplePay (~> 25.12.0)
-    - StripeFinancialConnections (~> 25.12.0)
-    - StripePayments (~> 25.12.0)
-    - StripePaymentSheet (~> 25.12.0)
-    - StripePaymentsUI (~> 25.12.0)
+    - Stripe (~> 25.15.0)
+    - StripeApplePay (~> 25.15.0)
+    - StripeFinancialConnections (~> 25.15.0)
+    - StripePayments (~> 25.15.0)
+    - StripePaymentSheet (~> 25.15.0)
+    - StripePaymentsUI (~> 25.15.0)
     - Yoga
-  - stripe-react-native/NewArch (0.64.0):
+  - stripe-react-native/NewArch (0.65.1):
     - hermes-engine
     - RCTRequired
     - RCTTypeSafety
@@ -1901,7 +1901,7 @@ PODS:
     - ReactCommon/turbomodule/core
     - ReactNativeDependencies
     - Yoga
-  - stripe-react-native/Onramp (0.64.0):
+  - stripe-react-native/Onramp (0.65.1):
     - hermes-engine
     - RCTRequired
     - RCTTypeSafety
@@ -1923,9 +1923,9 @@ PODS:
     - ReactCommon/turbomodule/core
     - ReactNativeDependencies
     - stripe-react-native/Core
-    - StripeCryptoOnramp (~> 25.12.0)
+    - StripeCryptoOnramp (~> 25.15.0)
     - Yoga
-  - stripe-react-native/Tests (0.64.0):
+  - stripe-react-native/Tests (0.65.1):
     - hermes-engine
     - RCTRequired
     - RCTTypeSafety
@@ -1947,46 +1947,46 @@ PODS:
     - ReactCommon/turbomodule/core
     - ReactNativeDependencies
     - Yoga
-  - StripeApplePay (25.12.0):
-    - StripeCore (= 25.12.0)
-  - StripeCameraCore (25.12.0):
-    - StripeCore (= 25.12.0)
-  - StripeCore (25.12.0)
-  - StripeCryptoOnramp (25.12.0):
-    - StripeApplePay (= 25.12.0)
-    - StripeCore (= 25.12.0)
-    - StripeIdentity (= 25.12.0)
-    - StripePayments (= 25.12.0)
-    - StripePaymentSheet (= 25.12.0)
-    - StripePaymentsUI (= 25.12.0)
-    - StripeUICore (= 25.12.0)
-  - StripeFinancialConnections (25.12.0):
-    - StripeCore (= 25.12.0)
-    - StripeUICore (= 25.12.0)
-  - StripeIdentity (25.12.0):
-    - StripeCameraCore (= 25.12.0)
-    - StripeCore (= 25.12.0)
-    - StripeUICore (= 25.12.0)
-  - StripeIssuing (25.12.0):
-    - StripeCore (= 25.12.0)
-    - StripePayments (= 25.12.0)
-    - StripePaymentsUI (= 25.12.0)
-  - StripePayments (25.12.0):
-    - StripeCore (= 25.12.0)
-    - StripePayments/Stripe3DS2 (= 25.12.0)
-  - StripePayments/Stripe3DS2 (25.12.0):
-    - StripeCore (= 25.12.0)
-  - StripePaymentSheet (25.12.0):
-    - StripeApplePay (= 25.12.0)
-    - StripeCore (= 25.12.0)
-    - StripePayments (= 25.12.0)
-    - StripePaymentsUI (= 25.12.0)
-  - StripePaymentsUI (25.12.0):
-    - StripeCore (= 25.12.0)
-    - StripePayments (= 25.12.0)
-    - StripeUICore (= 25.12.0)
-  - StripeUICore (25.12.0):
-    - StripeCore (= 25.12.0)
+  - StripeApplePay (25.15.0):
+    - StripeCore (= 25.15.0)
+  - StripeCameraCore (25.15.0):
+    - StripeCore (= 25.15.0)
+  - StripeCore (25.15.0)
+  - StripeCryptoOnramp (25.15.0):
+    - StripeApplePay (= 25.15.0)
+    - StripeCore (= 25.15.0)
+    - StripeIdentity (= 25.15.0)
+    - StripePayments (= 25.15.0)
+    - StripePaymentSheet (= 25.15.0)
+    - StripePaymentsUI (= 25.15.0)
+    - StripeUICore (= 25.15.0)
+  - StripeFinancialConnections (25.15.0):
+    - StripeCore (= 25.15.0)
+    - StripeUICore (= 25.15.0)
+  - StripeIdentity (25.15.0):
+    - StripeCameraCore (= 25.15.0)
+    - StripeCore (= 25.15.0)
+    - StripeUICore (= 25.15.0)
+  - StripeIssuing (25.15.0):
+    - StripeCore (= 25.15.0)
+    - StripePayments (= 25.15.0)
+    - StripePaymentsUI (= 25.15.0)
+  - StripePayments (25.15.0):
+    - StripeCore (= 25.15.0)
+    - StripePayments/Stripe3DS2 (= 25.15.0)
+  - StripePayments/Stripe3DS2 (25.15.0):
+    - StripeCore (= 25.15.0)
+  - StripePaymentSheet (25.15.0):
+    - StripeApplePay (= 25.15.0)
+    - StripeCore (= 25.15.0)
+    - StripePayments (= 25.15.0)
+    - StripePaymentsUI (= 25.15.0)
+  - StripePaymentsUI (25.15.0):
+    - StripeCore (= 25.15.0)
+    - StripePayments (= 25.15.0)
+    - StripeUICore (= 25.15.0)
+  - StripeUICore (25.15.0):
+    - StripeCore (= 25.15.0)
   - Yoga (0.0.0)
 
 DEPENDENCIES:
@@ -2311,19 +2311,19 @@ SPEC CHECKSUMS:
   RNCAsyncStorage: 3a4f5e2777dae1688b781a487923a08569e27fe4
   RNCPicker: c8a3584b74133464ee926224463fcc54dfdaebca
   RNScreens: 61c18865ab074f4d995ac8d7cf5060522a649d05
-  Stripe: 0befd1ef4c49e9e1b5a781f1e61805c856bb9c1c
-  stripe-react-native: 1a655d668d564118f064973d4bbad07ddce53a76
-  StripeApplePay: a58f76d25970050c4b3447cf6d34ce098cd0b517
-  StripeCameraCore: 8b5ff52f138220cfb96713c1736f36b764e3cdc0
-  StripeCore: c10a35ed2d1f2165ccb8db8077e10c6fa488c6b8
-  StripeCryptoOnramp: 68016bb14054aeea13cf1da61e6d7ad09865825c
-  StripeFinancialConnections: 6abb9257f511f8ba1fd17df07d48058f48eb7b22
-  StripeIdentity: b9a2bb898d6da31b527768c9532585bf49ba0891
-  StripeIssuing: c92d94e7f1e068d728715aa382f8b7907499b83f
-  StripePayments: fb4105c822f9f07ca2092c86b68ab366b5d4a144
-  StripePaymentSheet: 7285761bacc685b160fc31871632554577beec35
-  StripePaymentsUI: 6aabff3711d0543db04632a2d102deac7a139095
-  StripeUICore: fb5f1c2f7d702b2879f706e3db3a7b793125256e
+  Stripe: 438c2683199eed851e3fca2ee0156904ff166ce0
+  stripe-react-native: 1105f74e8a51ad305b40424a8c643784594fc97b
+  StripeApplePay: 983321574dc364226bef883994457d931289bcbc
+  StripeCameraCore: 77f18b360aaf5a33c7e2215957df8ab04b07082e
+  StripeCore: 8645a446637112586f6a862d2a000e7d8f5fc988
+  StripeCryptoOnramp: 71e48c45e0b99448182d2c2dd7bd000483d95621
+  StripeFinancialConnections: 66d4d828e5e47c674b2e539c5872414c2100e60a
+  StripeIdentity: 1353bb887d15e2800a29df6cd8f10a0ffecf84fe
+  StripeIssuing: 1b21db879c6ec8eaba89af69ea654ce29333d322
+  StripePayments: 1fe0ba59551bf2b5be62707694a2c40df01b195f
+  StripePaymentSheet: d706de7ac354470ada1d1e0fa82de2be3e08ba1d
+  StripePaymentsUI: 260125f3da77ba8010dcc89319da8549f94e7bd4
+  StripeUICore: dd9ff37d3236763162914d8f19edd0c0c3f54861
   Yoga: 3fd22c2cae22d7a2b0f0b538f55f7c2a17dc94d5
 
 PODFILE CHECKSUM: 605f3cad878b7c0eee93ebb4a78a8141d34cd328

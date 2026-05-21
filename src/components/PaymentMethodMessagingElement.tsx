@@ -1,11 +1,17 @@
-import React, { forwardRef, useEffect, useState } from 'react';
-import { AccessibilityProps, LayoutAnimation } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import {
+  AccessibilityProps,
+  HostComponent,
+  LayoutAnimation,
+} from 'react-native';
 import {
   PaymentMethodMessagingElementAppearance,
   PaymentMethodMessagingElementState,
 } from '../types/components/PaymentMethodMessagingElementComponent';
 import { PaymentMethodMessagingElementConfiguration } from '../types/components/PaymentMethodMessagingElementComponent';
-import NativePaymentMethodMessagingElement from '../specs/NativePaymentMethodMessagingElement';
+import NativePaymentMethodMessagingElement, {
+  NativeProps,
+} from '../specs/NativePaymentMethodMessagingElement';
 import { addListener } from '../events';
 
 export interface Props extends AccessibilityProps {
@@ -44,57 +50,62 @@ export interface Props extends AccessibilityProps {
  * @returns JSX.Element
  * @category ReactComponents
  */
-export const PaymentMethodMessagingElement = forwardRef<any, Props>(
-  ({ appearance, configuration, onStateChange, ...props }, ref) => {
-    const [height, setHeight] = useState<number | undefined>();
+export const PaymentMethodMessagingElement = ({
+  appearance,
+  configuration,
+  onStateChange,
+  ...props
+}: Props) => {
+  const viewRef = useRef<React.ComponentRef<HostComponent<NativeProps>>>(null);
 
-    useEffect(() => {
-      // listen for height changes
-      const sub = addListener(
-        'paymentMethodMessagingElementDidUpdateHeight',
-        ({ height: h }) => {
-          LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-          setHeight(h);
-        }
-      );
-      return () => sub.remove();
-    });
+  const [height, setHeight] = useState<number | undefined>();
 
-    useEffect(() => {
-      // listen for load complete
-      const sub = addListener(
-        'paymentMethodMessagingElementConfigureResult',
-        ({ status: s }) => {
-          let state: PaymentMethodMessagingElementState;
-
-          if (s === 'loaded') {
-            state = { status: 'loaded' };
-          } else if (s === 'loading') {
-            state = { status: 'loading' };
-          } else if (s === 'no_content') {
-            state = { status: 'no_content' };
-          } else {
-            state = {
-              status: 'failed',
-              error: new Error(
-                'Failed to configure payment method messaging element'
-              ),
-            };
-          }
-          onStateChange?.(state);
-        }
-      );
-      return () => sub.remove();
-    }, [onStateChange]);
-
-    return (
-      <NativePaymentMethodMessagingElement
-        appearance={appearance}
-        style={[{ width: '100%', height: height }]}
-        configuration={configuration}
-        {...props}
-        ref={ref}
-      />
+  useEffect(() => {
+    // listen for height changes
+    const sub = addListener(
+      'paymentMethodMessagingElementDidUpdateHeight',
+      ({ height: h }) => {
+        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+        setHeight(h);
+      }
     );
-  }
-);
+    return () => sub.remove();
+  });
+
+  useEffect(() => {
+    // listen for load complete
+    const sub = addListener(
+      'paymentMethodMessagingElementConfigureResult',
+      ({ status: s }) => {
+        let state: PaymentMethodMessagingElementState;
+
+        if (s === 'loaded') {
+          state = { status: 'loaded' };
+        } else if (s === 'loading') {
+          state = { status: 'loading' };
+        } else if (s === 'no_content') {
+          state = { status: 'no_content' };
+        } else {
+          state = {
+            status: 'failed',
+            error: new Error(
+              'Failed to configure payment method messaging element'
+            ),
+          };
+        }
+        onStateChange?.(state);
+      }
+    );
+    return () => sub.remove();
+  }, [onStateChange]);
+
+  return (
+    <NativePaymentMethodMessagingElement
+      appearance={appearance}
+      style={[{ width: '100%', height: height }]}
+      configuration={configuration}
+      {...props}
+      ref={viewRef}
+    />
+  );
+};

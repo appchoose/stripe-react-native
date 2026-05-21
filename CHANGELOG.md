@@ -1,12 +1,12 @@
 # CHANGELOG
 
-## [0.65.2](https://github.com/appchoose/stripe-react-native/compare/v0.65.1...v0.65.2) (2026-05-12)
+## 0.66.0 - 2026-05-20
+**Changes**
+* Updated Stripe iOS SDK from 25.14.0 to 25.15.0.
+* Updated Stripe Android SDK from 23.8.+ to 23.9.+.
 
-
-### Bug Fixes
-
-* Fix presentWithTimeout ([#2451](https://github.com/appchoose/stripe-react-native/issues/2451)) ([90aee1e](https://github.com/appchoose/stripe-react-native/commit/90aee1e3e31d7c70992c49661691a8f3f8e6baa0))
-* **ios:** Remove spurious onExit firing during Connect onboarding identity verification ([#2447](https://github.com/appchoose/stripe-react-native/issues/2447)) ([3cb8a2b](https://github.com/appchoose/stripe-react-native/commit/3cb8a2b9608fad08e15e0f6fa843bb8e78e4a2fd))
+**Features**
+* [Added] Added EU support to Onramp. This includes three new APIs, `retrieveMissingIdentifiers`, `submitIdentifiers`, and `presentCRSCARFDeclaration`, EU-specific additions to `KycInfo` including `birthCountry`, `birthCity`, and `nationalities`, as well as associated helper model types in `Onramp.ts`.
 
 ## 0.65.1 - 2026-05-11
 **Fixes**
