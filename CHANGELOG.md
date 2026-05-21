@@ -1,5 +1,12 @@
 # CHANGELOG
 
+# [0.66.0](https://github.com/appchoose/stripe-react-native/compare/v0.65.2...v0.66.0) (2026-05-21)
+
+
+### Features
+
+* release ([5aff5aa](https://github.com/appchoose/stripe-react-native/commit/5aff5aa75f006b3caa037c3de706a0e9990c8091))
+
 ## 0.66.0 - 2026-05-20
 **Changes**
 * Updated Stripe iOS SDK from 25.14.0 to 25.15.0.
