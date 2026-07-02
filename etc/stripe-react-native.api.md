@@ -112,6 +112,7 @@ export interface AddToWalletButtonProps extends AccessibilityProps {
     };
     ephemeralKey: object;
     iOSButtonStyle?: 'onDarkBackground' | 'onLightBackground';
+    isBounceProvisioned?: boolean;
     onComplete(result: {
         error: StripeError<CardActionError> | null;
     }): void;
@@ -210,6 +211,11 @@ interface AndroidProps {
     // (undocumented)
     accentColor?: string;
 }
+
+// @public
+type AppAttestationError = OnrampApiError & {
+    onrampErrorType: 'AppAttestationError';
+};
 
 // Warning: (ae-forgotten-export) The symbol "RecursivePartial" needs to be exported by the entry point index.d.ts
 //
@@ -417,7 +423,7 @@ type AuthorizeResult = {
 } | {
     status?: undefined;
     customerId?: undefined;
-    error: StripeError<OnrampError>;
+    error: CryptoOnrampError;
 };
 
 // @public
@@ -614,6 +620,7 @@ export const canAddCardToWallet: (params: CanAddCardToWalletParams) => Promise<C
 export type CanAddCardToWalletParams = {
     primaryAccountIdentifier: string | null;
     cardLastFour: string;
+    cardBrand: string;
     testEnv?: boolean;
     hasPairedAppleWatch?: boolean;
     supportsTapToPay?: boolean;
@@ -1008,6 +1015,7 @@ export const collectBankAccountToken: (clientSecret: string, params?: CollectBan
 type CollectBankAccountTokenParams = {
     style?: UserInterfaceStyle;
     onEvent?: (event: FinancialConnectionsEvent) => void;
+    connectedAccountId?: string;
 };
 
 // @public
@@ -1035,7 +1043,7 @@ type CollectPaymentMethodResult = {
 } | {
     displayData?: undefined;
     kycInfo?: undefined;
-    error: StripeError<OnrampError>;
+    error: CryptoOnrampError;
 };
 
 // @public
@@ -1060,6 +1068,7 @@ type ComplianceIdentifierRequirement = {
 type ComplianceIdentifierRequirements = {
     identifiers: ComplianceIdentifierRequirement[];
     alternatives: ComplianceIdentifierAlternativeGroup[];
+    carfTinRequired: boolean;
 };
 
 // @public
@@ -1300,7 +1309,7 @@ type CreateCryptoPaymentTokenResult = {
     error?: undefined;
 } | {
     cryptoPaymentToken?: undefined;
-    error: StripeError<OnrampError>;
+    error: CryptoOnrampError;
 };
 
 // @public (undocumented)
@@ -1396,15 +1405,6 @@ export type CreateTokenResult = {
 };
 
 // @public
-type CRSCARFDeclarationResult = {
-    status: 'Confirmed';
-    error?: undefined;
-} | {
-    status?: undefined;
-    error: StripeError<OnrampError>;
-};
-
-// @public
 enum CryptoNetwork {
     // (undocumented)
     aptos = "aptos",
@@ -1431,6 +1431,11 @@ enum CryptoNetwork {
     // (undocumented)
     xrpl = "xrpl"
 }
+
+// @public
+type CryptoOnrampError = (StripeError<OnrampError> & {
+    onrampErrorType?: undefined;
+}) | AppAttestationError | UncategorizedApiError;
 
 // @public
 type CryptoPaymentToken = {
@@ -2058,7 +2063,7 @@ type HasLinkAccountResult = {
     error?: undefined;
 } | {
     hasLinkAccount?: undefined;
-    error: StripeError<OnrampError>;
+    error: CryptoOnrampError;
 };
 
 // @public (undocumented)
@@ -2558,6 +2563,7 @@ type OnFormCompleteEvent = NativeSyntheticEvent<{
 
 declare namespace Onramp {
     export {
+        OnrampError,
         Configuration,
         GooglePayConfig,
         GooglePayBillingAddressConfig,
@@ -2577,9 +2583,15 @@ declare namespace Onramp {
         ComplianceIdentifierRequirement,
         ComplianceIdentifierAlternativeGroup,
         ComplianceIdentifierRequirements,
+        OnrampErrorType,
+        SDKVersion,
+        OnrampApiError,
+        AppAttestationError,
+        UncategorizedApiError,
+        CryptoOnrampError,
         RetrieveMissingIdentifiersResult,
         SubmitIdentifiersResult,
-        CRSCARFDeclarationResult,
+        UserAttestationResult,
         VerifyKycResult,
         VoidResult,
         AuthorizeResult,
@@ -2595,7 +2607,25 @@ declare namespace Onramp {
 export { Onramp }
 
 // @public (undocumented)
-export enum OnrampError {
+type OnrampApiError = StripeError<OnrampError> & {
+    onrampErrorType: string;
+    developerMessage: string;
+    userMessage: string;
+    reason?: string;
+    operation: string;
+    appPackageName: string;
+    mode?: 'live' | 'test';
+    sdkVersions?: SDKVersion[];
+    requestId?: string;
+    apiErrorCode?: string;
+    apiErrorType?: string;
+    apiErrorMessage?: string;
+    apiUserMessage?: string;
+    docUrl?: string;
+};
+
+// @public
+enum OnrampError {
     // (undocumented)
     Canceled = "Canceled",
     // (undocumented)
@@ -2603,6 +2633,9 @@ export enum OnrampError {
     // (undocumented)
     Unknown = "Unknown"
 }
+
+// @public
+type OnrampErrorType = 'AppAttestationError' | 'UncategorizedApiError';
 
 // @public
 type OnrampGooglePayParams = {
@@ -2683,7 +2716,7 @@ type PaymentDisplayDataResult = {
     error?: undefined;
 } | {
     displayData?: undefined;
-    error: StripeError<OnrampError>;
+    error: CryptoOnrampError;
 };
 
 declare namespace PaymentIntent {
@@ -3215,7 +3248,7 @@ type RegisterLinkUserResult = {
     error?: undefined;
 } | {
     customerId?: undefined;
-    error: StripeError<OnrampError>;
+    error: CryptoOnrampError;
 };
 
 // @public
@@ -3353,7 +3386,8 @@ type RetrieveMissingIdentifiersResult = (ComplianceIdentifierRequirements & {
 }) | {
     identifiers?: undefined;
     alternatives?: undefined;
-    error: StripeError<OnrampError>;
+    carfTinRequired?: undefined;
+    error: CryptoOnrampError;
 };
 
 // @public (undocumented)
@@ -3417,6 +3451,12 @@ export enum RowStyle {
     FlatWithRadio = "flatWithRadio",
     FloatingButton = "floatingButton"
 }
+
+// @public
+type SDKVersion = {
+    name: string;
+    version: string;
+};
 
 // @public (undocumented)
 interface SepaDebitResult {
@@ -3765,17 +3805,19 @@ type Subcategory = 'checking' | 'creditCard' | 'lineOfCredit' | 'mortgage' | 'ot
 
 // @public
 type SubmitIdentifiersResult = {
-    valid: boolean;
+    completed: boolean;
     identifiers: ComplianceIdentifierRequirement[];
     alternatives: ComplianceIdentifierAlternativeGroup[];
+    carfTinRequired: boolean;
     invalidIdentifiers: ComplianceIdentifierType[];
     error?: undefined;
 } | {
-    valid?: undefined;
+    completed?: undefined;
     identifiers?: undefined;
     alternatives?: undefined;
+    carfTinRequired?: undefined;
     invalidIdentifiers?: undefined;
-    error: StripeError<OnrampError>;
+    error: CryptoOnrampError;
 };
 
 // @public
@@ -3875,6 +3917,11 @@ type Type = 'AfterpayClearpay' | 'Card' | 'Alipay' | 'GrabPay' | 'Ideal' | 'Fpx'
 type Type_2 = 'Account' | 'BankAccount' | 'Card' | 'CvcUpdate' | 'Person' | 'Pii';
 
 // @public
+type UncategorizedApiError = OnrampApiError & {
+    onrampErrorType: 'UncategorizedApiError';
+};
+
+// @public
 export const updatePlatformPaySheet: (params: {
     applePay: {
         cartItems: Array<PlatformPay.CartSummaryItem>;
@@ -3956,10 +4003,7 @@ export interface UseEmbeddedPaymentElementResult {
     // (undocumented)
     loadingError: Error | null;
     paymentOption: PaymentOptionDisplayData | null;
-    update: {
-        (intentConfig: PaymentSheet.IntentConfiguration): void;
-        (checkout: Checkout): void;
-    };
+    update: (intentConfig: PaymentSheet.IntentConfiguration) => void;
 }
 
 // @public
@@ -3972,28 +4016,28 @@ export function useFinancialConnectionsSheet(): {
 // @public
 export function useOnramp(): {
     configure: (config: Onramp.Configuration) => Promise<{
-        error?: StripeError<OnrampError>;
+        error?: Onramp.CryptoOnrampError;
     }>;
     hasLinkAccount: (email: string) => Promise<Onramp.HasLinkAccountResult>;
     registerLinkUser: (info: Onramp.LinkUserInfo) => Promise<Onramp.RegisterLinkUserResult>;
     registerWalletAddress: (walletAddress: string, network: Onramp.CryptoNetwork) => Promise<{
-        error?: StripeError<OnrampError>;
+        error?: Onramp.CryptoOnrampError;
     }>;
     attachKycInfo: (kycInfo: Onramp.KycInfo) => Promise<{
-        error?: StripeError<OnrampError>;
+        error?: Onramp.CryptoOnrampError;
     }>;
     retrieveMissingIdentifiers: () => Promise<Onramp.RetrieveMissingIdentifiersResult>;
     submitIdentifiers: (identifiers: Onramp.ComplianceIdentifier[]) => Promise<Onramp.SubmitIdentifiersResult>;
-    presentCRSCARFDeclaration: () => Promise<Onramp.CRSCARFDeclarationResult>;
+    presentUserAttestation: () => Promise<Onramp.UserAttestationResult>;
     presentKycInfoVerification: (updatedAddress: Address | null) => Promise<Onramp.VerifyKycResult>;
     updatePhoneNumber: (phone: string) => Promise<{
-        error?: StripeError<OnrampError>;
+        error?: Onramp.CryptoOnrampError;
     }>;
     authenticateUserWithToken: (linkAuthTokenClientSecret: string) => Promise<{
-        error?: StripeError<OnrampError>;
+        error?: Onramp.CryptoOnrampError;
     }>;
     verifyIdentity: () => Promise<{
-        error?: StripeError<OnrampError>;
+        error?: Onramp.CryptoOnrampError;
     }>;
     collectPaymentMethod: {
         (paymentMethod: "Card" | "BankAccount" | "CardAndBankAccount", platformPayParams?: undefined): Promise<Onramp.CollectPaymentMethodResult>;
@@ -4001,14 +4045,14 @@ export function useOnramp(): {
     };
     createCryptoPaymentToken: () => Promise<Onramp.CreateCryptoPaymentTokenResult>;
     performCheckout: (onrampSessionId: string, provideCheckoutClientSecret: () => Promise<string | null>) => Promise<{
-        error?: StripeError<OnrampError>;
+        error?: Onramp.CryptoOnrampError;
     }>;
     authorize: (linkAuthIntentId: string) => Promise<Onramp.AuthorizeResult>;
     getCryptoTokenDisplayData: (token: CryptoPaymentToken) => Promise<Onramp.PaymentDisplayDataResult>;
     logOut: () => Promise<{
-        error?: StripeError<OnrampError>;
+        error?: Onramp.CryptoOnrampError;
     }>;
-    isAuthError: (error?: StripeError<OnrampError>) => boolean;
+    isAuthError: (error?: Onramp.CryptoOnrampError) => boolean;
 };
 
 // @public
@@ -4042,6 +4086,15 @@ export function usePlatformPay(): {
     }>;
     canAddCardToWallet: (params: CanAddCardToWalletParams) => Promise<CanAddCardToWalletResult>;
     openPlatformPaySetup: () => Promise<void>;
+};
+
+// @public
+type UserAttestationResult = {
+    status: 'Confirmed';
+    error?: undefined;
+} | {
+    status?: undefined;
+    error: CryptoOnrampError;
 };
 
 // @public
@@ -4109,7 +4162,7 @@ type VerifyKycResult = {
     error?: undefined;
 } | {
     status?: undefined;
-    error: StripeError<OnrampError>;
+    error: CryptoOnrampError;
 };
 
 // @public (undocumented)
@@ -4157,7 +4210,7 @@ export type VerifyMicrodepositsParams = {
 
 // @public
 type VoidResult = {
-    error?: StripeError<OnrampError>;
+    error?: CryptoOnrampError;
 };
 
 // @public (undocumented)

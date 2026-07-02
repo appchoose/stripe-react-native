@@ -30,8 +30,8 @@ class OnrampMappersTests: XCTestCase {
 
         XCTAssertEqual(appearance.style, .alwaysDark)
         XCTAssertTrue(appearance.reduceLinkBranding)
-        XCTAssertEqual(appearance.primaryButton?.cornerRadius, CGFloat(12))
-        XCTAssertEqual(appearance.primaryButton?.height, CGFloat(48))
+        XCTAssertEqual(appearance.primaryButton.cornerRadius, CGFloat(12))
+        XCTAssertEqual(appearance.primaryButton.height, CGFloat(48))
 
         assertColor(
             appearance.colors?.primary,
@@ -65,7 +65,7 @@ class OnrampMappersTests: XCTestCase {
         )
     }
 
-    func test_mapToLinkAppearance_partialPrimaryButtonIsIgnored() {
+    func test_mapToLinkAppearance_partialPrimaryButtonMapsProvidedFields() {
         let params: [String: Any?] = [
             "primaryButton": [
                 "cornerRadius": CGFloat(12),
@@ -75,7 +75,38 @@ class OnrampMappersTests: XCTestCase {
         let appearance = Mappers.mapToLinkAppearance(params)
 
         XCTAssertNil(appearance.colors)
-        XCTAssertNil(appearance.primaryButton)
+        XCTAssertEqual(appearance.primaryButton.cornerRadius, CGFloat(12))
+        XCTAssertNil(appearance.primaryButton.height)
+        XCTAssertEqual(appearance.style, .automatic)
+        XCTAssertTrue(appearance.reduceLinkBranding)
+    }
+
+    func test_mapToLinkAppearance_primaryButtonHeightOnly() {
+        let params: [String: Any?] = [
+            "primaryButton": [
+                "height": CGFloat(48),
+            ],
+        ]
+
+        let appearance = Mappers.mapToLinkAppearance(params)
+
+        XCTAssertNil(appearance.colors)
+        XCTAssertNil(appearance.primaryButton.cornerRadius)
+        XCTAssertEqual(appearance.primaryButton.height, CGFloat(48))
+        XCTAssertEqual(appearance.style, .automatic)
+        XCTAssertTrue(appearance.reduceLinkBranding)
+    }
+
+    func test_mapToLinkAppearance_primaryButtonEmptyMap() {
+        let params: [String: Any?] = [
+            "primaryButton": [:],
+        ]
+
+        let appearance = Mappers.mapToLinkAppearance(params)
+
+        XCTAssertNil(appearance.colors)
+        XCTAssertNil(appearance.primaryButton.cornerRadius)
+        XCTAssertNil(appearance.primaryButton.height)
         XCTAssertEqual(appearance.style, .automatic)
         XCTAssertTrue(appearance.reduceLinkBranding)
     }
@@ -85,7 +116,8 @@ class OnrampMappersTests: XCTestCase {
 
         XCTAssertEqual(appearance.style, .alwaysLight)
         XCTAssertNil(appearance.colors)
-        XCTAssertNil(appearance.primaryButton)
+        XCTAssertNil(appearance.primaryButton.cornerRadius)
+        XCTAssertNil(appearance.primaryButton.height)
         XCTAssertTrue(appearance.reduceLinkBranding)
     }
 
@@ -99,7 +131,8 @@ class OnrampMappersTests: XCTestCase {
         let appearance = Mappers.mapToLinkAppearance([:])
 
         XCTAssertNil(appearance.colors)
-        XCTAssertNil(appearance.primaryButton)
+        XCTAssertNil(appearance.primaryButton.cornerRadius)
+        XCTAssertNil(appearance.primaryButton.height)
         XCTAssertEqual(appearance.style, .automatic)
         XCTAssertTrue(appearance.reduceLinkBranding)
     }
@@ -489,7 +522,8 @@ class OnrampMappersTests: XCTestCase {
                         originalMissingIdentifiers: [.mtNIC],
                         alternativeMissingIdentifiers: [.mtPP]
                     ),
-                ]
+                ],
+                carfTinRequired: true
             )
         )
 
@@ -504,6 +538,7 @@ class OnrampMappersTests: XCTestCase {
         XCTAssertEqual(alternatives?.count, 1)
         XCTAssertEqual(alternatives?[0]["originalMissingIdentifiers"], ["mt_nic"])
         XCTAssertEqual(alternatives?[0]["alternativeMissingIdentifiers"], ["mt_pp"])
+        XCTAssertEqual(result["carfTinRequired"] as? Bool, true)
     }
 
     func test_mapFromSubmitIdentifiersResult_mapsValidationResult() throws {
@@ -513,7 +548,7 @@ class OnrampMappersTests: XCTestCase {
         let data = Data(
             """
             {
-              "valid": false,
+              "completed": false,
               "identifiers": [
                 {
                   "type": "ee_ik",
@@ -526,6 +561,7 @@ class OnrampMappersTests: XCTestCase {
                   "alternative_missing_identifiers": ["mt_pp"]
                 }
               ],
+              "carf_tin_required": true,
               "invalid_identifiers": ["gr_afm"]
             }
             """.utf8
@@ -534,7 +570,8 @@ class OnrampMappersTests: XCTestCase {
 
         let result = Mappers.mapFromSubmitIdentifiersResult(submitResult)
 
-        XCTAssertEqual(result["valid"] as? Bool, false)
+        XCTAssertEqual(result["completed"] as? Bool, false)
+        XCTAssertEqual(result["carfTinRequired"] as? Bool, true)
         XCTAssertEqual(result["invalidIdentifiers"] as? [String], ["gr_afm"])
 
         let identifiers = result["identifiers"] as? [[String: String]]

@@ -1,10 +1,12 @@
 import { EventSubscription, Platform } from 'react-native';
 import NativeOnrampSdk from '../specs/NativeOnrampSdkModule';
-import { Onramp, OnrampError, StripeError } from '../types';
+import { Onramp } from '../types';
 import type { Address } from '../types';
 import { useCallback } from 'react';
 import { addOnrampListener } from '../events';
 import { CryptoPaymentToken } from '../types/Onramp';
+import { getCurrentPublishableKey } from '../internal/stripeConfig';
+import pjson from '../../package.json';
 
 export function requireOnrampModule() {
   if (NativeOnrampSdk == null) {
@@ -24,6 +26,83 @@ export function requireOnrampModule() {
 let onCheckoutClientSecretRequestedSubscription: EventSubscription | null =
   null;
 
+const legacyAppAttestationUnavailableMessages = [
+  'App attestation is missing or device cannot use native Link.',
+  'Native Link is not available',
+];
+const cryptoOnrampAppAttestationUnavailableCode = 'app_attestation_unavailable';
+
+function isLegacyAppAttestationUnavailableMessage(message?: string): boolean {
+  return (
+    message != null && legacyAppAttestationUnavailableMessages.includes(message)
+  );
+}
+
+function publishableKeyMode(): 'live' | 'test' | undefined {
+  const publishableKey = getCurrentPublishableKey();
+  if (publishableKey?.startsWith('pk_live_')) {
+    return 'live';
+  }
+  if (publishableKey?.startsWith('pk_test_')) {
+    return 'test';
+  }
+  return undefined;
+}
+
+// Temporary React Native shim: iOS/Android currently surface this configure/create
+// failure as a legacy SDK-level message instead of a typed rich error. This can be
+// removed once the native SDKs map it themselves, though keeping it is harmless as
+// a compatibility fallback for older native SDK versions.
+function mapLegacyConfigureAppAttestationError(result: {
+  error?: Onramp.CryptoOnrampError;
+}): { error?: Onramp.CryptoOnrampError } {
+  const error = result.error;
+  if (
+    error == null ||
+    error.onrampErrorType != null ||
+    (!isLegacyAppAttestationUnavailableMessage(error.message) &&
+      !isLegacyAppAttestationUnavailableMessage(error.localizedMessage))
+  ) {
+    return result;
+  }
+
+  const userMessage =
+    "This app couldn't be verified. Contact the app developer for help.";
+  const mode = publishableKeyMode();
+
+  const context = [
+    'Context:',
+    '  operation: configure',
+    mode != null ? `  mode: ${mode}` : undefined,
+  ].filter((line): line is string => line != null);
+  const appAttestationError = {
+    ...error,
+    message: userMessage,
+    localizedMessage: userMessage,
+    stripeErrorCode: cryptoOnrampAppAttestationUnavailableCode,
+    developerMessage: [
+      "App attestation unavailable: this app isn't configured to use Stripe Crypto Onramp.",
+      '',
+      "This usually means app attestation isn't enabled for this Stripe account, or this app isn't registered as a trusted application. Use your iOS bundle ID or Android package name and contact Stripe to enable app attestation or register the app for this account.",
+      '',
+      ...context,
+      '',
+      `Code: ${cryptoOnrampAppAttestationUnavailableCode}`,
+      '',
+      'Next step: confirm app attestation is enabled for this Stripe account and that the app identifier is registered as trusted, then call configure again.',
+      `SDK: stripe-react-native@${pjson.version}`,
+    ].join('\n'),
+    userMessage,
+    operation: 'configure',
+    mode,
+  } as unknown as Onramp.CryptoOnrampError;
+
+  return {
+    ...result,
+    error: appAttestationError,
+  };
+}
+
 /**
  * useOnramp hook
  */
@@ -31,8 +110,10 @@ export function useOnramp() {
   const _configure = useCallback(
     async (
       config: Onramp.Configuration
-    ): Promise<{ error?: StripeError<OnrampError> }> => {
-      return requireOnrampModule().configureOnramp(config);
+    ): Promise<{ error?: Onramp.CryptoOnrampError }> => {
+      return mapLegacyConfigureAppAttestationError(
+        await requireOnrampModule().configureOnramp(config)
+      );
     },
     []
   );
@@ -57,7 +138,7 @@ export function useOnramp() {
     async (
       walletAddress: string,
       network: Onramp.CryptoNetwork
-    ): Promise<{ error?: StripeError<OnrampError> }> => {
+    ): Promise<{ error?: Onramp.CryptoOnrampError }> => {
       return requireOnrampModule().registerWalletAddress(
         walletAddress,
         network
@@ -69,7 +150,7 @@ export function useOnramp() {
   const _attachKycInfo = useCallback(
     async (
       kycInfo: Onramp.KycInfo
-    ): Promise<{ error?: StripeError<OnrampError> }> => {
+    ): Promise<{ error?: Onramp.CryptoOnrampError }> => {
       return requireOnrampModule().attachKycInfo(kycInfo);
     },
     []
@@ -89,9 +170,9 @@ export function useOnramp() {
     []
   );
 
-  const _presentCRSCARFDeclaration =
-    useCallback(async (): Promise<Onramp.CRSCARFDeclarationResult> => {
-      return requireOnrampModule().presentCRSCARFDeclaration();
+  const _presentUserAttestation =
+    useCallback(async (): Promise<Onramp.UserAttestationResult> => {
+      return requireOnrampModule().presentUserAttestation();
     }, []);
 
   const _presentKycInfoVerification = useCallback(
@@ -104,7 +185,7 @@ export function useOnramp() {
   const _authenticateUserWithToken = useCallback(
     async (
       linkAuthTokenClientSecret: string
-    ): Promise<{ error?: StripeError<OnrampError> }> => {
+    ): Promise<{ error?: Onramp.CryptoOnrampError }> => {
       return requireOnrampModule().authenticateUserWithToken(
         linkAuthTokenClientSecret
       );
@@ -113,14 +194,14 @@ export function useOnramp() {
   );
 
   const _updatePhoneNumber = useCallback(
-    async (phone: string): Promise<{ error?: StripeError<OnrampError> }> => {
+    async (phone: string): Promise<{ error?: Onramp.CryptoOnrampError }> => {
       return requireOnrampModule().updatePhoneNumber(phone);
     },
     []
   );
 
   const _verifyIdentity = useCallback(async (): Promise<{
-    error?: StripeError<OnrampError>;
+    error?: Onramp.CryptoOnrampError;
   }> => {
     return requireOnrampModule().verifyIdentity();
   }, []);
@@ -168,7 +249,7 @@ export function useOnramp() {
     async (
       onrampSessionId: string,
       provideCheckoutClientSecret: () => Promise<string | null>
-    ): Promise<{ error?: StripeError<OnrampError> }> => {
+    ): Promise<{ error?: Onramp.CryptoOnrampError }> => {
       onCheckoutClientSecretRequestedSubscription?.remove();
       onCheckoutClientSecretRequestedSubscription = addOnrampListener(
         'onCheckoutClientSecretRequested',
@@ -203,13 +284,15 @@ export function useOnramp() {
   );
 
   const _logOut = useCallback(async (): Promise<{
-    error?: StripeError<OnrampError>;
+    error?: Onramp.CryptoOnrampError;
   }> => {
     return requireOnrampModule().logout();
   }, []);
 
-  const _isAuthError = (error?: StripeError<OnrampError>): boolean => {
-    const stripeErrorCode = error?.stripeErrorCode;
+  const _isAuthError = (error?: Onramp.CryptoOnrampError): boolean => {
+    const stripeErrorCode =
+      error?.stripeErrorCode ??
+      (error?.onrampErrorType ? error.apiErrorCode : undefined);
     if (stripeErrorCode == null) {
       return false;
     }
@@ -276,17 +359,17 @@ export function useOnramp() {
      * Requires an authenticated Link user.
      *
      * @param identifiers The compliance identifiers to submit
-     * @returns Promise that resolves to whether the submission was valid, any remaining requirements, invalid identifiers, or error
+     * @returns Promise that resolves to whether collection is complete, any remaining requirements, CARF TIN state, invalid identifiers, or error
      */
     submitIdentifiers: _submitIdentifiers,
 
     /**
-     * Presents UI for the current Link user to accept the CRS/CARF declaration.
+     * Presents UI for the current Link user to accept user attestation.
      * Requires an authenticated Link user.
      *
      * @returns Promise that resolves to `Confirmed` when accepted, or error
      */
-    presentCRSCARFDeclaration: _presentCRSCARFDeclaration,
+    presentUserAttestation: _presentUserAttestation,
 
     /**
      * Presents UI to verify KYC information for the current Link user.

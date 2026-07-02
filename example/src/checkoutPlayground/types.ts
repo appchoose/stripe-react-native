@@ -1,3 +1,9 @@
+import { CurrencySelectorLabelContent } from '@stripe/stripe-react-native/src/components/CurrencySelectorElement';
+import type {
+  CurrencySelectorShape,
+  CurrencySelectorTheme,
+} from './CurrencySelectorAppearanceConfig';
+
 export const hostedCheckoutEndpoint =
   'https://stp-mobile-playground-backend-v7.stripedemos.com/checkout_session';
 
@@ -23,7 +29,6 @@ export type AdaptivePricingCountry =
   | 'br';
 
 export type CheckoutPlaygroundIntegrationType =
-  | 'paymentSheet'
   | 'paymentSheetFlowController'
   | 'embedded';
 
@@ -47,6 +52,9 @@ export type CheckoutPlaygroundConfig = {
   checkoutSessionPaymentMethodSave: boolean;
   checkoutSessionPaymentMethodRemove: boolean;
   adaptivePricingCountry: AdaptivePricingCountry;
+  currencySelectorTheme: CurrencySelectorTheme;
+  currencySelectorLabelContent: CurrencySelectorLabelContent;
+  currencySelectorShape: CurrencySelectorShape;
   paymentMethodTypes: string[];
 };
 
@@ -79,7 +87,6 @@ export const customerTypeOptions: SelectionOption<CheckoutPlaygroundCustomerType
 
 export const integrationTypeOptions: SelectionOption<CheckoutPlaygroundIntegrationType>[] =
   [
-    { label: 'PaymentSheet', value: 'paymentSheet' },
     {
       label: 'PaymentSheet.FlowController',
       value: 'paymentSheetFlowController',
@@ -110,7 +117,7 @@ export const defaultCheckoutPlaygroundConfig: CheckoutPlaygroundConfig = {
   mode: 'payment',
   currency: 'usd',
   customerType: 'guest',
-  integrationType: 'paymentSheet',
+  integrationType: 'paymentSheetFlowController',
   enableShipping: true,
   allowPromotionCodes: true,
   phoneNumberCollection: false,
@@ -121,6 +128,9 @@ export const defaultCheckoutPlaygroundConfig: CheckoutPlaygroundConfig = {
   checkoutSessionPaymentMethodSave: true,
   checkoutSessionPaymentMethodRemove: true,
   adaptivePricingCountry: 'none',
+  currencySelectorTheme: 'default',
+  currencySelectorLabelContent: CurrencySelectorLabelContent.Automatic,
+  currencySelectorShape: 'capsule',
   paymentMethodTypes: ['card'],
 };
 

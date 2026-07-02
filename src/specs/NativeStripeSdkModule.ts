@@ -210,9 +210,6 @@ export interface Spec extends TurboModule {
   updateEmbeddedPaymentElement(
     intentConfig: UnsafeObject<IntentConfiguration>
   ): Promise<UnsafeObject<any> | null>;
-  updateEmbeddedPaymentElementWithCheckout(
-    sessionKey: string
-  ): Promise<UnsafeObject<any> | null>;
   clearEmbeddedPaymentOption(viewTag: Int32): Promise<void>;
   createRadarSession(): Promise<CreateRadarSessionResult>;
 
@@ -255,12 +252,6 @@ export interface Spec extends TurboModule {
   checkoutSelectShippingOption(
     sessionKey: string,
     id: string
-  ): Promise<UnsafeObject<Checkout.State>>;
-
-  checkoutUpdateTaxId(
-    sessionKey: string,
-    type: string,
-    value: string
   ): Promise<UnsafeObject<Checkout.State>>;
 
   checkoutRunServerUpdateStart(

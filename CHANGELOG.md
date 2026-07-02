@@ -1,11 +1,31 @@
 # CHANGELOG
 
-# [0.66.0](https://github.com/appchoose/stripe-react-native/compare/v0.65.2...v0.66.0) (2026-05-21)
+## 0.68.0 - 2026-06-29
+**Changes**
+* Updated Stripe iOS SDK from 25.17.0 to 26.0.0.
+* Updated Stripe Android SDK from 23.10.1 to 23.11.0.
+* [Breaking] Updated Stripe Issuing Android Push Provisioning SDK from 1.1.0+ to 1.3.0+.
+* [Breaking] Updated Google Wallet Android Push Provisioning to the Unified Push Provisioning flow. This enables issued cards to be provisioned onto wearable devices via a mobile phone. `canAddCardToWallet` now requires `cardBrand`, and now checks if the card can be provisioned onto the mobile device or any connected wearable devices. See [documentation](https://docs.stripe.com/issuing/cards/digital-wallets?platform=react-native#push-provisioning) for integration guide.
 
+**Features**
+* [Added] Added Issuing support for Google Wallet Bounce Provisioning via the `isBounceProvisioned` parameter on `AddToWalletButton`. See [documentation](https://docs.stripe.com/issuing/cards/digital-wallets?platform=react-native#push-provisioning) for integration guide.
 
-### Features
+**Fixes**
+* [Fixed] Manual bank-account entry in ConnectAccountOnboarding now creates an external account on iOS/Android by collecting a bank-account token instead of only Financial Connections accounts.
 
-* release ([5aff5aa](https://github.com/appchoose/stripe-react-native/commit/5aff5aa75f006b3caa037c3de706a0e9990c8091))
+## 0.67.0 - 2026-06-09
+**Changes**
+* Updated Stripe iOS SDK from 25.16.0 to 25.17.0.
+* Updated Stripe Android SDK from 23.9.+ to 23.10.+.
+* [Changed] Renamed the React Native Crypto Onramp wrapper API from `presentCRSCARFDeclaration` to `presentUserAttestation`.
+* [Changed] Updated Crypto Onramp `submitIdentifiers` results to return `completed` and `carfTinRequired`, and removed the `valid` field.
+
+**Features**
+* [Added] Added typed Crypto Onramp API errors for app attestation and uncategorized API failures, including developer diagnostics and structured SDK version metadata.
+
+**Fixes**
+* Updated Stripe iOS SDK from 25.15.0 to 25.16.0.
+* [Fixed] Matched iOS Onramp `LinkAppearance.PrimaryButtonConfiguration` mapping to Android so unspecified custom height and corner radius values use Link defaults.
 
 ## 0.66.0 - 2026-05-20
 **Changes**
