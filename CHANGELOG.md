@@ -1,5 +1,17 @@
 # CHANGELOG
 
+# [0.67.0](https://github.com/appchoose/stripe-react-native/compare/v0.66.0...v0.67.0) (2026-07-02)
+
+
+### Bug Fixes
+
+* Fix manual entry not working in financial connections ([#2490](https://github.com/appchoose/stripe-react-native/issues/2490)) ([9e81ade](https://github.com/appchoose/stripe-react-native/commit/9e81ade42a6f44c12ab88718ecd51c13f5d3ec63))
+
+
+### Features
+
+* **example-connect:** add automated Android release signing setup ([#2304](https://github.com/appchoose/stripe-react-native/issues/2304)) ([2a7a897](https://github.com/appchoose/stripe-react-native/commit/2a7a897410a6c8f9359fac145c17f16cb8d30576))
+
 ## 0.68.0 - 2026-06-29
 **Changes**
 * Updated Stripe iOS SDK from 25.17.0 to 26.0.0.
