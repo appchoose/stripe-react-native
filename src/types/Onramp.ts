@@ -6,9 +6,9 @@ import type {
 } from './PlatformPay';
 
 /**
- * Generic error codes returned by Crypto Onramp APIs.
+ * Generic error statuses returned by Crypto Onramp APIs.
  */
-export enum OnrampError {
+export enum OnrampErrorStatus {
   Failed = 'Failed',
   Canceled = 'Canceled',
   Unknown = 'Unknown',
@@ -175,7 +175,38 @@ export enum CryptoNetwork {
   worldchain = 'worldchain',
   xrpl = 'xrpl',
   sui = 'sui',
+  arbitrum = 'arbitrum',
 }
+
+/**
+ * A short-lived server-issued challenge used to prove ownership of a registered wallet.
+ */
+export type WalletOwnershipChallenge = {
+  /** Opaque identifier for this challenge. */
+  challengeId: string;
+  /** The wallet address bound to this challenge. */
+  walletAddress: string;
+  /** The crypto network bound to this challenge. */
+  network: CryptoNetwork;
+  /** The exact opaque message the wallet must sign. */
+  message: string;
+  /** ISO 8601 timestamp indicating when this challenge expires. */
+  expiresAt: string;
+};
+
+/**
+ * A registered crypto consumer wallet.
+ */
+export type CryptoConsumerWallet = {
+  /** The consumer wallet's unique identifier. */
+  id: string;
+  /** The registered wallet address. */
+  walletAddress: string;
+  /** The crypto network for the registered wallet. */
+  network: CryptoNetwork;
+  /** Whether ownership of this wallet has been verified. */
+  verifiedOwnership: boolean;
+};
 
 /**
  * Represents a calendar date using day, month, and year components.
@@ -269,36 +300,42 @@ export type ComplianceIdentifierRequirements = {
 };
 
 /**
- * Typed Crypto Onramp error discriminants returned by newer native SDKs.
+ * Typed Crypto Onramp API error discriminants.
  */
-export type OnrampErrorType = 'AppAttestationError' | 'UncategorizedApiError';
+export type OnrampApiErrorType =
+  | 'AppAttestationError'
+  | 'UncategorizedApiError';
 
 /**
- * A native SDK component and version included in Crypto Onramp diagnostics.
+ * Typed Crypto Onramp error discriminants returned by newer native SDKs.
  */
-export type SDKVersion = {
-  /** The SDK component name. */
-  name: string;
-  /** The SDK component version. */
-  version: string;
-};
+export type OnrampErrorType =
+  | OnrampApiErrorType
+  | 'AppAttestationUnavailableError';
 
-export type OnrampApiError = StripeError<OnrampError> & {
-  onrampErrorType: string;
+/**
+ * Base rich error shape returned by native Crypto Onramp SDK errors.
+ */
+export type OnrampSdkError = StripeError<OnrampErrorStatus> & {
+  onrampErrorType: OnrampErrorType;
   developerMessage: string;
   userMessage: string;
+  docUrl?: string;
+};
+
+/**
+ * API-context fields returned for Crypto Onramp API errors.
+ */
+export type OnrampApiError = OnrampSdkError & {
+  onrampErrorType: OnrampApiErrorType;
   reason?: string;
-  operation: string;
-  appPackageName: string;
-  mode?: 'live' | 'test';
-  sdkVersions?: SDKVersion[];
   requestId?: string;
   apiErrorCode?: string;
   apiErrorType?: string;
   apiErrorMessage?: string;
   apiUserMessage?: string;
-  docUrl?: string;
 };
+
 /**
  * A typed Crypto Onramp app attestation failure.
  */
@@ -314,6 +351,13 @@ export type UncategorizedApiError = OnrampApiError & {
 };
 
 /**
+ * A typed Crypto Onramp local SDK error for app attestation setup failures.
+ */
+export type AppAttestationUnavailableError = OnrampSdkError & {
+  onrampErrorType: 'AppAttestationUnavailableError';
+};
+
+/**
  * Error returned by Crypto Onramp APIs.
  *
  * Most failures use the generic Stripe error envelope. Newer native SDK
@@ -321,11 +365,14 @@ export type UncategorizedApiError = OnrampApiError & {
  * `onrampErrorType`.
  */
 export type CryptoOnrampError =
-  | (StripeError<OnrampError> & {
-      onrampErrorType?: undefined;
+  | (StripeError<OnrampErrorStatus> & {
+      onrampErrorType?: never;
+      developerMessage?: never;
+      userMessage?: never;
     })
   | AppAttestationError
-  | UncategorizedApiError;
+  | UncategorizedApiError
+  | AppAttestationUnavailableError;
 
 /**
  * Result of retrieving missing compliance identifiers.
@@ -467,6 +514,36 @@ export type RegisterLinkUserResult =
   | {
       customerId?: undefined;
       /** Present if registration failed with an error. */
+      error: CryptoOnrampError;
+    };
+
+/**
+ * Result of creating a wallet ownership challenge.
+ */
+export type GetWalletOwnershipChallengeResult =
+  | {
+      /** The short-lived challenge whose message must be signed by the wallet. */
+      challenge: WalletOwnershipChallenge;
+      error?: undefined;
+    }
+  | {
+      challenge?: undefined;
+      /** Present if challenge creation failed with an error. */
+      error: CryptoOnrampError;
+    };
+
+/**
+ * Result of submitting a wallet ownership signature.
+ */
+export type SubmitWalletOwnershipSignatureResult =
+  | {
+      /** The registered wallet after ownership verification. */
+      consumerWallet: CryptoConsumerWallet;
+      error?: undefined;
+    }
+  | {
+      consumerWallet?: undefined;
+      /** Present if signature verification failed with an error. */
       error: CryptoOnrampError;
     };
 

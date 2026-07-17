@@ -1,23 +1,24 @@
 # CHANGELOG
 
-# [0.68.0](https://github.com/appchoose/stripe-react-native/compare/v0.67.0...v0.68.0) (2026-07-02)
+## 0.70.0 - 2026-07-16
+**Changes**
+* [Changed] Renamed the Crypto Onramp error status enum from `OnrampError` to `OnrampErrorStatus`. Existing generic Onramp errors now use `StripeError<OnrampErrorStatus>`.
+* [Changed] Split rich Crypto Onramp errors into `OnrampSdkError` for SDK-owned diagnostics and `OnrampApiError` for API response context. Rich SDK errors use an `onrampErrorType` discriminator typed as `OnrampErrorType`, while API errors narrow it to `OnrampApiErrorType` and add fields such as `reason`, `requestId`, and API message/code details.
+* [Fixed] Android: `PaymentMethod.Card.availableNetworks` and `PaymentMethod.USBankAccount.supportedNetworks` now return the expected array of network strings instead of always returning `null`, matching iOS behavior.
 
+**Features**
+* [Added] Added `AppAttestationUnavailableError` for local SDK app attestation availability/setup failures.
+* [Added] Added Crypto Onramp wallet ownership verification APIs, `getWalletOwnershipChallenge` and `submitWalletOwnershipSignature`, for EU Travel Rule compliance.
+* [Added] Added Arbitrum network support to Crypto Onramp.
 
-### Features
+## 0.69.0 - 2026-07-15
+**Changes**
+* Updated Stripe iOS SDK from 26.0.0 to 26.3.0.
+* Updated Stripe Android SDK from 23.11.0 to 23.12.0.
+* [Changed] Connect embedded components — `ConnectAccountOnboarding`, `ConnectPayments`, and `ConnectPayouts` — are now generally available. No API changes; existing integrations continue to work without modification.
 
-* release ([35a31c0](https://github.com/appchoose/stripe-react-native/commit/35a31c0ba2fae68263d3065df02e2a0feab11de8))
-
-# [0.67.0](https://github.com/appchoose/stripe-react-native/compare/v0.66.0...v0.67.0) (2026-07-02)
-
-
-### Bug Fixes
-
-* Fix manual entry not working in financial connections ([#2490](https://github.com/appchoose/stripe-react-native/issues/2490)) ([9e81ade](https://github.com/appchoose/stripe-react-native/commit/9e81ade42a6f44c12ab88718ecd51c13f5d3ec63))
-
-
-### Features
-
-* **example-connect:** add automated Android release signing setup ([#2304](https://github.com/appchoose/stripe-react-native/issues/2304)) ([2a7a897](https://github.com/appchoose/stripe-react-native/commit/2a7a897410a6c8f9359fac145c17f16cb8d30576))
+**Features**
+* [Added] Added standalone Link wallet APIs in private preview via `useLinkController`.
 
 ## 0.68.0 - 2026-06-29
 **Changes**

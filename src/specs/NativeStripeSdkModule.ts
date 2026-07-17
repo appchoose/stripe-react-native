@@ -22,6 +22,7 @@ import type {
   InitialiseParams,
   InitPaymentSheetResult,
   IsCardInWalletResult,
+  LinkController,
   OpenApplePaySetupResult,
   PaymentIntent,
   PaymentMethod,
@@ -227,13 +228,6 @@ export interface Spec extends TurboModule {
     phone: string | null
   ): Promise<UnsafeObject<Checkout.State>>;
 
-  checkoutUpdateBillingAddress(
-    sessionKey: string,
-    address: UnsafeObject<Checkout.Address>,
-    name: string | null,
-    phone: string | null
-  ): Promise<UnsafeObject<Checkout.State>>;
-
   checkoutApplyPromotionCode(
     sessionKey: string,
     code: string
@@ -285,6 +279,16 @@ export interface Spec extends TurboModule {
   getNetworksForCard(
     params: UnsafeObject<{ cardNumber: string }>
   ): Promise<PossibleNativeBrand[]>;
+
+  // LinkController - Private Preview
+
+  /** @PrivatePreview */
+  initLinkController(
+    params: UnsafeObject<LinkController.Configuration>
+  ): Promise<UnsafeObject<LinkController.InitResult>>;
+
+  /** @PrivatePreview */
+  presentLinkController(): Promise<UnsafeObject<LinkController.PresentResult>>;
 
   // Events
   addListener: (eventType: string) => void;

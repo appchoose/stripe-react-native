@@ -10,9 +10,9 @@ import StripePaymentsUI
 import UIKit
 #if canImport(StripeCryptoOnramp)
 @_spi(CryptoOnrampAlpha) import StripeCryptoOnramp
-@_spi(CryptoOnrampAlpha) @_spi(ReactNativeSDK) @_spi(AppearanceAPIAdditionsPreview) import StripePaymentSheet
+@_spi(LinkControllerPreview) @_spi(CryptoOnrampAlpha) @_spi(ReactNativeSDK) @_spi(AppearanceAPIAdditionsPreview) import StripePaymentSheet
 #else
-@_spi(ReactNativeSDK) import StripePaymentSheet
+@_spi(LinkControllerPreview) @_spi(ReactNativeSDK) import StripePaymentSheet
 #endif
 
 @available(iOS 13.0, *)
@@ -102,6 +102,11 @@ public class StripeSdkImpl: NSObject, UIAdaptivePresentationControllerDelegate {
     var applePayShippingMethods: [PKShippingMethod] = []
     var applePayShippingAddressErrors: [Error]?
     var applePayCouponCodeErrors: [Error]?
+
+    // LinkController - Private Preview
+    var linkController: LinkController?
+    var linkControllerEmail: String?
+    var linkControllerPhone: String?
 
     var customerSheetConfiguration = CustomerSheet.Configuration()
     var customerSheet: CustomerSheet?
@@ -1417,6 +1422,62 @@ public class StripeSdkImpl: NSObject, UIAdaptivePresentationControllerDelegate {
         }
     }
 
+    @objc(getWalletOwnershipChallenge:network:resolver:rejecter:)
+    public func getWalletOwnershipChallenge(
+        walletAddress: String,
+        network: String,
+        resolver resolve: @escaping RCTPromiseResolveBlock,
+        rejecter reject: @escaping RCTPromiseRejectBlock
+    ) {
+        guard isPublishableKeyAvailable(resolve), let coordinator = requireOnrampCoordinator(resolve) else {
+            return
+        }
+
+        guard let cryptoNetwork = CryptoNetwork(rawValue: network) else {
+            let errorResult = Errors.createError(ErrorType.Unknown, "Invalid network: \(network)")
+            resolve(["error": errorResult["error"]!])
+            return
+        }
+
+        Task {
+            do {
+                let challenge = try await coordinator.getWalletOwnershipChallenge(
+                    walletAddress: walletAddress,
+                    network: cryptoNetwork
+                )
+                resolve(["challenge": Mappers.mapFromWalletOwnershipChallenge(challenge)])
+            } catch {
+                let errorResult = OnrampErrors.createFailedError(error)
+                resolve(["error": errorResult["error"]!])
+            }
+        }
+    }
+
+    @objc(submitWalletOwnershipSignature:signature:resolver:rejecter:)
+    public func submitWalletOwnershipSignature(
+        challengeId: String,
+        signature: String,
+        resolver resolve: @escaping RCTPromiseResolveBlock,
+        rejecter reject: @escaping RCTPromiseRejectBlock
+    ) {
+        guard isPublishableKeyAvailable(resolve), let coordinator = requireOnrampCoordinator(resolve) else {
+            return
+        }
+
+        Task {
+            do {
+                let consumerWallet = try await coordinator.submitWalletOwnershipSignature(
+                    challengeId: challengeId,
+                    signature: signature
+                )
+                resolve(["consumerWallet": Mappers.mapFromCryptoConsumerWallet(consumerWallet)])
+            } catch {
+                let errorResult = OnrampErrors.createFailedError(error)
+                resolve(["error": errorResult["error"]!])
+            }
+        }
+    }
+
     @objc(attachKycInfo:resolver:rejecter:)
     public func attachKycInfo(
         info: NSDictionary,
@@ -1518,7 +1579,7 @@ public class StripeSdkImpl: NSObject, UIAdaptivePresentationControllerDelegate {
                 let presentingViewController = await MainActor.run {
                     findViewControllerPresenter(from: RCTKeyWindow()?.rootViewController ?? UIViewController())
                 }
-                let result = try await coordinator.presentCRSCARFDeclaration(from: presentingViewController)
+                let result = try await coordinator.presentUserAttestation(from: presentingViewController)
                 switch result {
                 case .confirmed:
                     resolve(["status": "Confirmed"])

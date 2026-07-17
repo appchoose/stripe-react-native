@@ -217,6 +217,11 @@ type AppAttestationError = OnrampApiError & {
     onrampErrorType: 'AppAttestationError';
 };
 
+// @public
+type AppAttestationUnavailableError = OnrampSdkError & {
+    onrampErrorType: 'AppAttestationUnavailableError';
+};
+
 // Warning: (ae-forgotten-export) The symbol "RecursivePartial" needs to be exported by the entry point index.d.ts
 //
 // @public
@@ -1085,6 +1090,16 @@ type Configuration = {
     googlePay?: GooglePayConfig;
 };
 
+// @public
+type Configuration_2 = {
+    email?: string;
+    merchantDisplayName: string;
+    supportedPaymentMethodTypes?: LinkPaymentMethodType[];
+    phoneNumber?: string;
+    allowLogout?: boolean;
+    setupIntentClientSecret?: string;
+};
+
 // @public (undocumented)
 interface ConfigurationParams extends Props_2 {
     // (undocumented)
@@ -1405,9 +1420,19 @@ export type CreateTokenResult = {
 };
 
 // @public
+type CryptoConsumerWallet = {
+    id: string;
+    walletAddress: string;
+    network: CryptoNetwork;
+    verifiedOwnership: boolean;
+};
+
+// @public
 enum CryptoNetwork {
     // (undocumented)
     aptos = "aptos",
+    // (undocumented)
+    arbitrum = "arbitrum",
     // (undocumented)
     avalanche = "avalanche",
     // (undocumented)
@@ -1433,9 +1458,11 @@ enum CryptoNetwork {
 }
 
 // @public
-type CryptoOnrampError = (StripeError<OnrampError> & {
-    onrampErrorType?: undefined;
-}) | AppAttestationError | UncategorizedApiError;
+type CryptoOnrampError = (StripeError<OnrampErrorStatus> & {
+    onrampErrorType?: never;
+    developerMessage?: never;
+    userMessage?: never;
+}) | AppAttestationError | UncategorizedApiError | AppAttestationUnavailableError;
 
 // @public
 type CryptoPaymentToken = {
@@ -1893,6 +1920,15 @@ type FutureUsage = 'OffSession' | 'OnSession' | 'None';
 // @public (undocumented)
 type FutureUsage_2 = 'Unknown' | 'None' | 'OnSession' | 'OffSession' | 'OneTime';
 
+// @public
+type GetWalletOwnershipChallengeResult = {
+    challenge: WalletOwnershipChallenge;
+    error?: undefined;
+} | {
+    challenge?: undefined;
+    error: CryptoOnrampError;
+};
+
 // @public (undocumented)
 export type GlobalColorConfig = {
     primary: string;
@@ -2120,6 +2156,9 @@ export interface InitialiseParams extends InitStripeParams {
     appInfo: AppInfo;
 }
 
+// @public
+export const initLinkController: (params: LinkController.Configuration) => Promise<LinkController.InitResult>;
+
 // @public (undocumented)
 export const initPaymentSheet: (params: PaymentSheet.SetupParams) => Promise<InitPaymentSheetResult>;
 
@@ -2130,6 +2169,13 @@ export type InitPaymentSheetResult = {
 } | {
     paymentOption?: undefined;
     error: StripeError<PaymentSheetError>;
+};
+
+// @public
+type InitResult = {
+    error?: undefined;
+} | {
+    error: StripeError<LinkControllerError>;
 };
 
 // @public (undocumented)
@@ -2330,6 +2376,27 @@ type LinkColors = {
     borderSelected: string;
 };
 
+declare namespace LinkController {
+    export {
+        LinkPaymentMethodType,
+        Configuration_2 as Configuration,
+        PaymentMethodPreview_2 as PaymentMethodPreview,
+        InitResult,
+        PresentResult
+    }
+}
+export { LinkController }
+
+// @public (undocumented)
+export enum LinkControllerError {
+    // (undocumented)
+    Canceled = "Canceled",
+    // (undocumented)
+    Failed = "Failed",
+    // (undocumented)
+    Unknown = "Unknown"
+}
+
 // @public
 export enum LinkDisplay {
     AUTOMATIC = "automatic",
@@ -2340,6 +2407,14 @@ export enum LinkDisplay {
 export type LinkParams = {
     display?: LinkDisplay;
 };
+
+// @public
+enum LinkPaymentMethodType {
+    // (undocumented)
+    BankAccount = "bankAccount",
+    // (undocumented)
+    Card = "card"
+}
 
 // @public
 type LinkPrimaryButton = {
@@ -2563,7 +2638,7 @@ type OnFormCompleteEvent = NativeSyntheticEvent<{
 
 declare namespace Onramp {
     export {
-        OnrampError,
+        OnrampErrorStatus,
         Configuration,
         GooglePayConfig,
         GooglePayBillingAddressConfig,
@@ -2575,6 +2650,8 @@ declare namespace Onramp {
         LinkPrimaryButton,
         LinkUserInfo,
         CryptoNetwork,
+        WalletOwnershipChallenge,
+        CryptoConsumerWallet,
         DateOfBirth,
         KycInfo,
         ComplianceIdentifierType,
@@ -2583,11 +2660,13 @@ declare namespace Onramp {
         ComplianceIdentifierRequirement,
         ComplianceIdentifierAlternativeGroup,
         ComplianceIdentifierRequirements,
+        OnrampApiErrorType,
         OnrampErrorType,
-        SDKVersion,
+        OnrampSdkError,
         OnrampApiError,
         AppAttestationError,
         UncategorizedApiError,
+        AppAttestationUnavailableError,
         CryptoOnrampError,
         RetrieveMissingIdentifiersResult,
         SubmitIdentifiersResult,
@@ -2597,6 +2676,8 @@ declare namespace Onramp {
         AuthorizeResult,
         HasLinkAccountResult,
         RegisterLinkUserResult,
+        GetWalletOwnershipChallengeResult,
+        SubmitWalletOwnershipSignatureResult,
         PaymentMethodDisplayData,
         CollectPaymentMethodResult,
         CreateCryptoPaymentTokenResult,
@@ -2606,26 +2687,22 @@ declare namespace Onramp {
 }
 export { Onramp }
 
-// @public (undocumented)
-type OnrampApiError = StripeError<OnrampError> & {
-    onrampErrorType: string;
-    developerMessage: string;
-    userMessage: string;
+// @public
+type OnrampApiError = OnrampSdkError & {
+    onrampErrorType: OnrampApiErrorType;
     reason?: string;
-    operation: string;
-    appPackageName: string;
-    mode?: 'live' | 'test';
-    sdkVersions?: SDKVersion[];
     requestId?: string;
     apiErrorCode?: string;
     apiErrorType?: string;
     apiErrorMessage?: string;
     apiUserMessage?: string;
-    docUrl?: string;
 };
 
 // @public
-enum OnrampError {
+type OnrampApiErrorType = 'AppAttestationError' | 'UncategorizedApiError';
+
+// @public
+enum OnrampErrorStatus {
     // (undocumented)
     Canceled = "Canceled",
     // (undocumented)
@@ -2635,7 +2712,7 @@ enum OnrampError {
 }
 
 // @public
-type OnrampErrorType = 'AppAttestationError' | 'UncategorizedApiError';
+type OnrampErrorType = OnrampApiErrorType | 'AppAttestationUnavailableError';
 
 // @public
 type OnrampGooglePayParams = {
@@ -2649,6 +2726,14 @@ type OnrampGooglePayParams = {
 type OnrampPlatformPayParams = {
     googlePay?: OnrampGooglePayParams;
     applePay?: ApplePayBaseParams & ApplePayPaymentMethodParams;
+};
+
+// @public
+type OnrampSdkError = StripeError<OnrampErrorStatus> & {
+    onrampErrorType: OnrampErrorType;
+    developerMessage: string;
+    userMessage: string;
+    docUrl?: string;
 };
 
 // @public (undocumented)
@@ -2890,6 +2975,13 @@ export interface PaymentMethodPreview {
     customerId?: string;
     type: Type;
 }
+
+// @public
+type PaymentMethodPreview_2 = {
+    icon: string;
+    label: string;
+    sublabel?: string;
+};
 
 // @public (undocumented)
 type PaymentMethodResult = {
@@ -3144,6 +3236,9 @@ export enum PlatformPayError {
     Unknown = "Unknown"
 }
 
+// @public
+export const presentLinkController: () => Promise<LinkController.PresentResult>;
+
 // @public (undocumented)
 export type PresentOptions = {
     timeout?: number;
@@ -3157,6 +3252,17 @@ export type PresentPaymentSheetResult = {
     paymentOption?: PaymentSheet.PaymentOption | undefined;
     didCancel?: boolean;
     error?: StripeError<PaymentSheetError> | undefined;
+};
+
+// @public
+type PresentResult = {
+    paymentMethod: Result_3;
+    paymentMethodPreview?: PaymentMethodPreview_2;
+    error?: undefined;
+} | {
+    paymentMethod?: undefined;
+    paymentMethodPreview?: undefined;
+    error: StripeError<LinkControllerError>;
 };
 
 // @public (undocumented)
@@ -3451,12 +3557,6 @@ export enum RowStyle {
     FlatWithRadio = "flatWithRadio",
     FloatingButton = "floatingButton"
 }
-
-// @public
-type SDKVersion = {
-    name: string;
-    version: string;
-};
 
 // @public (undocumented)
 interface SepaDebitResult {
@@ -3821,6 +3921,15 @@ type SubmitIdentifiersResult = {
 };
 
 // @public
+type SubmitWalletOwnershipSignatureResult = {
+    consumerWallet: CryptoConsumerWallet;
+    error?: undefined;
+} | {
+    consumerWallet?: undefined;
+    error: CryptoOnrampError;
+};
+
+// @public
 export enum TermsDisplay {
     AUTOMATIC = "automatic",
     NEVER = "never"
@@ -4014,6 +4123,13 @@ export function useFinancialConnectionsSheet(): {
 };
 
 // @public
+export function useLinkController(): {
+    loading: boolean;
+    initLinkController: (params: LinkController.Configuration) => Promise<LinkController.InitResult>;
+    presentLinkController: () => Promise<LinkController.PresentResult>;
+};
+
+// @public
 export function useOnramp(): {
     configure: (config: Onramp.Configuration) => Promise<{
         error?: Onramp.CryptoOnrampError;
@@ -4023,6 +4139,8 @@ export function useOnramp(): {
     registerWalletAddress: (walletAddress: string, network: Onramp.CryptoNetwork) => Promise<{
         error?: Onramp.CryptoOnrampError;
     }>;
+    getWalletOwnershipChallenge: (walletAddress: string, network: Onramp.CryptoNetwork) => Promise<Onramp.GetWalletOwnershipChallengeResult>;
+    submitWalletOwnershipSignature: (challengeId: string, signature: string) => Promise<Onramp.SubmitWalletOwnershipSignatureResult>;
     attachKycInfo: (kycInfo: Onramp.KycInfo) => Promise<{
         error?: Onramp.CryptoOnrampError;
     }>;
@@ -4213,6 +4331,15 @@ type VoidResult = {
     error?: CryptoOnrampError;
 };
 
+// @public
+type WalletOwnershipChallenge = {
+    challengeId: string;
+    walletAddress: string;
+    network: CryptoNetwork;
+    message: string;
+    expiresAt: string;
+};
+
 // @public (undocumented)
 interface WeChatPayParams {
     // (undocumented)
@@ -4240,9 +4367,9 @@ interface WeChatPayParams_2 {
 // Warnings were encountered during analysis:
 //
 // src/components/CustomerSheet.tsx:374:27 - (ae-forgotten-export) The symbol "Component" needs to be exported by the entry point index.d.ts
-// src/connect/Components.tsx:74:3 - (ae-forgotten-export) The symbol "StepChange" needs to be exported by the entry point index.d.ts
-// src/connect/Components.tsx:78:3 - (ae-forgotten-export) The symbol "CollectionOptions" needs to be exported by the entry point index.d.ts
-// src/connect/Components.tsx:243:3 - (ae-forgotten-export) The symbol "PaymentsListDefaultFilters" needs to be exported by the entry point index.d.ts
+// src/connect/Components.tsx:75:3 - (ae-forgotten-export) The symbol "StepChange" needs to be exported by the entry point index.d.ts
+// src/connect/Components.tsx:79:3 - (ae-forgotten-export) The symbol "CollectionOptions" needs to be exported by the entry point index.d.ts
+// src/connect/Components.tsx:253:3 - (ae-forgotten-export) The symbol "PaymentsListDefaultFilters" needs to be exported by the entry point index.d.ts
 // src/connect/connectTypes.ts:208:3 - (ae-forgotten-export) The symbol "AppearanceOptions" needs to be exported by the entry point index.d.ts
 // src/connect/connectTypes.ts:218:3 - (ae-forgotten-export) The symbol "CssFontSource" needs to be exported by the entry point index.d.ts
 // src/connect/connectTypes.ts:218:3 - (ae-forgotten-export) The symbol "CustomFontSource" needs to be exported by the entry point index.d.ts
