@@ -1,5 +1,12 @@
 # CHANGELOG
 
+# [0.70.0](https://github.com/appchoose/stripe-react-native/compare/v0.69.0...v0.70.0) (2026-07-17)
+
+
+### Features
+
+* release ([1d97bd8](https://github.com/appchoose/stripe-react-native/commit/1d97bd86e2c927fd7ac983ee5cf9bd5dcd2a465f))
+
 ## 0.70.0 - 2026-07-16
 **Changes**
 * [Changed] Renamed the Crypto Onramp error status enum from `OnrampError` to `OnrampErrorStatus`. Existing generic Onramp errors now use `StripeError<OnrampErrorStatus>`.
