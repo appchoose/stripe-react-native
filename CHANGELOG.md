@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## [0.70.1](https://github.com/appchoose/stripe-react-native/compare/v0.70.0...v0.70.1) (2026-07-28)
+
+
+### Bug Fixes
+
+* use exact hostname matching in Connect WebView allowlist ([#2550](https://github.com/appchoose/stripe-react-native/issues/2550)) ([3c8cd04](https://github.com/appchoose/stripe-react-native/commit/3c8cd0450269d2c61e0e05f07950d6902aab2bff))
+
 ## 0.72.0 - 2026-07-27
 **Changes**
 * Updated Stripe iOS SDK from 26.3.0 to 26.4.1.
