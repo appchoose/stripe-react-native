@@ -404,6 +404,24 @@ export default function HomeScreen() {
               }}
             />
           </View>
+
+          <View style={styles.buttonContainer}>
+            <Button
+              title="Twint Payment"
+              onPress={() => {
+                navigation.navigate('TwintPaymentScreen');
+              }}
+            />
+          </View>
+
+          <View style={styles.buttonContainer}>
+            <Button
+              title="Twint Recurring set up"
+              onPress={() => {
+                navigation.navigate('TwintSetupFuturePaymentScreen');
+              }}
+            />
+          </View>
         </>
       </Collapse>
 
@@ -535,6 +553,14 @@ export default function HomeScreen() {
               title="RevolutPay"
               onPress={() => {
                 navigation.navigate('RevolutPayScreen');
+              }}
+            />
+          </View>
+          <View style={styles.buttonContainer}>
+            <Button
+              title="Pay by Bank"
+              onPress={() => {
+                navigation.navigate('PayByBankScreen');
               }}
             />
           </View>

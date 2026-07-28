@@ -1095,9 +1095,9 @@ type Configuration_2 = {
     email?: string;
     merchantDisplayName: string;
     supportedPaymentMethodTypes?: LinkPaymentMethodType[];
+    paymentMethodTypes?: string[];
     phoneNumber?: string;
     allowLogout?: boolean;
-    setupIntentClientSecret?: string;
 };
 
 // @public (undocumented)
@@ -1136,6 +1136,9 @@ export { ConfirmationToken }
 export type ConfirmCustomPaymentMethodCallback = (customPaymentMethod: CustomPaymentMethod, billingDetails: BillingDetails | null,
 resultHandler: (result: CustomPaymentMethodResult) => void) => void;
 
+// @public
+export const confirmLinkControllerSetupIntent: (clientSecret: string) => Promise<LinkController.ConfirmSetupIntentResult>;
+
 // @public (undocumented)
 type ConfirmOptions = PaymentMethod.ConfirmOptions;
 
@@ -1146,7 +1149,7 @@ type ConfirmOptions_2 = CreateOptions;
 type ConfirmOptions_3 = ConfirmOptions;
 
 // @public (undocumented)
-type ConfirmParams = CardParams | IdealParams | OxxoParams | MultibancoParams | P24Params | AlipayParams | AlmaParams | SepaParams | EpsParams | AuBecsDebitParams | GrabPayParams | FPXParams | AfterpayClearpayParams | KlarnaParams | BancontactParams | BillieParams | USBankAccountParams | PayPalParams | AffirmParams | CashAppParams | RevolutPayParams;
+type ConfirmParams = CardParams | IdealParams | OxxoParams | MultibancoParams | P24Params | AlipayParams | AlmaParams | SepaParams | EpsParams | AuBecsDebitParams | GrabPayParams | FPXParams | AfterpayClearpayParams | KlarnaParams | BancontactParams | BillieParams | USBankAccountParams | PayPalParams | AffirmParams | CashAppParams | RevolutPayParams | PayByBankParams | TwintParams;
 
 // @public (undocumented)
 type ConfirmParams_2 = CreateParams;
@@ -1234,6 +1237,13 @@ type ConfirmSetupIntentResult_2 = {
 } | {
     setupIntent?: undefined;
     error: StripeError<PlatformPayError>;
+};
+
+// @public
+type ConfirmSetupIntentResult_3 = {
+    error?: undefined;
+} | {
+    error: StripeError<LinkControllerError>;
 };
 
 // Warning: (ae-forgotten-export) The symbol "CommonComponentProps" needs to be exported by the entry point index.d.ts
@@ -2382,6 +2392,7 @@ declare namespace LinkController {
         Configuration_2 as Configuration,
         PaymentMethodPreview_2 as PaymentMethodPreview,
         InitResult,
+        ConfirmSetupIntentResult_3 as ConfirmSetupIntentResult,
         PresentResult
     }
 }
@@ -2795,6 +2806,16 @@ interface P24Params_2 {
     paymentMethodType: 'P24';
 }
 
+// @public (undocumented)
+type PayByBankParams = {
+    paymentMethodType: 'PayByBank';
+    paymentMethodData?: {
+        billingDetails?: BillingDetails;
+        mandateData?: MandateData;
+        metadata?: MetaData;
+    };
+};
+
 // @public
 type PaymentDisplayDataResult = {
     displayData: PaymentMethodDisplayData;
@@ -2824,6 +2845,7 @@ declare namespace PaymentIntent {
         MultibancoParams,
         GrabPayParams,
         BancontactParams,
+        TwintParams,
         BillieParams,
         SepaParams,
         AfterpayClearpayParams,
@@ -2837,6 +2859,7 @@ declare namespace PaymentIntent {
         PayPalParams,
         CashAppParams,
         RevolutPayParams,
+        PayByBankParams,
         CollectBankAccountParams_2 as CollectBankAccountParams
     }
 }
@@ -4020,7 +4043,19 @@ type TokenResult_2 = {
 };
 
 // @public (undocumented)
-type Type = 'AfterpayClearpay' | 'Card' | 'Alipay' | 'GrabPay' | 'Ideal' | 'Fpx' | 'CardPresent' | 'SepaDebit' | 'AuBecsDebit' | 'BacsDebit' | 'P24' | 'Eps' | 'Bancontact' | 'Multibanco' | 'Oxxo' | 'USBankAccount' | 'PayPal' | 'Unknown';
+interface TwintParams {
+    // (undocumented)
+    paymentMethodData: {
+        billingDetails: BillingDetails;
+        mandateData?: MandateData;
+        metadata?: MetaData;
+    };
+    // (undocumented)
+    paymentMethodType: 'Twint';
+}
+
+// @public (undocumented)
+type Type = 'AfterpayClearpay' | 'Card' | 'Alipay' | 'GrabPay' | 'Ideal' | 'Fpx' | 'CardPresent' | 'SepaDebit' | 'AuBecsDebit' | 'BacsDebit' | 'P24' | 'Eps' | 'Bancontact' | 'Multibanco' | 'Oxxo' | 'USBankAccount' | 'PayPal' | 'PayByBank' | 'Unknown';
 
 // @public (undocumented)
 type Type_2 = 'Account' | 'BankAccount' | 'Card' | 'CvcUpdate' | 'Person' | 'Pii';
@@ -4127,6 +4162,7 @@ export function useLinkController(): {
     loading: boolean;
     initLinkController: (params: LinkController.Configuration) => Promise<LinkController.InitResult>;
     presentLinkController: () => Promise<LinkController.PresentResult>;
+    confirmLinkControllerSetupIntent: (clientSecret: string) => Promise<LinkController.ConfirmSetupIntentResult>;
 };
 
 // @public
@@ -4373,8 +4409,8 @@ interface WeChatPayParams_2 {
 // src/connect/connectTypes.ts:208:3 - (ae-forgotten-export) The symbol "AppearanceOptions" needs to be exported by the entry point index.d.ts
 // src/connect/connectTypes.ts:218:3 - (ae-forgotten-export) The symbol "CssFontSource" needs to be exported by the entry point index.d.ts
 // src/connect/connectTypes.ts:218:3 - (ae-forgotten-export) The symbol "CustomFontSource" needs to be exported by the entry point index.d.ts
-// src/types/PaymentIntent.ts:269:5 - (ae-forgotten-export) The symbol "MetaData" needs to be exported by the entry point index.d.ts
-// src/types/PaymentMethod.ts:297:3 - (ae-forgotten-export) The symbol "UserInterfaceStyle" needs to be exported by the entry point index.d.ts
+// src/types/PaymentIntent.ts:280:5 - (ae-forgotten-export) The symbol "MetaData" needs to be exported by the entry point index.d.ts
+// src/types/PaymentMethod.ts:298:3 - (ae-forgotten-export) The symbol "UserInterfaceStyle" needs to be exported by the entry point index.d.ts
 // src/types/PaymentSheet.ts:124:3 - (ae-forgotten-export) The symbol "Checkout" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)

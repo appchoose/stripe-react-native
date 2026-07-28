@@ -151,6 +151,8 @@ internal fun mapPaymentMethodType(type: PaymentMethod.Type?): String =
     PaymentMethod.Type.Affirm -> "Affirm"
     PaymentMethod.Type.CashAppPay -> "CashApp"
     PaymentMethod.Type.RevolutPay -> "RevolutPay"
+    PaymentMethod.Type.PayByBank -> "PayByBank"
+    PaymentMethod.Type.Twint -> "Twint"
     PaymentMethod.Type.Link -> "Link"
     else -> "Unknown"
   }
@@ -182,6 +184,8 @@ internal fun mapToPaymentMethodType(type: String?): PaymentMethod.Type? =
     "Affirm" -> PaymentMethod.Type.Affirm
     "CashApp" -> PaymentMethod.Type.CashAppPay
     "RevolutPay" -> PaymentMethod.Type.RevolutPay
+    "PayByBank" -> PaymentMethod.Type.PayByBank
+    "Twint" -> PaymentMethod.Type.Twint
     "Link" -> PaymentMethod.Type.Link
     else -> null
   }

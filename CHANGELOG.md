@@ -1,11 +1,14 @@
 # CHANGELOG
 
-# [0.70.0](https://github.com/appchoose/stripe-react-native/compare/v0.69.0...v0.70.0) (2026-07-17)
+## 0.72.0 - 2026-07-27
+**Changes**
+* Updated Stripe iOS SDK from 26.3.0 to 26.4.1.
+* Updated Stripe Android SDK from 23.12.0 to 23.13.1.
+* [Changed] `useLinkController` (private preview): SetupIntent confirmation is now a separate step. The SDK no longer confirms the SetupIntent automatically inside `presentLinkController`; instead, confirmation is triggered explicitly after the payment method is selected.
 
-
-### Features
-
-* release ([1d97bd8](https://github.com/appchoose/stripe-react-native/commit/1d97bd86e2c927fd7ac983ee5cf9bd5dcd2a465f))
+## 0.71.0 - 2026-07-22
+**Features**
+* [Added] Added support for the Pay by Bank payment method (`paymentMethodType: 'PayByBank'`) in `confirmPayment` and `confirmSetupIntent`.
 
 ## 0.70.0 - 2026-07-16
 **Changes**

@@ -295,6 +295,7 @@ export type Type =
   | 'Oxxo'
   | 'USBankAccount'
   | 'PayPal'
+  | 'PayByBank'
   | 'Unknown';
 
 export type CollectBankAccountParams = {
