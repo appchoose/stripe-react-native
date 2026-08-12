@@ -1,5 +1,18 @@
 # CHANGELOG
 
+# [0.73.0](https://github.com/appchoose/stripe-react-native/compare/v0.72.0...v0.73.0) (2026-08-12)
+
+
+### Bug Fixes
+
+* **ios:** read captureMethod from nested mode params instead of top-level intentConfiguration ([#2518](https://github.com/appchoose/stripe-react-native/issues/2518)) ([01de773](https://github.com/appchoose/stripe-react-native/commit/01de7732e0b629415223cc9920c92c105f8c78b4))
+* **ios:** use stripe-connect callback scheme for authenticated web view ([#2561](https://github.com/appchoose/stripe-react-native/issues/2561)) ([ead93f7](https://github.com/appchoose/stripe-react-native/commit/ead93f737b0ecf10278f3efa314e0362bd7924fe))
+
+
+### Features
+
+* **ios:** support `supportedNetworks` in `ApplePayBaseParams` ([#2566](https://github.com/appchoose/stripe-react-native/issues/2566)) ([8a10bf9](https://github.com/appchoose/stripe-react-native/commit/8a10bf9a4092721c47553c22cb6f4dc08ab15d31))
+
 ## 0.74.0 - 2026-08-11
 **Features**
 * [Added] iOS: Added `supportedNetworks` to the Apple Pay params, which restricts the card networks offered in the Apple Pay sheet.
