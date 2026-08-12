@@ -1,6 +1,7 @@
 import AuthenticationServices
 import Foundation
 import PassKit
+import SafariServices
 @_spi(DashboardOnly) @_spi(STP) import Stripe
 @_spi(STP) @_spi(ReactNativeSDK) import StripeCore
 import StripeFinancialConnections
@@ -138,6 +139,8 @@ public class StripeSdkImpl: NSObject, UIAdaptivePresentationControllerDelegate {
 
     var authenticationSession: ASWebAuthenticationSession?
     var authenticationContextProvider: Any?
+
+    static let authenticatedWebViewReturnURLScheme = "stripe-connect"
 
     @objc public func getConstants() -> [AnyHashable: Any] {
         return [
@@ -1979,7 +1982,7 @@ public class StripeSdkImpl: NSObject, UIAdaptivePresentationControllerDelegate {
             // Create the authentication session with the configured URL scheme
             self.authenticationSession = ASWebAuthenticationSession(
                 url: url,
-                callbackURLScheme: nil
+                callbackURLScheme: StripeSdkImpl.authenticatedWebViewReturnURLScheme
             ) { callbackURL, error in
                 if let error = error {
                     // User canceled or an error occurred
@@ -2017,6 +2020,33 @@ public class StripeSdkImpl: NSObject, UIAdaptivePresentationControllerDelegate {
                 self.authenticationSession = nil
                 self.authenticationContextProvider = nil
                 return
+            }
+        }
+    }
+
+    @objc(presentExternalWebPage:resolver:rejecter:)
+    public func presentExternalWebPage(
+        url: String,
+        resolver resolve: @escaping RCTPromiseResolveBlock,
+        rejecter reject: @escaping RCTPromiseRejectBlock
+    ) {
+        guard let url = URL(string: url),
+              let scheme = url.scheme?.lowercased(),
+              ["http", "https"].contains(scheme) else {
+            reject(ErrorType.Failed, "Invalid web URL", nil)
+            return
+        }
+
+        DispatchQueue.main.async {
+            let safariViewController = SFSafariViewController(url: url)
+            safariViewController.dismissButtonStyle = .done
+            safariViewController.modalPresentationStyle = .pageSheet
+
+            let presenter = findViewControllerPresenter(
+                from: RCTKeyWindow()?.rootViewController ?? UIViewController()
+            )
+            presenter.present(safariViewController, animated: true) {
+                resolve(nil)
             }
         }
     }

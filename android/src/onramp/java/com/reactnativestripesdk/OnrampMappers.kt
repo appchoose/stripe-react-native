@@ -1,4 +1,4 @@
-@file:OptIn(ExperimentalCryptoOnramp::class)
+@file:OptIn(ExperimentalCryptoOnramp::class, LinkControllerPreview::class)
 
 package com.reactnativestripesdk
 
@@ -10,6 +10,7 @@ import com.facebook.react.bridge.ReadableMap
 import com.facebook.react.bridge.WritableArray
 import com.stripe.android.core.model.CountryCode
 import com.stripe.android.crypto.onramp.ExperimentalCryptoOnramp
+import com.stripe.android.link.LinkControllerPreview
 import com.stripe.android.crypto.onramp.model.CryptoConsumerWallet
 import com.stripe.android.crypto.onramp.model.CryptoNetwork
 import com.stripe.android.crypto.onramp.exception.SDKVersion
@@ -185,6 +186,7 @@ internal fun mapPaymentDetailsType(type: PaymentMethodDisplayData.Type): String 
     PaymentMethodDisplayData.Type.Card -> "Card"
     PaymentMethodDisplayData.Type.BankAccount -> "BankAccount"
     PaymentMethodDisplayData.Type.GooglePay -> "GooglePay"
+    PaymentMethodDisplayData.Type.SamsungPay -> "SamsungPay"
   }
 
 @OptIn(ExperimentalCryptoOnramp::class)

@@ -1,4 +1,4 @@
-@file:OptIn(ExperimentalCryptoOnramp::class)
+@file:OptIn(ExperimentalCryptoOnramp::class, LinkControllerPreview::class)
 
 package com.reactnativestripesdk.mappers
 
@@ -24,6 +24,7 @@ import com.stripe.android.crypto.onramp.model.PaymentMethodDisplayData
 import com.stripe.android.googlepaylauncher.GooglePayEnvironment
 import com.stripe.android.googlepaylauncher.GooglePayPaymentMethodLauncher
 import com.stripe.android.link.LinkAppearance.Style
+import com.stripe.android.link.LinkControllerPreview
 import com.stripe.android.model.DateOfBirth
 import com.stripe.android.paymentsheet.PaymentSheet
 import org.junit.Assert.assertEquals
@@ -451,6 +452,7 @@ class OnrampMappersTest {
     assertEquals("Card", mapPaymentDetailsType(PaymentMethodDisplayData.Type.Card))
     assertEquals("BankAccount", mapPaymentDetailsType(PaymentMethodDisplayData.Type.BankAccount))
     assertEquals("GooglePay", mapPaymentDetailsType(PaymentMethodDisplayData.Type.GooglePay))
+    assertEquals("SamsungPay", mapPaymentDetailsType(PaymentMethodDisplayData.Type.SamsungPay))
   }
 
   @Test

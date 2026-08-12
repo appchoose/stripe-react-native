@@ -1,25 +1,16 @@
 # CHANGELOG
 
-# [0.72.0](https://github.com/appchoose/stripe-react-native/compare/v0.71.0...v0.72.0) (2026-07-28)
+## 0.74.0 - 2026-08-11
+**Features**
+* [Added] iOS: Added `supportedNetworks` to the Apple Pay params, which restricts the card networks offered in the Apple Pay sheet.
 
-
-### Features
-
-* release ([98345b6](https://github.com/appchoose/stripe-react-native/commit/98345b659438ed754bb9f8bedd567b0a876c8ba1))
-
-# [0.71.0](https://github.com/appchoose/stripe-react-native/compare/v0.70.1...v0.71.0) (2026-07-28)
-
-
-### Features
-
-* release ([12bb4bd](https://github.com/appchoose/stripe-react-native/commit/12bb4bd25c16c01155de964cb2518f1b74f1c01e))
-
-## [0.70.1](https://github.com/appchoose/stripe-react-native/compare/v0.70.0...v0.70.1) (2026-07-28)
-
-
-### Bug Fixes
-
-* use exact hostname matching in Connect WebView allowlist ([#2550](https://github.com/appchoose/stripe-react-native/issues/2550)) ([3c8cd04](https://github.com/appchoose/stripe-react-native/commit/3c8cd0450269d2c61e0e05f07950d6902aab2bff))
+## 0.73.0 - 2026-08-04
+**Changes**
+* Updated Stripe iOS SDK from 26.4.1 to 26.5.0.
+* Updated Stripe Android SDK from 23.13.1 to 23.14.0.
+* [Added] `useLinkController` (private preview): Added `billingDetailsCollectionConfiguration` to `LinkController.Configuration` to control which billing fields are collected in the Link sheet.
+* [Added] `useLinkController` (private preview): Added `appearance` to `LinkController.Configuration` to customize Link UI colors and styling.
+* [Added] Added Tempo network support to Crypto Onramp.
 
 ## 0.72.0 - 2026-07-27
 **Changes**
