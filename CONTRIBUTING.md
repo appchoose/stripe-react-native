@@ -178,96 +178,24 @@ The React Native SDK depends on underlying native [iOS](https://github.com/strip
 
 ## Changing the public APIs
 
-The public API is everything exported from `src/index.tsx`. 
-**Important**: After you make changes, run `yarn api-extractor:update`. 
+The public API is everything exported from `src/index.tsx`.
+**Important**: After you make changes, run `yarn api-extractor:update`.
 
 ### In-development (not yet public) APIs
 
 - Don't export from `src/index.tsx`.
-- Exception - if a public type must reference it:
-  - Tag it with `@internal`. 
-  - Teel free to also mark with e.g. `@CheckoutSessionsPrivatePreview` for easy grepping later.
-
-```ts
-/**
- * @CheckoutSessionsPrivatePreview
- * @internal
- */
-export type CheckoutSetupParams = { ... }
-```
+- Exception - if a public type must reference it, tag it with `@internal`.
 
 ### Private Preview / Public Preview APIs
 
 - Export from `src/index.tsx`.
 - Use `@MyFeaturePrivatePreview` / `@MyFeaturePublicPreview`.
 
-```ts
-/**
- * @CheckoutSessionsPrivatePreview
- */
-export type CheckoutSetupParams = { ... }
-```
+## React Native architecture compatibility
 
-## Maintaining the Stripe old-architecture patch
+The SDK requires the new architecture.
 
-We ship `patches/old-arch-codegen-fix.patch` so that the library builds on **React-Native >= 0.74 in the old architecture** (it converts `EventEmitter` properties into callback functions so code-gen doesn't fail).
-
-### When to update the patch
-
-The patch needs to be updated when:
-- You modify `src/specs/NativeStripeSdkModule.ts` and add/remove/change EventEmitter properties
-- You upgrade dependencies that might affect the TurboModule interface
-- The patch fails to apply during testing or CI
-
-### How to update the patch
-
-1. **Make your changes to the source code** in `src/specs/NativeStripeSdkModule.ts`
-
-2. **Create a backup of the original file**:
-   ```bash
-   cp src/specs/NativeStripeSdkModule.ts src/specs/NativeStripeSdkModule.ts.orig
-   ```
-
-3. **Apply the old-arch compatible changes**:
-   - Remove the `EventEmitter` import from the imports section
-   - Convert all `EventEmitter` properties to callback function methods
-   - For example, change:
-     ```typescript
-     onConfirmHandlerCallback: EventEmitter<{
-       paymentMethod: UnsafeObject<PaymentMethod.Result>;
-       shouldSavePaymentMethod: boolean;
-     }>;
-     ```
-     To:
-     ```typescript
-     onConfirmHandlerCallback(
-       callback: (event: {
-         paymentMethod: UnsafeObject<PaymentMethod.Result>;
-         shouldSavePaymentMethod: boolean;
-       }) => void
-     ): void;
-     ```
-
-4. **Generate the new patch**:
-   ```bash
-   diff -u src/specs/NativeStripeSdkModule.ts.orig src/specs/NativeStripeSdkModule.ts > patches/old-arch-codegen-fix.patch
-   ```
-
-5. **Test the patch**:
-   ```bash
-   # Test that the patch applies cleanly
-   git stash  # stash your changes
-   patch -p0 < patches/old-arch-codegen-fix.patch
-   # Verify the file looks correct
-   git stash pop  # restore your changes
-   ```
-
-6. **Commit the updated patch**:
-   ```bash
-   git add patches/old-arch-codegen-fix.patch
-   git commit -m "chore: update old-arch codegen fix patch"
-   ```
-
+React Native versions before 0.80 still require the event-emitter compatibility layers in `src/events.ts`, Android's `EventEmitterCompat.kt`, and `ios/StripeSdkEventEmitterCompat.{h,m}`.
 
 ## Scripts reference
 

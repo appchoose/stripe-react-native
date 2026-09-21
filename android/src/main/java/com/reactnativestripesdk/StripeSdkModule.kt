@@ -13,7 +13,6 @@ import androidx.core.net.toUri
 import androidx.fragment.app.FragmentActivity
 import com.facebook.react.ReactActivity
 import com.facebook.react.bridge.Arguments
-import com.facebook.react.bridge.BaseActivityEventListener
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactMethod
@@ -26,6 +25,7 @@ import com.facebook.react.bridge.WritableNativeMap
 import com.facebook.react.module.annotations.ReactModule
 import com.facebook.react.modules.systeminfo.ReactNativeVersion
 import com.reactnativestripesdk.addresssheet.AddressLauncherManager
+import com.reactnativestripesdk.checkout.CheckoutControllerRegistry
 import com.reactnativestripesdk.customersheet.CustomerSheetManager
 import com.reactnativestripesdk.pushprovisioning.PushProvisioningProxy
 import com.reactnativestripesdk.pushprovisioning.TapAndPayProxy
@@ -86,21 +86,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.json.JSONObject
 
-internal const val CHECKOUT_UNAVAILABLE_MESSAGE =
-  "Checkout Sessions are temporarily unavailable while the native integration is being rebuilt."
-
-private fun rejectCheckoutUnavailable(promise: Promise) {
-  promise.reject(ErrorType.Failed.toString(), CHECKOUT_UNAVAILABLE_MESSAGE)
-}
-
-internal fun createCheckoutUnavailableError(): WritableMap =
-  createError(ErrorType.Failed.toString(), CHECKOUT_UNAVAILABLE_MESSAGE)
-
 @ReactModule(name = StripeSdkModule.NAME)
 @OptIn(ReactNativeSdkInternal::class)
 class StripeSdkModule(
   reactContext: ReactApplicationContext,
 ) : NativeStripeSdkModuleSpec(reactContext) {
+
   var cardFieldView: CardFieldView? = null
   var cardFormView: CardFormView? = null
 
@@ -110,7 +101,7 @@ class StripeSdkModule(
   private var urlScheme: String? = null
 
   private var createPlatformPayPaymentMethodPromise: Promise? = null
-  private var platformPayUsesDeprecatedTokenFlow = false
+  private var platformPayLauncher: GooglePayRequestLauncher? = null
 
   private val stripeUIManagers = mutableListOf<StripeUIManager>()
   private var paymentSheetManager: PaymentSheetManager? = null
@@ -121,6 +112,7 @@ class StripeSdkModule(
   private var googlePayPaymentMethodLauncherManager: GooglePayPaymentMethodLauncherManager? = null
   private var customerSheetManager: CustomerSheetManager? = null
   private var linkControllerManager: LinkControllerManager? = null
+  internal val checkoutControllerRegistry = CheckoutControllerRegistry()
 
   internal var embeddedIntentCreationCallback = CompletableDeferred<ReadableMap>()
   internal var embeddedConfirmationTokenCreationCallback = CompletableDeferred<ReadableMap>()
@@ -135,42 +127,17 @@ class StripeSdkModule(
 
   val eventEmitter: EventEmitterCompat by lazy { EventEmitterCompat(reactApplicationContext) }
 
-  private val mActivityEventListener =
-    object : BaseActivityEventListener() {
-      override fun onActivityResult(
-        activity: Activity,
-        requestCode: Int,
-        resultCode: Int,
-        data: Intent?,
-      ) {
-        if (::stripe.isInitialized) {
-          when (requestCode) {
-            GooglePayRequestHelper.LOAD_PAYMENT_DATA_REQUEST_CODE -> {
-              createPlatformPayPaymentMethodPromise?.let {
-                GooglePayRequestHelper.handleGooglePaymentMethodResult(
-                  resultCode,
-                  data,
-                  stripe,
-                  platformPayUsesDeprecatedTokenFlow,
-                  it,
-                )
-                createPlatformPayPaymentMethodPromise = null
-              }
-            }
-          }
-        }
-      }
-    }
-
-  init {
-    reactContext.addActivityEventListener(mActivityEventListener)
-  }
-
   override fun invalidate() {
     super.invalidate()
 
     stripeUIManagers.forEach { it.destroy() }
     stripeUIManagers.clear()
+    UiThreadUtil.runOnUiThread {
+      platformPayLauncher?.destroy()
+      platformPayLauncher = null
+      createPlatformPayPaymentMethodPromise = null
+      checkoutControllerRegistry.clear()
+    }
     linkControllerManager?.destroy()
     linkControllerManager = null
   }
@@ -232,7 +199,7 @@ class StripeSdkModule(
               ).toString()
           ),
           "appVersion" to (packageInfo?.versionName ?: ""),
-          "isNewArchitecture" to BuildConfig.IS_NEW_ARCHITECTURE_ENABLED,
+          "isNewArchitecture" to true,
           "reactNativeVersion" to
             with(ReactNativeVersion.VERSION) {
               "${get("major")}.${get("minor")}.${get("patch")}"
@@ -271,7 +238,7 @@ class StripeSdkModule(
 
     PaymentConfiguration.init(reactApplicationContext, publishableKey, stripeAccountId)
 
-    ReactNativeAnalytics.isNewArchitecture = BuildConfig.IS_NEW_ARCHITECTURE_ENABLED
+    ReactNativeAnalytics.isNewArchitecture = true
     ReactNativeAnalytics.reactNativeVersion =
       with(ReactNativeVersion.VERSION) {
         "${get("major")}.${get("minor")}.${get("patch")}"
@@ -910,6 +877,7 @@ class StripeSdkModule(
   }
 
   @ReactMethod
+  @Suppress("TooGenericExceptionCaught") // Convert SDK and Activity launch failures to bridge errors.
   override fun createPlatformPayPaymentMethod(
     params: ReadableMap,
     usesDeprecatedTokenFlow: Boolean,
@@ -925,16 +893,34 @@ class StripeSdkModule(
         )
         return
       }
-    platformPayUsesDeprecatedTokenFlow = usesDeprecatedTokenFlow
-    createPlatformPayPaymentMethodPromise = promise
-    getCurrentActivityOrResolveWithError(promise)?.let {
-      val request =
-        GooglePayRequestHelper.createPaymentRequest(
-          it,
+    UiThreadUtil.runOnUiThread {
+      if (createPlatformPayPaymentMethodPromise != null) {
+        promise.resolve(createError("Failed", "A Google Pay request is already in progress."))
+        return@runOnUiThread
+      }
+      val activity = getCurrentActivityOrResolveWithError(promise) ?: return@runOnUiThread
+      createPlatformPayPaymentMethodPromise = promise
+      try {
+        platformPayLauncher = GooglePayRequestLauncher(reactApplicationContext) { result ->
+          platformPayLauncher?.destroy()
+          platformPayLauncher = null
+          createPlatformPayPaymentMethodPromise = null
+          GooglePayRequestHelper.handleGooglePaymentMethodResult(
+            result, stripe, usesDeprecatedTokenFlow, promise,
+          )
+        }
+        val request = GooglePayRequestHelper.createPaymentRequest(
+          activity,
           GooglePayJsonFactory(reactApplicationContext),
           googlePayParams,
         )
-      GooglePayRequestHelper.createPaymentMethod(request, it)
+        platformPayLauncher?.launch(activity, request)
+      } catch (error: Exception) {
+        platformPayLauncher?.destroy()
+        platformPayLauncher = null
+        createPlatformPayPaymentMethodPromise = null
+        promise.resolve(createError("Failed", error))
+      }
     }
   }
 
@@ -1419,15 +1405,6 @@ class StripeSdkModule(
   }
 
   @ReactMethod
-  override fun createEmbeddedPaymentElementWithCheckout(
-    sessionKey: String,
-    configuration: ReadableMap,
-    promise: Promise,
-  ) {
-    promise.resolve(null)
-  }
-
-  @ReactMethod
   override fun confirmEmbeddedPaymentElement(
     viewTag: Double,
     promise: Promise,
@@ -1756,71 +1733,6 @@ class StripeSdkModule(
     promise: Promise?,
   ) {
     // noop, iOS only.
-  }
-
-  override fun initCheckoutSession(
-    clientSecret: String,
-    configuration: ReadableMap,
-    promise: Promise,
-  ) {
-    rejectCheckoutUnavailable(promise)
-  }
-
-  override fun checkoutUpdateShippingAddress(
-    sessionKey: String,
-    address: ReadableMap,
-    name: String?,
-    phone: String?,
-    promise: Promise,
-  ) {
-    rejectCheckoutUnavailable(promise)
-  }
-
-  override fun checkoutApplyPromotionCode(
-    sessionKey: String,
-    code: String,
-    promise: Promise,
-  ) {
-    rejectCheckoutUnavailable(promise)
-  }
-
-  override fun checkoutRemovePromotionCode(
-    sessionKey: String,
-    promise: Promise,
-  ) {
-    rejectCheckoutUnavailable(promise)
-  }
-
-  override fun checkoutUpdateLineItemQuantity(
-    sessionKey: String,
-    lineItemId: String,
-    quantity: Double,
-    promise: Promise,
-  ) {
-    rejectCheckoutUnavailable(promise)
-  }
-
-  override fun checkoutSelectShippingOption(
-    sessionKey: String,
-    id: String,
-    promise: Promise,
-  ) {
-    rejectCheckoutUnavailable(promise)
-  }
-
-  override fun checkoutRunServerUpdateStart(
-    sessionKey: String,
-    promise: Promise,
-  ) {
-    rejectCheckoutUnavailable(promise)
-  }
-
-  override fun checkoutRunServerUpdateComplete(
-    sessionKey: String,
-    error: String?,
-    promise: Promise,
-  ) {
-    rejectCheckoutUnavailable(promise)
   }
 
   /**

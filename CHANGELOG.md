@@ -1,24 +1,38 @@
 # CHANGELOG
 
-# [0.74.0](https://github.com/appchoose/stripe-react-native/compare/v0.73.0...v0.74.0) (2026-08-12)
+## 0.77.0 - 2026-09-16
 
+**Changes**
+* Updated Stripe iOS SDK from 26.9.0 to 26.11.0.
+* Updated Stripe Android SDK from 23.17.1 to 23.19.0.
 
-### Features
+**Features**
 
-* release ([258f940](https://github.com/appchoose/stripe-react-native/commit/258f940a53bbf40b9c9aa3ff20094755b9e491d8))
+* [Added] Added `idType` to Crypto Onramp `KycInfo`, supporting US SSN, Canada SIN, Colombia NIT, and Philippines TIN.
 
-# [0.73.0](https://github.com/appchoose/stripe-react-native/compare/v0.72.0...v0.73.0) (2026-08-12)
+**Changes**
 
+* Updated Stripe iOS SDK from 26.9.0 to 26.11.0.
+* Updated Stripe Android SDK from 23.17.1 to 23.19.0.
+* [Changed] Android: Migrated Google Pay payment method and token creation to the Activity Result API.
+* [Changed] Android: Checkout billing details collection is now controlled by the Checkout Session; `paymentElement.billingDetailsCollectionConfiguration` applies only to iOS.
 
-### Bug Fixes
+**Breaking changes**
 
-* **ios:** read captureMethod from nested mode params instead of top-level intentConfiguration ([#2518](https://github.com/appchoose/stripe-react-native/issues/2518)) ([01de773](https://github.com/appchoose/stripe-react-native/commit/01de7732e0b629415223cc9920c92c105f8c78b4))
-* **ios:** use stripe-connect callback scheme for authenticated web view ([#2561](https://github.com/appchoose/stripe-react-native/issues/2561)) ([ead93f7](https://github.com/appchoose/stripe-react-native/commit/ead93f737b0ecf10278f3efa314e0362bd7924fe))
+* [Removed] Removed support for the React Native old architecture. Enable the new architecture with `newArchEnabled=true` in `gradle.properties` for Android, `RCT_NEW_ARCH_ENABLED=1` in your `Podfile` for iOS, or `newArchEnabled: true` in your app configuration for Expo.
 
+**Fixes**
 
-### Features
+* [Fixed] Android: Fixed Crypto Onramp presentation failures after Activity recreation by recreating the presenter for the current Activity.
 
-* **ios:** support `supportedNetworks` in `ApplePayBaseParams` ([#2566](https://github.com/appchoose/stripe-react-native/issues/2566)) ([8a10bf9](https://github.com/appchoose/stripe-react-native/commit/8a10bf9a4092721c47553c22cb6f4dc08ab15d31))
+## 0.76.0 - 2026-09-01
+**Features**
+* [Added] Added `deleteWalletAddress` to Crypto Onramp for deleting a registered wallet from the current Link account.
+
+## 0.75.0 - 2026-08-18
+**Features**
+* [Added] Android: Added Crypto Onramp Samsung Pay configuration, availability checks, payment collection, and example integration.
+* [Added] Added typed Crypto Onramp error coverage for wallet ownership verification failures.
 
 ## 0.74.0 - 2026-08-11
 **Features**

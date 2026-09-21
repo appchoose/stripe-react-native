@@ -36,17 +36,10 @@ private func getDeviceType() -> String {
 
 @objc(StripeSdkImpl)
 public class StripeSdkImpl: NSObject, UIAdaptivePresentationControllerDelegate {
+
     @objc public static let shared = StripeSdkImpl()
 
-    static let checkoutUnavailableMessage = "Checkout Sessions are temporarily unavailable while the native integration is being rebuilt."
-
-    static var isNewArchitecture: Bool {
-        #if RCT_NEW_ARCH_ENABLED
-        return true
-        #else
-        return false
-        #endif
-    }
+    static let isNewArchitecture = true
 
     static var reactNativeVersion: String {
         let version = RCTGetReactNativeVersion()
@@ -60,6 +53,8 @@ public class StripeSdkImpl: NSObject, UIAdaptivePresentationControllerDelegate {
     @objc public weak var onrampEmitter: StripeOnrampSdkEmitter?
     weak var cardFieldView: CardFieldView?
     weak var cardFormView: CardFormView?
+
+    @MainActor lazy var checkoutControllerRegistry = CheckoutControllerRegistry()
 
     var merchantIdentifier: String?
 
@@ -139,6 +134,12 @@ public class StripeSdkImpl: NSObject, UIAdaptivePresentationControllerDelegate {
 
     var authenticationSession: ASWebAuthenticationSession?
     var authenticationContextProvider: Any?
+
+    @objc public func invalidateCheckoutControllers() {
+        DispatchQueue.main.async { [weak self] in
+            self?.checkoutControllerRegistry.removeAll()
+        }
+    }
 
     static let authenticatedWebViewReturnURLScheme = "stripe-connect"
 
@@ -1415,6 +1416,27 @@ public class StripeSdkImpl: NSObject, UIAdaptivePresentationControllerDelegate {
         Task {
             do {
                 try await coordinator.registerWalletAddress(walletAddress: address, network: cryptoNetwork)
+                resolve([:])  // Return empty object on success
+            } catch {
+                let errorResult = OnrampErrors.createFailedError(error)
+                resolve(["error": errorResult["error"]!])
+            }
+        }
+    }
+
+    @objc(deleteWalletAddress:resolver:rejecter:)
+    public func deleteWalletAddress(
+        walletId: String,
+        resolver resolve: @escaping RCTPromiseResolveBlock,
+        rejecter reject: @escaping RCTPromiseRejectBlock
+    ) {
+        guard isPublishableKeyAvailable(resolve), let coordinator = requireOnrampCoordinator(resolve) else {
+            return
+        }
+
+        Task {
+            do {
+                try await coordinator.deleteWalletAddress(walletId: walletId)
                 resolve([:])  // Return empty object on success
             } catch {
                 let errorResult = OnrampErrors.createFailedError(error)
