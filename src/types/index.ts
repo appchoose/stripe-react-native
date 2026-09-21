@@ -52,6 +52,7 @@ export * from './PushProvisioning';
 export * from './Errors';
 export * from './CustomerSheet';
 export * from './Checkout';
+export * from './CardScan';
 export type {
   Address,
   BillingDetails,

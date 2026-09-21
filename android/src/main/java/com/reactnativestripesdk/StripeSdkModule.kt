@@ -24,6 +24,9 @@ import com.facebook.react.bridge.WritableNativeArray
 import com.facebook.react.bridge.WritableNativeMap
 import com.facebook.react.module.annotations.ReactModule
 import com.facebook.react.modules.systeminfo.ReactNativeVersion
+import com.google.android.gms.wallet.PaymentCardRecognitionIntentRequest
+import com.google.android.gms.wallet.Wallet
+import com.google.android.gms.wallet.WalletConstants
 import com.reactnativestripesdk.addresssheet.AddressLauncherManager
 import com.reactnativestripesdk.checkout.CheckoutControllerRegistry
 import com.reactnativestripesdk.customersheet.CustomerSheetManager
@@ -102,6 +105,7 @@ class StripeSdkModule(
 
   private var createPlatformPayPaymentMethodPromise: Promise? = null
   private var platformPayLauncher: GooglePayRequestLauncher? = null
+  private var cardScanLauncher: StandaloneCardScanLauncher? = null
 
   private val stripeUIManagers = mutableListOf<StripeUIManager>()
   private var paymentSheetManager: PaymentSheetManager? = null
@@ -135,6 +139,8 @@ class StripeSdkModule(
     UiThreadUtil.runOnUiThread {
       platformPayLauncher?.destroy()
       platformPayLauncher = null
+      cardScanLauncher?.destroy()
+      cardScanLauncher = null
       createPlatformPayPaymentMethodPromise = null
       checkoutControllerRegistry.clear()
     }
@@ -1387,6 +1393,57 @@ class StripeSdkModule(
         },
       activity = getCurrentActivityOrResolveWithError(promise) as? AppCompatActivity,
     )
+  }
+
+  @ReactMethod
+  @Suppress("TooGenericExceptionCaught")
+  override fun scanCard(promise: Promise) {
+    if (cardScanLauncher != null) {
+      promise.resolve(
+        StandaloneCardScanResult.Failed(
+          code = "AlreadyInProgress",
+          message = "A card scan is already in progress.",
+        ).toWritableMap(),
+      )
+      return
+    }
+
+    val activity = reactApplicationContext.currentActivity as? FragmentActivity
+    if (activity == null) {
+      promise.resolve(
+        StandaloneCardScanResult.Failed(
+          code = "Failed",
+          message = "Activity doesn't exist yet. You can safely retry this method.",
+        ).toWritableMap(),
+      )
+      return
+    }
+    val launcher = StandaloneCardScanLauncher(
+      context = reactApplicationContext,
+      callback = { result ->
+        cardScanLauncher = null
+        promise.resolve(result.toWritableMap())
+      },
+    )
+    cardScanLauncher = launcher
+
+    try {
+      val walletOptions = Wallet.WalletOptions.Builder()
+        .setEnvironment(WalletConstants.ENVIRONMENT_PRODUCTION)
+        .build()
+      val paymentsClient = Wallet.getPaymentsClient(reactApplicationContext, walletOptions)
+      val request = PaymentCardRecognitionIntentRequest.getDefaultInstance()
+      launcher.launch(activity, paymentsClient.getPaymentCardRecognitionIntent(request))
+    } catch (error: Exception) {
+      launcher.destroy()
+      cardScanLauncher = null
+      promise.resolve(
+        StandaloneCardScanResult.Failed(
+          code = "NotSupported",
+          message = error.localizedMessage ?: "Card scanning is not available on this device.",
+        ).toWritableMap(),
+      )
+    }
   }
 
   // Android owns EmbeddedPaymentElement through its native view. Configuration,

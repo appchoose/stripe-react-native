@@ -115,6 +115,7 @@ module StripeSPM
     StripePayments
     StripePaymentsUI
     StripeApplePay
+    StripeCardScan
     StripeFinancialConnections
   ].freeze
 

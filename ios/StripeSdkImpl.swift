@@ -3,6 +3,7 @@ import Foundation
 import PassKit
 import SafariServices
 @_spi(DashboardOnly) @_spi(STP) import Stripe
+import StripeCardScan
 @_spi(STP) @_spi(ReactNativeSDK) import StripeCore
 import StripeFinancialConnections
 @_spi(STP) @_spi(ConfirmationTokensPublicPreview) import StripePayments
@@ -133,6 +134,7 @@ public class StripeSdkImpl: NSObject, UIAdaptivePresentationControllerDelegate {
     lazy var embeddedInstanceDelegate = StripeSdkEmbeddedPaymentElementDelegate(sdkImpl: self)
 
     var authenticationSession: ASWebAuthenticationSession?
+    private var cardScanSheet: CardScanSheet?
     var authenticationContextProvider: Any?
 
     @objc public func invalidateCheckoutControllers() {
@@ -1284,6 +1286,72 @@ public class StripeSdkImpl: NSObject, UIAdaptivePresentationControllerDelegate {
             }
 
             resolve(["id": session.id])
+        }
+    }
+
+    @objc(scanCard:rejecter:)
+    public func scanCard(
+        resolver resolve: @escaping RCTPromiseResolveBlock,
+        rejecter reject: @escaping RCTPromiseRejectBlock
+    ) {
+        DispatchQueue.main.async {
+            guard self.cardScanSheet == nil else {
+                resolve([
+                    "status": "failed",
+                    "error": [
+                        "code": "AlreadyInProgress",
+                        "message": "A card scan is already in progress.",
+                    ],
+                ])
+                return
+            }
+
+            guard Bundle.main.object(forInfoDictionaryKey: "NSCameraUsageDescription") != nil else {
+                resolve([
+                    "status": "failed",
+                    "error": [
+                        "code": "NotSupported",
+                        "message": "NSCameraUsageDescription is missing from the application's Info.plist.",
+                    ],
+                ])
+                return
+            }
+
+            let cardScanSheet = CardScanSheet()
+            self.cardScanSheet = cardScanSheet
+            let presenter = findViewControllerPresenter(
+                from: RCTKeyWindow()?.rootViewController ?? UIViewController()
+            )
+
+            cardScanSheet.present(from: presenter) { [weak self] result in
+                self?.cardScanSheet = nil
+
+                switch result {
+                case .completed(let card):
+                    var scannedCard: [String: Any] = ["number": card.pan]
+                    if let expiryMonth = card.expiryMonth.flatMap({ Int($0) }) {
+                        scannedCard["expiryMonth"] = expiryMonth
+                    }
+                    if let expiryYear = card.expiryYear.flatMap({ Int($0) }) {
+                        scannedCard["expiryYear"] = expiryYear
+                    }
+                    if let name = card.name, !name.isEmpty {
+                        scannedCard["name"] = name
+                    }
+                    resolve(["status": "completed", "card": scannedCard])
+                case .canceled:
+                    resolve(["status": "canceled"])
+                case .failed(let error):
+                    resolve([
+                        "status": "failed",
+                        "error": [
+                            "code": "Failed",
+                            "message": error.localizedDescription,
+                            "localizedMessage": error.localizedDescription,
+                        ],
+                    ])
+                }
+            }
         }
     }
 

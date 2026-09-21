@@ -34,6 +34,7 @@ import type {
   PlatformPay,
   CreateRadarSessionResult,
   PossibleBrand,
+  CardScanResult,
 } from './types';
 import { Platform, EventSubscription } from 'react-native';
 import type { CollectFinancialConnectionsAccountsParams } from './types/FinancialConnections';
@@ -921,6 +922,20 @@ export const createRadarSession =
   async (): Promise<CreateRadarSessionResult> => {
     return await NativeStripeSdk.createRadarSession();
   };
+
+/**
+ * Presents the native card scanner and returns the recognized card details.
+ *
+ * The returned card number is sensitive. Do not log, persist, or include it in
+ * analytics or crash reports. The CVC is never scanned.
+ *
+ * iOS requires `NSCameraUsageDescription` in the host application's Info.plist.
+ * Android requires Google Pay API access and the
+ * `com.google.android.gms.wallet.api.enabled` manifest metadata.
+ */
+export const scanCard = async (): Promise<CardScanResult> => {
+  return await NativeStripeSdk.scanCard();
+};
 
 export const setFinancialConnectionsForceNativeFlow = async (
   enabled: boolean
