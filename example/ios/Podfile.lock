@@ -1874,6 +1874,7 @@ PODS:
     - ReactNativeDependencies
     - Stripe (= 26.11.0)
     - StripeApplePay (= 26.11.0)
+    - StripeCardScan (= 26.11.0)
     - StripeFinancialConnections (= 26.11.0)
     - StripePayments (= 26.11.0)
     - StripePaymentSheet (= 26.11.0)
@@ -1950,6 +1951,8 @@ PODS:
   - StripeApplePay (26.11.0):
     - StripeCore (= 26.11.0)
   - StripeCameraCore (26.11.0):
+    - StripeCore (= 26.11.0)
+  - StripeCardScan (26.11.0):
     - StripeCore (= 26.11.0)
   - StripeCore (26.11.0)
   - StripeCryptoOnramp (26.11.0):
@@ -2077,6 +2080,7 @@ SPEC REPOS:
     - Stripe
     - StripeApplePay
     - StripeCameraCore
+    - StripeCardScan
     - StripeCore
     - StripeCryptoOnramp
     - StripeFinancialConnections
@@ -2316,9 +2320,10 @@ SPEC CHECKSUMS:
   RNCPicker: c8a3584b74133464ee926224463fcc54dfdaebca
   RNScreens: 61c18865ab074f4d995ac8d7cf5060522a649d05
   Stripe: eeb45e6b3c973d412227def2e757f9b4cf9caf95
-  stripe-react-native: 7982db37f3a3c3c74c51d0405e8214dba34cf447
+  stripe-react-native: 0842a451c170ef64cbecc27c8a59cfcf963d032d
   StripeApplePay: 6067bc754f87b41468ba67f2646a7fbc91abfa34
   StripeCameraCore: 31f746270b5c7af6311de5ba07473bfaa94081be
+  StripeCardScan: 9a164636d5ec804ccfa39c3899cf8ed871b55f5d
   StripeCore: 21d74e81c1bb74b711a8d06988ca675d21fdbcf8
   StripeCryptoOnramp: eb098daec54824e099c9004f329656a631460e8a
   StripeFinancialConnections: f66aa973cac09ac96a16f8655c1d2b83ec804e87

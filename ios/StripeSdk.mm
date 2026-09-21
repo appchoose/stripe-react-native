@@ -490,6 +490,12 @@ RCT_EXPORT_METHOD(createRadarSession:(nonnull RCTPromiseResolveBlock)resolve
   [StripeSdkImpl.shared createRadarSession:resolve rejecter:reject];
 }
 
+RCT_EXPORT_METHOD(scanCard:(nonnull RCTPromiseResolveBlock)resolve
+                    reject:(nonnull RCTPromiseRejectBlock)reject)
+{
+  [StripeSdkImpl.shared scanCard:resolve rejecter:reject];
+}
+
 RCT_EXPORT_METHOD(createPaymentMethodCustomNative:(nonnull NSDictionary *)params
                                resolve:(nonnull RCTPromiseResolveBlock)resolve
                                 reject:(nonnull RCTPromiseRejectBlock)reject)

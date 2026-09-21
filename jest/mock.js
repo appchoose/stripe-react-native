@@ -48,6 +48,14 @@ const mockFunctions = {
   openPlatformPaySetup: jest.fn(async () => {
     return;
   }),
+  scanCard: jest.fn(async () => ({
+    status: 'completed',
+    card: {
+      number: '4242424242424242',
+      expiryMonth: 12,
+      expiryYear: 2034,
+    },
+  })),
   handleNextAction: jest.fn(async () => ({
     paymentIntent: {},
     error: null,

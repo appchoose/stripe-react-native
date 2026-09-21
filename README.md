@@ -32,6 +32,30 @@ Get started with our [📚 integration guides](https://stripe.com/docs/payments/
 
 If you're selling digital products or services within your app, (e.g. subscriptions, in-game currencies, game levels, access to premium content, or unlocking a full version), you must use the app store's in-app purchase APIs. See [Apple's](https://developer.apple.com/app-store/review/guidelines/#payments) and [Google's](https://support.google.com/googleplay/android-developer/answer/9858738?hl=en&ref_topic=9857752) guidelines for more information. For all other scenarios you can use this SDK to process payments via Stripe.
 
+#### Standalone card scanning
+
+This fork exposes a standalone native card scanner for custom card forms. It
+does not present PaymentSheet:
+
+```tsx
+import { scanCard } from '@appchoose/stripe-react-native';
+
+const result = await scanCard();
+if (result.status === 'completed') {
+  const { number, expiryMonth, expiryYear, name } = result.card;
+  // Populate your custom form. The CVC must still be entered manually.
+}
+```
+
+On iOS, add `NSCameraUsageDescription` to the app's `Info.plist`. The standalone
+scanner requires iOS 15 or later. On Android, enable the Google Pay API in the
+manifest and request production access in the Google Pay & Wallet Console. The
+scanner is only available on eligible devices and builds signed with a
+registered signing key.
+
+The returned full card number is sensitive. Never log or persist it, or include
+it in analytics or crash reports.
+
 ## Installation
 
 ```sh

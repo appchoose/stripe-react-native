@@ -16,7 +16,7 @@ Pod::Spec.new do |s|
   s.license      = package['license']
   s.authors      = package['author']
 
-  s.platforms    = { ios: '13.0' }
+  s.platforms    = { ios: '15.0' }
   s.source       = { git: 'https://github.com/appchoose/stripe-react-native.git', tag: s.version.to_s }
 
   s.header_dir = 'stripe_react_native'
@@ -48,6 +48,7 @@ Pod::Spec.new do |s|
     core.dependency 'StripePaymentsUI', stripe_version
     core.dependency 'StripeApplePay', stripe_version
     core.dependency 'StripeFinancialConnections', stripe_version
+    core.dependency 'StripeCardScan', stripe_version
   end
 
   s.subspec 'Onramp' do |onramp|

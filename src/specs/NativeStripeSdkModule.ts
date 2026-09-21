@@ -36,6 +36,7 @@ import type {
   Token,
   VerifyMicrodepositsParams,
   CreateRadarSessionResult,
+  CardScanResult,
 } from '../types';
 import type {
   EmbeddedPaymentElementConfiguration,
@@ -208,6 +209,7 @@ export interface Spec extends TurboModule {
   ): Promise<UnsafeObject<any> | null>;
   clearEmbeddedPaymentOption(viewTag: Int32): Promise<void>;
   createRadarSession(): Promise<CreateRadarSessionResult>;
+  scanCard(): Promise<UnsafeObject<CardScanResult>>;
 
   setFinancialConnectionsForceNativeFlow(enabled: boolean): Promise<void>;
 
