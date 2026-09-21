@@ -1,5 +1,12 @@
 # CHANGELOG
 
+# [0.78.0](https://github.com/appchoose/stripe-react-native/compare/v0.77.0...v0.78.0) (2026-09-21)
+
+
+### Features
+
+* add standalone card scanner ([#22](https://github.com/appchoose/stripe-react-native/issues/22)) ([9ea0b05](https://github.com/appchoose/stripe-react-native/commit/9ea0b05979ade08eca7ea8e4dbc8207348c88655))
+
 # [0.77.0](https://github.com/appchoose/stripe-react-native/compare/v0.76.0...v0.77.0) (2026-09-21)
 
 
