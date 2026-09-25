@@ -1,32 +1,9 @@
 # CHANGELOG
 
-# [0.78.0](https://github.com/appchoose/stripe-react-native/compare/v0.77.0...v0.78.0) (2026-09-21)
-
-
-### Features
-
-* add standalone card scanner ([#22](https://github.com/appchoose/stripe-react-native/issues/22)) ([9ea0b05](https://github.com/appchoose/stripe-react-native/commit/9ea0b05979ade08eca7ea8e4dbc8207348c88655))
-
-# [0.77.0](https://github.com/appchoose/stripe-react-native/compare/v0.76.0...v0.77.0) (2026-09-21)
-
-
-### Features
-
-* release ([3ca6b18](https://github.com/appchoose/stripe-react-native/commit/3ca6b18d3555f82e1d2ff6e04711d0e956d212a4))
-
-# [0.76.0](https://github.com/appchoose/stripe-react-native/compare/v0.75.0...v0.76.0) (2026-09-21)
-
-
-### Features
-
-* release ([2e8122d](https://github.com/appchoose/stripe-react-native/commit/2e8122dd9c07c5447334833b0e9018b0b0096534))
-
-# [0.75.0](https://github.com/appchoose/stripe-react-native/compare/v0.74.0...v0.75.0) (2026-09-21)
-
-
-### Features
-
-* release ([1e86220](https://github.com/appchoose/stripe-react-native/commit/1e86220ffa1ae3e5b3e128f3cbfe658eb7ea0dd9))
+## 0.78.0 - 2026-09-23
+**Changes**
+* [Changed] React Native versions < 0.75 are deprecated.
+* [Changed] iOS: By default, the Stripe iOS SDK is now resolved through Swift Package Manager instead of CocoaPods (the Stripe iOS SDK is deprecating CocoaPods support). This requires building with dynamic frameworks: add `use_frameworks! :linkage => :dynamic` to your Podfile (for Expo, set `"useFrameworks": "dynamic"` via the `expo-build-properties` plugin). See [Stripe iOS SDK resolution](https://github.com/stripe/stripe-react-native#ios-dependency-resolution) in the README for details, troubleshooting, and temporary workarounds.
 
 ## 0.77.0 - 2026-09-16
 

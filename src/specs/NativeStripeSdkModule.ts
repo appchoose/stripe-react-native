@@ -43,11 +43,16 @@ import type {
   EmbeddedPaymentElementResult,
 } from '../types/EmbeddedPaymentElement';
 import type { IntentConfiguration } from '../types/PaymentSheet';
+import type { Checkout } from '../types/Checkout';
 import type { UnsafeObject } from './utils';
 import type { PossibleNativeBrand } from '../types/Common';
 
 type CustomerSheetInitResult = UnsafeObject<{
   error?: StripeError<CustomerSheetError>;
+}>;
+
+type CheckoutCreateResult = UnsafeObject<{
+  session: Checkout.Session;
 }>;
 
 export interface Spec extends TurboModule {
@@ -250,6 +255,41 @@ export interface Spec extends TurboModule {
   confirmLinkControllerSetupIntent(
     params: UnsafeObject<{ clientSecret: string }>
   ): Promise<UnsafeObject<LinkController.ConfirmSetupIntentResult>>;
+
+  // Checkout Session - Private Preview
+
+  /** @CheckoutSessionPrivatePreview */
+  createCheckout(
+    params: UnsafeObject<Checkout.CreateOptions>,
+    controllerId: string
+  ): Promise<CheckoutCreateResult>;
+
+  /** @CheckoutSessionPrivatePreview */
+  updateCheckoutEmail(
+    controllerId: string,
+    email: string | null
+  ): Promise<void>;
+
+  /** @CheckoutSessionPrivatePreview */
+  updateCheckoutShippingAddress(
+    controllerId: string,
+    params: UnsafeObject<Checkout.UpdateShippingAddressParams>
+  ): Promise<void>;
+
+  /** @CheckoutSessionPrivatePreview */
+  applyCheckoutPromotionCode(
+    controllerId: string,
+    promotionCode: string
+  ): Promise<void>;
+
+  /** @CheckoutSessionPrivatePreview */
+  removeCheckoutPromotionCode(controllerId: string): Promise<void>;
+
+  /** @CheckoutSessionPrivatePreview */
+  clearCheckoutPaymentOption(controllerId: string): Promise<void>;
+
+  /** @CheckoutSessionPrivatePreview */
+  destroyCheckout(controllerId: string): Promise<void>;
 
   // Events
   addListener: (eventType: string) => void;

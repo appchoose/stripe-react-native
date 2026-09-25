@@ -981,6 +981,7 @@ export namespace Checkout {
         state?: string;
     }
     export interface AdjustableQuantity {
+        enabled: boolean;
         maximum: number;
         minimum: number;
     }
@@ -989,7 +990,6 @@ export namespace Checkout {
         minorUnitsAmount: number;
     }
     export interface AmountDetails {
-        discount: Amount;
         subtotal: Amount;
         taxAmounts?: TaxAmount[];
         taxExclusive: Amount;
@@ -1002,7 +1002,7 @@ export namespace Checkout {
         merchantCountryCode: string;
     }
     export interface BillingDetails {
-        address?: Address;
+        address?: Partial<Address>;
         email?: string;
         name?: string;
         phone?: string;
@@ -1049,6 +1049,7 @@ export namespace Checkout {
     }
     export interface OneTimePriceItem {
         adjustableQuantity?: AdjustableQuantity;
+        amountDetails: AmountDetails;
         displayName: string;
         images: string[];
         key: string;
@@ -1058,7 +1059,6 @@ export namespace Checkout {
         unitLabel?: string;
     }
     export interface OneTimePriceOrderSummaryItem {
-        amountDetails: AmountDetails;
         description?: string;
         items: OneTimePriceItem[];
         key: string;
@@ -1081,7 +1081,6 @@ export namespace Checkout {
         rowSelectionBehavior?: RowSelectionBehavior;
         savePaymentMethodOptInBehavior?: SavePaymentMethodOptInBehavior;
         termsDisplay?: Record<string, TermsDisplay>;
-        useAutocompleteEndpoints?: boolean;
     }
     export interface PaymentOptionDisplayData {
         billingDetails?: BillingDetails;
@@ -1111,7 +1110,6 @@ export namespace Checkout {
         discountAmounts: DiscountAmount[];
         email?: string;
         id: string;
-        lastPaymentError?: StripeError<ErrorCode>;
         livemode: boolean;
         minorUnitsAmountDivisor?: number;
         orderSummaryItems: OrderSummaryItem[];
@@ -1588,7 +1586,7 @@ type CreateCardTokenParams = {
 };
 
 // @public
-export function createCheckout(_options: Checkout.CreateOptions): Promise<CheckoutController>;
+export function createCheckout(options: Checkout.CreateOptions): Promise<CheckoutController>;
 
 // @public
 type CreateCryptoPaymentTokenResult = {
@@ -2082,8 +2080,10 @@ enum FinancialConnectionsEventErrorCode {
     InstitutionUnavailablePlanned = "institution_unavailable_planned",
     InstitutionUnavailableUnplanned = "institution_unavailable_unplanned",
     NoDebitableAccount = "no_debitable_account",
+    NoEligibleAccounts = "no_eligible_accounts",
     SessionExpired = "session_expired",
-    UnexpectedError = "unexpected_error"
+    UnexpectedError = "unexpected_error",
+    WebBrowserUnavailable = "web_browser_unavailable"
 }
 
 // @public (undocumented)
