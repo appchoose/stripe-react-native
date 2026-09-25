@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## [0.78.1](https://github.com/appchoose/stripe-react-native/compare/v0.78.0...v0.78.1) (2026-09-25)
+
+
+### Bug Fixes
+
+* preserve Financial Connections onEvent error codes ([#2684](https://github.com/appchoose/stripe-react-native/issues/2684)) ([28b2f33](https://github.com/appchoose/stripe-react-native/commit/28b2f332506d8d67983176f431362c7e760bcc76))
+
 ## 0.78.0 - 2026-09-23
 **Changes**
 * [Changed] React Native versions < 0.75 are deprecated.
