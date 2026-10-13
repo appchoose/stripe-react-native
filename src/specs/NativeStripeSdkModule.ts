@@ -11,7 +11,6 @@ import type {
   CreateTokenForCVCUpdateResult,
   CreateTokenResult,
   CustomerAdapter,
-  CustomerSessionClientSecret,
   CustomerSheetError,
   CustomerSheetInitParams,
   CustomerSheetPresentParams,
@@ -53,6 +52,7 @@ type CustomerSheetInitResult = UnsafeObject<{
 
 type CheckoutCreateResult = UnsafeObject<{
   session: Checkout.Session;
+  isCurrencySelectorAvailable: boolean;
 }>;
 
 export interface Spec extends TurboModule {
@@ -200,7 +200,12 @@ export interface Spec extends TurboModule {
     setupIntentClientSecret: string
   ): Promise<void>;
   clientSecretProviderCustomerSessionClientSecretCallback(
-    customerSessionClientSecret: UnsafeObject<CustomerSessionClientSecret>
+    customerSessionClientSecret: UnsafeObject<{
+      requestId: string;
+      customerId?: string;
+      clientSecret?: string;
+      error?: string;
+    }>
   ): Promise<void>;
   createEmbeddedPaymentElement(
     intentConfig: UnsafeObject<IntentConfiguration>,
@@ -289,7 +294,26 @@ export interface Spec extends TurboModule {
   clearCheckoutPaymentOption(controllerId: string): Promise<void>;
 
   /** @CheckoutSessionPrivatePreview */
+  confirmCheckout(controllerId: string): Promise<UnsafeObject<Checkout.Result>>;
+
+  /** @CheckoutSessionPrivatePreview */
+  presentCheckoutPaymentElement(controllerId: string): Promise<void>;
+
+  /** @CheckoutSessionPrivatePreview */
   destroyCheckout(controllerId: string): Promise<void>;
+
+  /** @CheckoutSessionPrivatePreview */
+  runCheckoutServerUpdate(
+    controllerId: string,
+    operationId: string
+  ): Promise<void>;
+
+  /** @CheckoutSessionPrivatePreview */
+  completeCheckoutServerUpdate(
+    controllerId: string,
+    operationId: string,
+    error: string | null
+  ): Promise<void>;
 
   // Events
   addListener: (eventType: string) => void;

@@ -213,6 +213,8 @@
         "CardField": "CardFieldComponentView",
         "CardForm": "CardFormComponentView",
         "EmbeddedPaymentElementView": "EmbeddedPaymentElementViewComponentView",
+        "CheckoutPaymentElementView": "CheckoutPaymentElementViewComponentView",
+        "CheckoutCurrencySelectorElementView": "CheckoutCurrencySelectorElementViewComponentView",
         "NavigationBar": "NavigationBarComponentView",
         "StripeContainer": "StripeContainerComponentView"
       }

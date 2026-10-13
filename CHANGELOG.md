@@ -1,11 +1,47 @@
 # CHANGELOG
 
-## [0.78.1](https://github.com/appchoose/stripe-react-native/compare/v0.78.0...v0.78.1) (2026-09-25)
+## Unreleased
 
+**Fixes**
 
-### Bug Fixes
+* [Fixed] Android: Fixed custom font validation rejecting font resource names containing underscores in PaymentSheet and PaymentMethodMessagingElement. ([#2573](https://github.com/stripe/stripe-react-native/pull/2573))
+* [Fixed] Fixed an issue where PaymentSheet could close immediately on Android after a JavaScript reload and Activity recreation.
+* [Fixed] Android: Fixed R8 build failures when the optional push provisioning dependency is not included. ([#2715](https://github.com/stripe/stripe-react-native/pull/2715))
 
-* preserve Financial Connections onEvent error codes ([#2684](https://github.com/appchoose/stripe-react-native/issues/2684)) ([28b2f33](https://github.com/appchoose/stripe-react-native/commit/28b2f332506d8d67983176f431362c7e760bcc76))
+## 0.81.0 - 2026-10-06
+
+**Features**
+
+* [Added] Onramp: Expose Platform Pay email, E.164 phone, and raw phone for Link registration prefill on iOS and Android, and add Samsung Pay contact collection configuration.
+* [Added] Added `financialConnectionsSessionId` to Financial Connections `FinancialConnectionsEvent`. Events are now emitted once the session identifier is available.
+
+**Changes**
+
+* Updated Stripe iOS SDK from 26.12.1 to 26.13.0.
+* Updated Stripe Android SDK from 23.21.0 to 23.22.0.
+
+**Fixes**
+
+* [Fixed] Android: Fixed PaymentSheet presentation failures after the host Activity changes. ([#2705](https://github.com/stripe/stripe-react-native/pull/2705))
+* [Fixed] Fixed an issue where CustomerSheet could crash on iOS or remain stuck loading on Android when using CustomerSession.
+* [Fixed] Android: ConfirmationToken `setupFutureUsage` now returns the `FutureUsage` values (`OffSession` / `OnSession` / `None`), matching iOS. ([#2697](https://github.com/stripe/stripe-react-native/pull/2697))
+
+## 0.80.0 - 2026-09-30
+
+**Features**
+
+* [Added] Added support for pre-collected consent in Financial Connections flows. (private preview)
+
+## 0.79.0 - 2026-09-29
+
+**Changes**
+
+* Updated Stripe iOS SDK from 26.12.0 to 26.12.1.
+* Updated Stripe Android SDK from 23.20.0 to 23.21.0.
+
+**Fixes**
+
+* [Fixed] Connect embedded components now use the configured appearance background and text colors for their loading indicator. ([#2665](https://github.com/stripe/stripe-react-native/pull/2665))
 
 ## 0.78.0 - 2026-09-23
 **Changes**
