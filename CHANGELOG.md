@@ -1,5 +1,19 @@
 # CHANGELOG
 
+# [0.79.0](https://github.com/appchoose/stripe-react-native/compare/v0.78.1...v0.79.0) (2026-10-13)
+
+
+### Bug Fixes
+
+* allow underscores and mixed-case PaymentSheet font names on android ([#2573](https://github.com/appchoose/stripe-react-native/issues/2573)) ([ee2f27b](https://github.com/appchoose/stripe-react-native/commit/ee2f27bdfeb74c508a30f05dfeea1a8001d4975c))
+* Android ConfirmationToken setupFutureUsage now matches the FutureUsage type ([#2697](https://github.com/appchoose/stripe-react-native/issues/2697)) ([6b4a525](https://github.com/appchoose/stripe-react-native/commit/6b4a5253bbb059e7903a6000d9badc00ba5418c8))
+* **android:** suppress R8 warnings for optional push provisioning classes ([#2715](https://github.com/appchoose/stripe-react-native/issues/2715)) ([67cef44](https://github.com/appchoose/stripe-react-native/commit/67cef44b7fc554fb870490e9d1a3fafcb626a761))
+
+
+### Features
+
+* attach Financial Connections session IDs to events ([#2685](https://github.com/appchoose/stripe-react-native/issues/2685)) ([d584dd5](https://github.com/appchoose/stripe-react-native/commit/d584dd53095a6d205794a03df4970c78910c5ce3))
+
 ## Unreleased
 
 **Fixes**
