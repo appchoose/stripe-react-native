@@ -5,6 +5,7 @@ import androidx.annotation.MainThread
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import com.facebook.react.bridge.Arguments
+import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.UiThreadUtil
 import com.facebook.react.bridge.WritableMap
 import com.reactnativestripesdk.EventEmitterCompat
@@ -31,6 +32,7 @@ internal class NativeCheckoutControllerInstance(
   private val eventEmitter: EventEmitterCompat,
   private val scope: CoroutineScope,
   initialSession: WritableMap,
+  private val context: ReactApplicationContext,
 ) {
   private val serverUpdateCompletions = mutableMapOf<String, CompletableDeferred<Result<Unit>>>()
   private var controllerId: String? = null
@@ -113,6 +115,13 @@ internal class NativeCheckoutControllerInstance(
     this.controllerId = controllerId
 
     scope.launch {
+      controller.isUpdating.collect { isUpdating ->
+        // Session serialization can suspend while loading a payment icon. Report busy transitions
+        // immediately, even if a later state cancels the serialized snapshot.
+        if (isUpdating && confirmation == null && !destroyed) emit("updating")
+      }
+    }
+    scope.launch {
       sessionStates().collect { session -> publish(session) }
     }
   }
@@ -120,7 +129,7 @@ internal class NativeCheckoutControllerInstance(
   private fun sessionStates() =
     controller.session.combine(controller.isUpdating) { session, _ -> session }
       .mapLatest { session ->
-        session?.let { CheckoutSessionSerializer.serialize(it) }
+        session?.let { CheckoutSessionSerializer.serialize(it, context.checkoutIconContext()) }
       }.filterNotNull()
 
   /** Publishes the current native snapshot before its status or operation result reaches JS. */
