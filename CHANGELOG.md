@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## [0.81.1](https://github.com/appchoose/stripe-react-native/compare/v0.81.0...v0.81.1) (2026-10-16)
+
+
+### Bug Fixes
+
+* **android:** exclude private TapAndPay SDK from compileOnly issuing dependency ([#2704](https://github.com/appchoose/stripe-react-native/issues/2704)) ([b6ea9b2](https://github.com/appchoose/stripe-react-native/commit/b6ea9b2959abb5abfac76a93d5b6b556f0b313ca))
+
 ## 0.82.0 - 2026-10-13
 
 **Changes**
