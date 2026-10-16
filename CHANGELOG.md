@@ -1,5 +1,12 @@
 # CHANGELOG
 
+# [0.82.0](https://github.com/appchoose/stripe-react-native/compare/v0.81.1...v0.82.0) (2026-10-16)
+
+
+### Features
+
+* release ([0354af6](https://github.com/appchoose/stripe-react-native/commit/0354af6559f5e6d63259113b508aa4b86e60673e))
+
 ## [0.81.1](https://github.com/appchoose/stripe-react-native/compare/v0.81.0...v0.81.1) (2026-10-16)
 
 
