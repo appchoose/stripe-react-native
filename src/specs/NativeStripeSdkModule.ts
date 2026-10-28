@@ -300,6 +300,9 @@ export interface Spec extends TurboModule {
   presentCheckoutPaymentElement(controllerId: string): Promise<void>;
 
   /** @CheckoutSessionPrivatePreview */
+  presentCheckoutShippingAddressElement(controllerId: string): Promise<void>;
+
+  /** @CheckoutSessionPrivatePreview */
   destroyCheckout(controllerId: string): Promise<void>;
 
   /** @CheckoutSessionPrivatePreview */

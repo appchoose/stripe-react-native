@@ -69,9 +69,6 @@ final class CheckoutConfigurationMapperTests: XCTestCase {
                 "paymentElement": [
                     "appearance": ["shapes": ["borderRadius": 12.0]],
                     "preferredNetworks": [7, 5],
-                    "billingDetailsCollectionConfiguration": [
-                        "address": "full",
-                    ],
                     "removeSavedPaymentMethodMessage": "Remove this payment method?",
                     "paymentMethodOrder": ["card", "link"],
                     "opensCardScannerAutomatically": true,
@@ -104,7 +101,6 @@ final class CheckoutConfigurationMapperTests: XCTestCase {
         let paymentElement = try XCTUnwrap(configuration.paymentElement)
         XCTAssertEqual(paymentElement.appearance.cornerRadius, 12.0)
         XCTAssertEqual(paymentElement.preferredNetworks, [.visa, .mastercard])
-        XCTAssertEqual(paymentElement.billingDetailsCollectionConfiguration.address, .full)
         XCTAssertEqual(
             paymentElement.removeSavedPaymentMethodMessage,
             "Remove this payment method?"
@@ -148,9 +144,8 @@ final class CheckoutConfigurationMapperTests: XCTestCase {
         XCTAssertNil(configuration.defaults.phone)
         XCTAssertEqual(configuration.userInterfaceStyle, .automatic)
         let paymentElement = try XCTUnwrap(configuration.paymentElement)
-        XCTAssertEqual(paymentElement.billingDetailsCollectionConfiguration.address, .automatic)
         XCTAssertFalse(paymentElement.opensCardScannerAutomatically)
-        XCTAssertFalse(paymentElement.displaysMandateText)
+        XCTAssertTrue(paymentElement.displaysMandateText)
         XCTAssertNil(paymentElement.applePayConfiguration)
         XCTAssertNil(paymentElement.linkConfiguration)
     }
@@ -178,6 +173,54 @@ final class CheckoutConfigurationMapperTests: XCTestCase {
         }
     }
 
+    func test_map_mapsApplePayDisplay() throws {
+        let cases: [(display: String?, merchantIdentifier: String?, enabled: Bool)] = [
+            (nil, "merchant.com.example", true),
+            ("automatic", "merchant.com.example", true),
+            ("never", "merchant.com.example", false),
+            ("never", nil, false),
+        ]
+        for testCase in cases {
+            var applePay = ["buttonType": "checkout"]
+            applePay["display"] = testCase.display
+            let configuration = try CheckoutConfigurationMapper.map(
+                params: [
+                    "paymentElement": [
+                        "applePay": applePay,
+                        "link": ["display": "never"],
+                        "paymentMethodOrder": ["card"],
+                    ],
+                ],
+                merchantIdentifier: testCase.merchantIdentifier,
+                didSelectPaymentOption: {}
+            )
+
+            let paymentElement = try XCTUnwrap(configuration.paymentElement)
+            if testCase.enabled {
+                let applePay = try XCTUnwrap(paymentElement.applePayConfiguration)
+                XCTAssertEqual(applePay.merchantId, testCase.merchantIdentifier)
+                XCTAssertEqual(applePay.buttonType, .checkout)
+            } else {
+                XCTAssertNil(paymentElement.applePayConfiguration)
+            }
+            XCTAssertEqual(paymentElement.linkConfiguration?.display, .never)
+            XCTAssertEqual(paymentElement.paymentMethodOrder, ["card"])
+        }
+    }
+
+    func test_map_rejectsUnsupportedApplePayDisplay() {
+        XCTAssertThrowsError(try CheckoutConfigurationMapper.map(
+            params: ["paymentElement": ["applePay": ["display": "invalid"]]],
+            merchantIdentifier: "merchant.com.example",
+            didSelectPaymentOption: {}
+        )) { error in
+            XCTAssertEqual(
+                error as? CheckoutConfigurationMapperError,
+                .unsupportedValue(path: "paymentElement.applePay.display", value: "invalid")
+            )
+        }
+    }
+
     func test_map_leavesConfigurationValidationToNativeCheckout() throws {
         let configuration = try CheckoutConfigurationMapper.map(
             params: [:],
@@ -190,20 +233,6 @@ final class CheckoutConfigurationMapperTests: XCTestCase {
     }
 
     func test_map_rejectsUnsupportedEnumValues() {
-        XCTAssertThrowsError(try CheckoutConfigurationMapper.map(
-            params: [
-                "clientSecret": "cs_test_secret_123",
-                "returnURL": "example://checkout",
-                "paymentElement": [
-                    "billingDetailsCollectionConfiguration": [
-                        "address": "never",
-                    ],
-                ],
-            ],
-            merchantIdentifier: nil,
-            didSelectPaymentOption: {}
-        ))
-
         XCTAssertThrowsError(try CheckoutConfigurationMapper.map(
             params: [
                 "clientSecret": "cs_test_secret_123",

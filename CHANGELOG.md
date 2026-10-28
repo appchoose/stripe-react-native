@@ -1,11 +1,28 @@
 # CHANGELOG
 
-## [0.81.1](https://github.com/appchoose/stripe-react-native/compare/v0.81.0...v0.81.1) (2026-10-16)
+## 0.84.0 - 2026-10-27
 
+**Breaking changes**
 
-### Bug Fixes
+* [Removed] iOS: The `disableSPM` Expo option and `$StripeDisableSPM = true` Podfile flag are no longer supported because the Stripe iOS SDK no longer supports CocoaPods resolution. Remove these options and use dynamic frameworks with Swift Package Manager. See the [migration guide](MIGRATING.md#ios-swift-package-manager-dependency-resolution-and-dynamic-linking).
+* [Removed] Support for React Native versions below 0.75. React Native 0.75 or later is now required.
 
-* **android:** exclude private TapAndPay SDK from compileOnly issuing dependency ([#2704](https://github.com/appchoose/stripe-react-native/issues/2704)) ([b6ea9b2](https://github.com/appchoose/stripe-react-native/commit/b6ea9b2959abb5abfac76a93d5b6b556f0b313ca))
+**Fixes**
+
+* [Fixed] Android: Connect external links now use the configured browser presentation regardless of navigation type.
+* [Fixed] Connect CSV exports now open the native share sheet again for exports served from Stripe's export storage.
+
+## 0.83.0 - 2026-10-20
+
+**Changes**
+
+* Updated Stripe iOS SDK from 26.14.0 to 26.15.0.
+* Updated Stripe Android SDK from 23.23.0 to 23.24.0.
+* [Deprecated] `AddressSheet`'s Android-only `googlePlacesApiKey` prop. Autocomplete now does not require a Google Places API key.
+
+**Fixes**
+
+* [Fixed] Connect embedded components no longer hang without calling `onLoadError` when an init param contains a double quote, backslash, or backtick, such as a double-quoted family name in `appearance.variables.fontFamily`.
 
 ## 0.82.0 - 2026-10-13
 

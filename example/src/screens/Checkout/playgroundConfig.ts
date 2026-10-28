@@ -1,4 +1,4 @@
-import type { Checkout } from '@stripe/stripe-react-native';
+import type { Checkout } from '@stripe/stripe-react-native/src/types/Checkout';
 import { hostedBackendURL } from './backend';
 
 export type PaymentElementMode = 'sheet' | 'view';
@@ -164,7 +164,7 @@ const lineItems = (settings: PlaygroundSettings) =>
 export function buildSessionParameters(
   settings: PlaygroundSettings,
   customerID?: string
-): object {
+): Record<string, unknown> {
   const params: Record<string, unknown> = {
     ui_mode: 'mobile_elements',
     currency: settings.currency,
@@ -268,16 +268,11 @@ export function checkoutConfiguration(
     merchantDisplayName: 'Stripe Shop',
     defaults,
     paymentElement: {
-      billingDetailsCollectionConfiguration: {
-        address:
-          settings.billingAddressCollection === 'required'
-            ? 'full'
-            : 'automatic',
-      },
       link: { display: settings.linkMode },
     },
     ...(settings.adaptivePricingCountry !== 'none'
       ? { currencySelectorElement: {} }
       : {}),
+    ...(settings.collectShippingAddress ? { shippingAddressElement: {} } : {}),
   };
 }
