@@ -1,5 +1,22 @@
 # CHANGELOG
 
+# [0.82.0](https://github.com/appchoose/stripe-react-native/compare/v0.81.1...v0.82.0) (2026-10-28)
+
+
+### Bug Fixes
+
+* align Connect link handling and CSV export detection on Android ([#2766](https://github.com/appchoose/stripe-react-native/issues/2766)) ([21f86f9](https://github.com/appchoose/stripe-react-native/commit/21f86f9727cbf9da0491f17ce683b6472bb6ee78)), closes [#2550](https://github.com/appchoose/stripe-react-native/issues/2550)
+* **android:** only configure preferredNetworks when explicitly provided ([#2751](https://github.com/appchoose/stripe-react-native/issues/2751)) ([a5c36fc](https://github.com/appchoose/stripe-react-native/commit/a5c36fcfd54398c9c3d48e40711ce1bf59343273))
+* **android:** refresh PaymentSheet callbacks on reinitialization ([#2770](https://github.com/appchoose/stripe-react-native/issues/2770)) ([8153496](https://github.com/appchoose/stripe-react-native/commit/8153496f474e12197d228a03ae6f8e2779ba8434))
+* **connect:** stop components hanging on double quotes in init params ([#2758](https://github.com/appchoose/stripe-react-native/issues/2758)) ([674f9c6](https://github.com/appchoose/stripe-react-native/commit/674f9c6635b9c2efacb82a136f8277fb833515df))
+* **example:** add react-native-webview so Connect components load ([#2764](https://github.com/appchoose/stripe-react-native/issues/2764)) ([80c4c7a](https://github.com/appchoose/stripe-react-native/commit/80c4c7a8ec4022021cd64277c2a5e6bb2b056d08)), closes [#2661](https://github.com/appchoose/stripe-react-native/issues/2661)
+* **ios:** add missing closing backtick in customerSessionClientSecret error message ([#2750](https://github.com/appchoose/stripe-react-native/issues/2750)) ([012f3ed](https://github.com/appchoose/stripe-react-native/commit/012f3edc058f6091b403d0eeff64b2176d5e90f6))
+
+
+### Features
+
+* release ([0354af6](https://github.com/appchoose/stripe-react-native/commit/0354af6559f5e6d63259113b508aa4b86e60673e))
+
 ## 0.84.0 - 2026-10-27
 
 **Breaking changes**
